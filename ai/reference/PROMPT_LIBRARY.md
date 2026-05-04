@@ -4,7 +4,7 @@ Status: Inactive reference
 Last Updated: 2026-05-04
 
 This file stores reusable prompt patterns for possible future inclusion in the
-starter. It is not part of the `/ai/START_HERE.md` Context Loading Order and
+starter. It is not part of the `/ai/START_HERE.md` Context Loading Strategy and
 must not affect how projects are initialized, worked, reviewed, handed off, or
 deployed.
 

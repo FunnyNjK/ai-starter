@@ -13,3 +13,5 @@ initialization.
 - Added root ignore rules for generated `ai/logs/` phase-run output.
 - Added the first starter changelog/version marker.
 - Added a bootstrap checklist to the project initialization prompt.
+- Changed startup context loading to a Fast Context core plus Conditional
+  Context docs.

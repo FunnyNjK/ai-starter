@@ -1,6 +1,6 @@
 # START HERE - AI Project Control File
 
-Last Updated: 2026-05-03
+Last Updated: 2026-05-04
 
 This is the only file an AI assistant needs to read first.
 
@@ -32,7 +32,8 @@ The goal is to let any capable AI assistant quickly understand:
 Every AI assistant working in this project must:
 
 1. Read this file first.
-2. Then read the referenced files listed in the Context Loading Order.
+2. Then read the Fast Context files listed in the Context Loading Strategy.
+   Load Conditional Context files only when the current task needs them.
 3. Summarize the current project state before making changes.
 4. Work only on the assigned task unless explicitly told otherwise.
 5. Avoid project creep.
@@ -41,28 +42,61 @@ Every AI assistant working in this project must:
    clearly documented.
 8. If a decision changes architecture, scope, data model, security, deployment,
    or dependencies, update `/ai/DECISIONS.md`.
-9. Honor the hard rules in `/ai/AI_RULES.md` and `/ai/DEV_ENVIRONMENT.md`.
-   These are non-negotiable.
+9. Honor the hard rules in `/ai/AI_RULES.md`. `/ai/DEV_ENVIRONMENT.md`
+   expands those rules and must be loaded before changing tooling, scripts,
+   package management, dev setup, CI, deployment, or environment assumptions.
 
 ---
 
-## 3. Context Loading Order
+## 3. Context Loading Strategy
 
-When beginning work, read these files in order:
+Use fast context by default. The goal is to give the AI enough project state
+to start safely without spending the whole context window on reference docs.
 
-1. `/ai/PROJECT.md`
-2. `/ai/DEV_ENVIRONMENT.md`         <-- WSL-native, no Docker for dev
-3. `/ai/AI_RULES.md`                <-- hard rules
-4. `/ai/CURRENT_STATE.md`
-5. `/ai/ARCHITECTURE.md`
-6. `/ai/ROADMAP.md`
-7. `/ai/TASKS.md`
-8. `/ai/TESTING.md`
-9. `/ai/DEPLOYMENT.md`
-10. `/ai/DECISIONS.md`
-11. `/ai/HANDOFF.md`
+### Fast Context - read every session
 
-If any file is missing, create it from the matching template in `/ai/templates`.
+After this file, read these files in order:
+
+1. `/ai/CURRENT_STATE.md`
+2. `/ai/HANDOFF.md`
+3. `/ai/TASKS.md`
+4. `/ai/AI_RULES.md`
+
+These files should stay compact enough to orient a new session quickly.
+
+### Conditional Context - read only when needed
+
+Load these files when the current task touches their area:
+
+- `/ai/PROJECT.md` - project identity, target users, goals, non-goals,
+  first-time initialization, README/project-description work.
+- `/ai/ARCHITECTURE.md` - system design, data flow, API boundaries,
+  component structure, security model, or architecture changes.
+- `/ai/ROADMAP.md` - phase planning, prioritization, new task creation, or
+  scope beyond the current task.
+- `/ai/TESTING.md` - test strategy, acceptance validation, coverage, CI test
+  failures, or behavior changes that need tests.
+- `/ai/DEPLOYMENT.md` - Azure, SWA, Functions, CI/CD, environment variables,
+  secrets, domains, release, or rollback work.
+- `/ai/DECISIONS.md` - dependency, architecture, security, deployment,
+  data-model, or scope decisions. Prefer reading the relevant ADR section
+  instead of the whole history when the task is narrow.
+- `/ai/DEV_ENVIRONMENT.md` - tooling, package management, shell, WSL,
+  Docker-for-database usage, editor setup, or environment troubleshooting.
+- `/ai/DONE_LOG.md` - historical implementation details when needed to
+  understand why completed work happened. Do not load it by default.
+- `/ai/reference/*` - inactive reference material. Load only when the user
+  explicitly asks about it.
+
+### Full Context
+
+Read all planning files only for first-time project initialization, refresh
+passes, broad audits, architecture reviews, or when the user explicitly asks
+for a whole-project review.
+
+If any required Fast Context file is missing, create it from the matching
+template in `/ai/templates`. If a needed Conditional Context file is missing
+and no template exists, ask before inventing a new permanent planning file.
 
 ---
 
@@ -92,10 +126,12 @@ told to modify them.
 
 ## 5. Standard Start-of-Chat Response
 
-After reading the required files, the AI must respond with:
+After reading the Fast Context files and any needed Conditional Context files,
+the AI must respond with:
 
 ```text
 Current project summary:
+- Context loaded:
 - Project:
 - Current phase:
 - Current task:
@@ -103,7 +139,7 @@ Current project summary:
 - What appears incomplete:
 - Hard rules I must respect (from AI_RULES.md):
 - Next recommended action:
-- Files I need to inspect or modify:
+- Additional files I need to inspect or modify:
 ```
 
 The AI should not begin coding until it has provided this summary, unless the

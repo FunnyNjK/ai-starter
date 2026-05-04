@@ -38,7 +38,9 @@ Before editing files, confirm:
 
 ## Step 1 — Read AI files
 
-Read /ai/START_HERE.md first, then follow its Context Loading Order.
+Read /ai/START_HERE.md first, then follow its Context Loading Strategy.
+Because this is first-time initialization, load the full planning context
+instead of only the Fast Context set.
 Honor /ai/AI_RULES.md and /ai/DEV_ENVIRONMENT.md as non-negotiable
 (WSL-native, no Docker for app code, no /mnt/c paths, push after every
 commit, planning-file size caps).

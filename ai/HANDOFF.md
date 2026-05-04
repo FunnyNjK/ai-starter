@@ -1,6 +1,6 @@
 # AI Handoff
 
-Last Updated: 2026-05-02
+Last Updated: 2026-05-04
 
 ## Current State Summary
 This repository contains the AI project starter (Tommy's Edition). The
@@ -27,7 +27,7 @@ Ask the AI to initialize the project using the application description.
 
 ## Important Instructions for Next AI
 - Read `/ai/START_HERE.md` first.
-- Follow the Context Loading Order in section 3.
+- Follow the Context Loading Strategy in section 3.
 - Honor `/ai/AI_RULES.md` and `/ai/DEV_ENVIRONMENT.md` as non-negotiable.
 - Do not build application code during initialization unless explicitly asked.
 - Replace starter placeholders with project-specific information.
