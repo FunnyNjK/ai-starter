@@ -29,7 +29,7 @@ acceptance criteria in `TASKS.md`.
 
 ## Important Instructions for Next AI
 - Read `/ai/START_HERE.md` first.
-- Honor `/ai/AI_RULES.md` and `/ai/DEV_ENVIRONMENT.md` as non-negotiable.
+- Honor `/ai/AI_RULES.md` as non-negotiable.
 - {Project-specific gotcha 1, one line.}
 - {Project-specific gotcha 2, one line.}
 - Update `CURRENT_STATE.md`, `TASKS.md`, `HANDOFF.md`, `DONE_LOG.md`
@@ -40,7 +40,7 @@ acceptance criteria in `TASKS.md`.
   `DONE_LOG.md` under the resolving task.
 
 ## Tests / Checks Last Run
-- `pnpm lint` — {pass/fail, count}
-- `pnpm typecheck` — {pass/fail}
-- `pnpm test` — {N passed / M failed}
-- `pnpm build` — {pass/fail, page count}
+- Lint — {pass/fail, count}
+- Type-check — {pass/fail, if applicable}
+- Tests — {N passed / M failed}
+- Build — {pass/fail}

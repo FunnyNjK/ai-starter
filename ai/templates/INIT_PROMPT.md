@@ -25,58 +25,63 @@ NEW REPO: current working directory.
 Before editing files, confirm:
 
 - This is a fresh project initialization, not a refresh of an existing app.
-- The working directory is the new repo, not the read-only old reference repo.
+- The working directory is the new repo, not any read-only reference repo.
 - The user supplied either an application description or enough old-repo
   context to infer one.
-- If OLD REPO is "none — greenfield", skip migration inventory and old-site
-  cataloging steps.
-- If OLD REPO is provided, inspect it read-only and preserve its brand,
-  content, and information architecture while modernizing implementation.
-- The default stack remains Astro 5 + React 19 + Tailwind 4 + Azure SWA unless
-  the user explicitly requests an override and the override is recorded as an
-  ADR.
+- If OLD REPO is "none — greenfield", skip migration inventory and
+  old-project cataloging steps.
+- If OLD REPO is provided, inspect it read-only and use it for context
+  (brand, content, information architecture, existing integrations).
 
 ## Step 1 — Read AI files
 
 Read /ai/START_HERE.md first, then follow its Context Loading Strategy.
 Because this is first-time initialization, load the full planning context
 instead of only the Fast Context set.
-Honor /ai/AI_RULES.md and /ai/DEV_ENVIRONMENT.md as non-negotiable
-(WSL-native, no Docker for app code, no /mnt/c paths, push after every
-commit, planning-file size caps).
+Honor /ai/AI_RULES.md as non-negotiable (push after every commit, planning-
+file size caps, scope control).
 
 Glance at /ai/templates/ — HANDOFF.template.md and CURRENT_STATE.template.md
 are the target shapes for the compact files you'll write.
 REFRESH_PROMPT.md is for existing repos; ignore here.
 
-## Step 2 — Inspect the old repo (read-only, skip if greenfield)
+## Step 2 — Choose the tech stack
 
-Treat it as read-only. Never modify it. Never copy its code (different
-stack). Catalog: pages, content, copy, assets, brand (colors/fonts),
-navigation, forms, integrations, features to drop, opportunities to
-improve.
+Use the user's application description (and the old repo, if any) to
+choose the language, framework(s), package manager, test tooling, hosting
+target, and any required external services. Capture each major choice as
+an ADR in /ai/DECISIONS.md (numbered ADR-001, ADR-002, ...) with
+rationale and trade-offs. Do not introduce a tool or service without an
+ADR. Ask the user before locking in choices that materially change the
+project's shape.
 
-## Step 3 — Design direction: EVOLVE
+## Step 3 — Inspect the old repo (read-only, skip if greenfield)
 
-Preserve brand identity, content, and information architecture.
-MODERNIZE the design: typography, spacing, mobile UX, accessibility,
-performance, component patterns. Use the old site as reference for what
-it IS, not a constraint on how it has to look. Document notable
-evolution choices as ADRs.
+Treat it as read-only. Never modify it. Catalog: pages or modules, content,
+copy, assets, brand (colors/fonts), navigation, integrations, features to
+drop, opportunities to improve.
 
-## Step 4 — Update planning files
+## Step 4 — Decide a design / migration direction
 
-Make all /ai/*.md files project-specific. Mark P0-T1 done. Keep
-P1-T1 (scaffold), P1-T2 (CI), and P1-T3 (README). Queue Phase 2 tasks —
-one per page or major section from the old repo. Add improvement-list
-tasks too. Each task: small enough for one focused session, with
-acceptance criteria and test requirements.
+If migrating from an old repo, decide with the user whether to:
 
-Add project-specific ADRs starting at ADR-011. Do NOT write a Node
-version ADR — the starter already pins Node 24 LTS end-to-end (see
-ADR-005 / ADR-008). If you find something that genuinely overrides a
-baked-in ADR (ADR-001 through ADR-010), write a new ADR that supersedes
-it; do not edit the original.
+- **Preserve** — keep the old design and behavior as faithfully as possible
+  while only re-implementing on a new stack.
+- **Evolve** — preserve identity (brand, content, information
+  architecture) but modernize implementation, conventions, accessibility,
+  and performance.
+- **Rebuild** — treat the old repo as reference only, not a constraint on
+  the new design.
+
+Document the chosen direction (and any notable evolution choices) as ADRs.
+
+## Step 5 — Update planning files
+
+Make all /ai/*.md files project-specific. Mark P0-T1 done. Queue the
+first few Phase-1 tasks (typically: scaffold, CI, README). Queue Phase 2
+tasks — one per major page, screen, or module. Add improvement-list tasks
+too. Each task: small enough for one focused session, with acceptance
+criteria and test requirements.
 
 CURRENT_STATE.md ≤ 80 lines. HANDOFF.md ≤ 50 lines. Use the templates
 in /ai/templates/.
@@ -84,29 +89,26 @@ in /ai/templates/.
 Add `Last Updated: YYYY-MM-DD` (today's UTC date) to the top of every
 planning file you touch.
 
-## Step 5 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
+## Step 6 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
 
-- Page mapping (old route → new page → status)
+- Page / module mapping (old → new → status)
 - Asset mapping (old path → new path)
 - Content mapping (section → source in old repo → notes)
 - Drop list (with reasons)
 - Improvement list (each linked to a TASKS.md entry)
 
-## Step 6 — Environment variables
+## Step 7 — Environment variables
 
-Identify every env var the new project will need (Postmark, Turnstile,
-plus anything from the old repo's .env.example or process.env usage).
-Document them in /ai/DEPLOYMENT.md "Required Environment Variables".
-The actual .env.local with placeholders gets created in P1-T1 (scaffold),
-not now.
+Identify every env var the new project will need. Document them in
+/ai/DEPLOYMENT.md "Required Environment Variables". The actual local env
+file (or equivalent) with placeholders gets created during scaffold
+(P1-T1), not now.
 
 ## Hard rules
 
-- Do NOT scaffold the Astro project yet (P1-T1 task).
+- Do NOT scaffold the project yet (P1-T1 task).
 - Do NOT install dependencies yet.
-- Do NOT modify the old reference repo.
-- Do NOT introduce Docker for application processes.
-- Do NOT use /mnt/c or Windows paths in any committed file.
+- Do NOT modify any read-only reference repo.
 - Do NOT modify /DEVELOPER-NOTES.md if present (developer-owned).
 - Use placeholders only, never real secrets.
 - Push after every commit (Git Rules in AI_RULES.md).

@@ -1,6 +1,6 @@
 # Current State
 
-Last Updated: 2026-05-02
+Last Updated: 2026-05-10
 
 ## Current Phase
 Starter / Not initialized
@@ -10,10 +10,8 @@ None
 
 ## What Exists Now
 - AI project starter files exist in `/ai`.
-- Default tech stack and architecture pattern documented (see `/ai/PROJECT.md`
-  and `/ai/ARCHITECTURE.md`).
-- Cross-project ADRs ADR-001 through ADR-010 are baked in.
 - Application-specific project details have not yet been filled in.
+- No tech stack, hosting target, or tooling has been chosen yet.
 
 ## What Works
 - The AI workflow is ready to drive a project initialization session.
@@ -28,9 +26,8 @@ None
 ## Important Files or Folders
 - `/ai/START_HERE.md` - main AI entry file
 - `/ai/PROJECT.md` - project definition (TBD until initialized)
-- `/ai/AI_RULES.md` - hard rules (WSL-native, no Docker for dev)
-- `/ai/DEV_ENVIRONMENT.md` - dev setup and conventions
-- `/ai/DECISIONS.md` - cross-project ADRs + project-specific ADRs
+- `/ai/AI_RULES.md` - hard rules
+- `/ai/DECISIONS.md` - architecture decision records
 - `/ai/TASKS.md` - task tracker
 - `/ai/HANDOFF.md` - resume context
 

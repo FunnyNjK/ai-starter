@@ -23,4 +23,5 @@ Final response must include:
 - Known issues
 - Project files updated
 - Next recommended task
-- Confirmation that no `/mnt/c` paths or Docker-for-dev usage was introduced
+- Confirmation that no project-specific hard rules from `/ai/AI_RULES.md`
+  or `/ai/DEV_ENVIRONMENT.md` were violated
