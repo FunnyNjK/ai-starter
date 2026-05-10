@@ -2,6 +2,11 @@
 # run-phase.sh — run N consecutive tasks autonomously, then stop.
 # Each task: work → handoff → commit → push.
 #
+# This script is an example harness written against the Claude Code CLI
+# (`claude`). If you use a different AI CLI, replace the invocations below
+# with your tool's equivalent — the surrounding workflow (start prompt,
+# end prompt, commit, push) is tool-agnostic.
+#
 # Usage:
 #   ./run-phase.sh <num_tasks>                    # commit + push (default)
 #   RUN_PHASE_NO_PUSH=1 ./run-phase.sh <num_tasks> # commit, skip push

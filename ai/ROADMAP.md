@@ -1,6 +1,6 @@
 # Roadmap
 
-Last Updated: 2026-05-02
+Last Updated: 2026-05-10
 
 ## Phase 0: Project Initialization
 Status: Ready
@@ -8,43 +8,38 @@ Status: Ready
 Goals:
 - Convert starter files into project-specific planning files.
 - Define application scope.
-- Confirm or override default architecture.
+- Choose and record the tech stack as ADRs in `/ai/DECISIONS.md`.
 - Create first implementation tasks.
 
 Deliverables:
-- `PROJECT.md` filled in (name, description, goals, non-goals).
+- `PROJECT.md` filled in (name, description, goals, non-goals, stack).
 - `CURRENT_STATE.md` reflects "scaffold not yet built."
-- Project-specific ADRs added if defaults are overridden.
+- Project-specific ADRs added for each major architecture choice.
 - First implementation tasks queued in `TASKS.md`.
 
 ## Phase 1: Foundation
 Status: Backlog
 
 Goals:
-- Scaffold the Astro 5 + React 19 + Tailwind 4 + TypeScript project.
-- Add Vitest, ESLint 9 flat config, Prettier (or formatting via ESLint).
-- Add `.env.example`, `.gitignore`, `README.md` (project-level).
-- First passing CI run on a placeholder homepage.
+- Scaffold the project per the chosen stack.
+- Configure lint, format, type-check (if applicable), and test tooling.
+- Add `.gitignore`, project-level `README.md`, and any required env-var
+  example file.
+- First passing CI run on a placeholder entry point.
 
 Deliverables:
-- `pnpm dev` runs the homepage in WSL.
-- `pnpm lint && pnpm typecheck && pnpm test && pnpm build` all pass.
-- GitHub Actions `ci.yml` passes on push.
+- The project's standard "run locally" command works.
+- The project's lint, type-check, test, and build commands all pass.
+- CI passes on push.
 
 ## Phase 2: Core Feature Buildout
 Status: Backlog
 
 Goals:
-- Build the actual pages and content.
-- Implement the contact form (frontend + Azure Function).
-- Wire Postmark and Turnstile.
-- Add rate limiting.
+- Build the primary features described in `PROJECT.md`.
 
 Deliverables:
-- Each page rendered.
-- Contact form successfully sends test email via Postmark.
-- Turnstile blocks unverified submissions.
-- Rate limiter enforces per-IP limits.
+- TBD per project.
 
 ## Phase 3: Hardening and Testing
 Status: Backlog
@@ -52,22 +47,19 @@ Status: Backlog
 Goals:
 - Test coverage targets met.
 - Error handling reviewed.
-- Accessibility pass (WCAG AA where applicable).
-- Lighthouse audit and fixes.
+- Accessibility / performance / security passes as appropriate.
 
 ## Phase 4: Deployment and Operations
 Status: Backlog
 
 Goals:
-- Configure Azure SWA resource.
-- Set up OIDC federation in Azure AD.
+- Configure target hosting environment.
 - First production deploy.
-- Custom domain configured with SSL.
-- Document release process.
+- Document release process and rollback plan.
 
 Deliverables:
-- Live site at custom domain.
-- Postmark + Turnstile configured against production keys.
+- Live deployment.
+- Production credentials configured.
 - Rollback plan tested at least once.
 
 ## Phase 5: Enhancements

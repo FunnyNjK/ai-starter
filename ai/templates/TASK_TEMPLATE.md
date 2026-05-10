@@ -27,9 +27,7 @@ TBD
 - TBD
 
 ## Dev Environment Constraints
-- All work runs natively in WSL Ubuntu (`~/repos/<project>`).
-- No Docker for application processes.
-- No `/mnt/c` paths in code or scripts.
+- TBD - any constraints from `/ai/DEV_ENVIRONMENT.md` that apply.
 
 ## Handoff Notes
 - TBD

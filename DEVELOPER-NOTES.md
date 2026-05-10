@@ -11,31 +11,25 @@
 
 ## Context limits — how to think about them
 
-Both Claude Code (in VS Code) and chat-based AI tools have context window
-limits. The `/ai` workflow files are designed to handle this — you don't
-have to fight the limits, you just have to respect the workflow.
+AI assistants — whether running in an IDE plugin, a CLI, or a chat interface —
+have a finite context window. The `/ai` workflow files are designed to handle
+this: you don't have to fight the limits, you just have to respect the
+workflow.
 
-### Claude Code in VS Code
+### Typical limits
 
-- Context window is ~200K tokens (roughly 150K words of effective working memory).
-- Claude Code auto-compacts older context when you approach the limit. You'll
-  see a "Context compacted" message when it happens.
-- Manual commands:
-  - `/compact` — summarize and continue in the same session
-  - `/clear` — wipe context and start fresh in the same panel
-  - `/resume` — pick up a previous conversation
-
-### Chat-based AI (Cowork, ChatGPT, Codex CLI, etc.)
-
-- Same kind of context limit, similar order of magnitude.
-- After many back-and-forth turns, older messages drop out of effective context.
-- For a new project phase or major topic shift, start a fresh chat.
+- Modern AI assistants typically have context windows in the 100K–200K token
+  range (roughly 75K–150K words of effective working memory).
+- Some assistants auto-compact older context as the limit approaches; some
+  simply truncate. Behavior varies by tool.
+- Most assistants offer some form of manual reset, summary, or resume command.
+  Check your tool's documentation.
 
 ## How to use the `/ai` workflow with context limits
 
 Treat each task in `/ai/TASKS.md` as a fresh AI session.
 
-1. Open a new Claude Code session (or `/clear` an existing one).
+1. Open a new AI session (or clear the existing one).
 2. Have the AI read `/ai/START_HERE.md` first (which loads the rest of the
    `/ai` files in the documented order).
 3. Work on one task at a time.
@@ -44,23 +38,16 @@ Treat each task in `/ai/TASKS.md` as a fresh AI session.
    `CURRENT_STATE.md`, `TASKS.md`, `HANDOFF.md`, and `DONE_LOG.md`.
 5. The next session reads `HANDOFF.md` to pick up where the last left off.
 
-The `/ai` files are the persistent memory across sessions. Auto-compact is a
-safety net; the task-bounded workflow is the real solution.
+The `/ai` files are the persistent memory across sessions. Auto-compact (if
+your tool offers it) is a safety net; the task-bounded workflow is the real
+solution.
 
 ## Quick reference
 
-| Situation                              | Right move                                   |
-| -------------------------------------- | -------------------------------------------- |
-| Finished a task                        | Run CHAT_END_PROMPT, then `/clear`           |
-| Mid-task and approaching context limit | Run `/compact` to keep going                 |
-| Starting a new task tomorrow           | Open fresh session, read `/ai/START_HERE.md` |
-| New major topic / phase shift          | Fresh chat / fresh session                   |
-| Returning to interrupted work          | `/resume` (Claude Code) or read HANDOFF.md   |
-
-
-
-Please read /ai/templates/CHAT_END_PROMPT.md and follow it.
-
-/clear
-
-Please read /ai/START_HERE.md and follow it. Then pick up the next task per HANDOFF.md.
+| Situation                              | Right move                                      |
+| -------------------------------------- | ----------------------------------------------- |
+| Finished a task                        | Run CHAT_END_PROMPT, then start a fresh session |
+| Mid-task and approaching context limit | Use your tool's compact/summarize feature       |
+| Starting a new task tomorrow           | Open fresh session, read `/ai/START_HERE.md`    |
+| New major topic / phase shift          | Fresh session                                   |
+| Returning to interrupted work          | Resume command or read HANDOFF.md               |

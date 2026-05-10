@@ -1,6 +1,6 @@
 # START HERE - AI Project Control File
 
-Last Updated: 2026-05-04
+Last Updated: 2026-05-10
 
 This is the only file an AI assistant needs to read first.
 
@@ -42,9 +42,9 @@ Every AI assistant working in this project must:
    clearly documented.
 8. If a decision changes architecture, scope, data model, security, deployment,
    or dependencies, update `/ai/DECISIONS.md`.
-9. Honor the hard rules in `/ai/AI_RULES.md`. `/ai/DEV_ENVIRONMENT.md`
-   expands those rules and must be loaded before changing tooling, scripts,
-   package management, dev setup, CI, deployment, or environment assumptions.
+9. Honor the hard rules in `/ai/AI_RULES.md`. If `/ai/DEV_ENVIRONMENT.md` has
+   been filled in for this project, load it before changing tooling, package
+   management, dev setup, CI, deployment, or environment assumptions.
 
 ---
 
@@ -76,13 +76,13 @@ Load these files when the current task touches their area:
   scope beyond the current task.
 - `/ai/TESTING.md` - test strategy, acceptance validation, coverage, CI test
   failures, or behavior changes that need tests.
-- `/ai/DEPLOYMENT.md` - Azure, SWA, Functions, CI/CD, environment variables,
-  secrets, domains, release, or rollback work.
+- `/ai/DEPLOYMENT.md` - hosting, CI/CD, environment variables, secrets,
+  domains, release, or rollback work.
 - `/ai/DECISIONS.md` - dependency, architecture, security, deployment,
   data-model, or scope decisions. Prefer reading the relevant ADR section
   instead of the whole history when the task is narrow.
-- `/ai/DEV_ENVIRONMENT.md` - tooling, package management, shell, WSL,
-  Docker-for-database usage, editor setup, or environment troubleshooting.
+- `/ai/DEV_ENVIRONMENT.md` - tooling, package management, shell, editor
+  setup, or environment troubleshooting.
 - `/ai/DONE_LOG.md` - historical implementation details when needed to
   understand why completed work happened. Do not load it by default.
 - `/ai/reference/*` - inactive reference material. Load only when the user
@@ -115,12 +115,12 @@ The initialization process must update:
 - `/ai/TASKS.md`
 - `/ai/TESTING.md`
 - `/ai/DEPLOYMENT.md`
-- `/ai/DECISIONS.md` (add any project-specific ADRs that override the baked-in defaults)
+- `/ai/DECISIONS.md` (add project-specific ADRs for each major choice)
+- `/ai/DEV_ENVIRONMENT.md` (document the chosen environment)
 - `/ai/HANDOFF.md`
 
-The AI must preserve `/ai/START_HERE.md`, `/ai/AI_RULES.md`, and
-`/ai/DEV_ENVIRONMENT.md` as stable cross-project files unless explicitly
-told to modify them.
+The AI must preserve `/ai/START_HERE.md` and `/ai/AI_RULES.md` as stable
+cross-project files unless explicitly told to modify them.
 
 ---
 
