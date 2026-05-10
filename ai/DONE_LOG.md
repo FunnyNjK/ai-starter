@@ -4,6 +4,31 @@ Last Updated: 2026-05-10
 
 ## 2026-05-10
 
+### Starter v0.5.3 — team-review fixes
+Resolved seven issues raised by the team after v0.5.2 shipped.
+
+P1:
+- `run-phase-codex.sh`: split `CODEX_FLAGS` into separate exec/resume
+  arrays (different commands accept different flags); replaced
+  hardcoded `--ask-for-approval never` with opt-in
+  `RUN_PHASE_CODEX_APPROVAL_FLAG` env var.
+- `run-phase.sh`: dropped hardcoded `--max-turns 100`; opt-in via
+  `RUN_PHASE_CLAUDE_MAX_TURNS`.
+- `ai/TASKS.md` P0-T1 expanded to match `TASK_TEMPLATE.md`
+  (Prerequisites, Step-by-Step, Verification, Security, Cost,
+  Rollback, Known Blockers, Handoff Notes).
+
+P2:
+- `ai/EXAMPLE_PROJECT.md`: replaced future-dated 2026-05-12 versions
+  with `<X.Y.Z>` / `<YYYY-MM-DD>` placeholders + illustrative banner.
+- `.gitattributes` added (`* text=auto eol=lf`, `*.sh text eol=lf`,
+  `*.md text eol=lf`).
+
+P3:
+- `ai/HANDOFF.md` trimmed 51 → 43 lines; routes to KICKOFF first.
+- Tagged `v0.5.2` retroactively at `f700530` and `v0.5.3` at this
+  commit.
+
 ### Starter v0.5.2 — audit cleanup
 Full-repo audit found five low-severity drift issues; all fixed:
 - Deleted orphan `ai/templates/CHAT_START_PROMPT.md` (zero inbound

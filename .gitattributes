@@ -1,0 +1,16 @@
+# Default: auto-detect text vs binary; normalize text files to LF on
+# commit, and check out as LF on every platform. Without this, repos
+# with `core.autocrlf=true` (common on Windows) can rewrite line endings
+# at checkout and corrupt bash scripts.
+* text=auto eol=lf
+
+# Bash scripts MUST be LF; CRLF will break the shebang on Linux / WSL.
+*.sh text eol=lf
+
+# Markdown — we author in LF; keep it consistent across platforms.
+*.md text eol=lf
+
+# Common dotfiles that are text.
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.cursorrules text eol=lf

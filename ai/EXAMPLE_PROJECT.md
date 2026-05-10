@@ -10,6 +10,14 @@ shapes will look like this but the content will reflect your project.
 
 The fragments below are excerpts, not full files.
 
+> **Versions, dates, and source URLs in this example are illustrative
+> only.** They are placeholders for what your *real* init will produce
+> when it looks up current stable versions from canonical sources at the
+> moment you run it. Do NOT copy these pins into your project — verify
+> live against npm / PyPI / Docker Hub / the Terraform registry / etc.
+> per the Versioning Rules in `/ai/AI_RULES.md`. Dates are written as
+> `<YYYY-MM-DD>` to make this explicit.
+
 ---
 
 ## `PROJECT.md` after init (excerpt)
@@ -17,7 +25,7 @@ The fragments below are excerpts, not full files.
 ```markdown
 # Project
 
-Last Updated: 2026-05-12
+Last Updated: <YYYY-MM-DD>
 
 ## Project Name
 TaskTrack
@@ -44,18 +52,19 @@ Engineering team leads at small startups (Seed / Series A).
 
 ## Tech Stack
 
-(Versions verified 2026-05-12 from canonical sources.)
+(Illustrative versions — your init will pin current stable from
+canonical sources on the day it runs.)
 
-- TypeScript 5.7.2 (npm)
-- Node.js 22.11.0 LTS
-- Next.js 15.1.0
-- PostgreSQL 17.2 (managed: Cloud SQL)
-- Redis 7.4.1 (managed: Memorystore)
-- Vitest 3.0.0
-- ESLint 9.16.0 + flat config
-- pnpm 10.0.0
+- TypeScript <X.Y.Z> (npm)
+- Node.js <X.Y.Z> LTS
+- Next.js <X.Y.Z>
+- PostgreSQL <X.Y> (managed: Cloud SQL)
+- Redis <X.Y> (managed: Memorystore)
+- Vitest <X.Y.Z>
+- ESLint <X.Y.Z> + flat config
+- pnpm <X.Y.Z>
 - Docker Compose (local dev only)
-- Terraform 1.10.2
+- Terraform <X.Y.Z>
 - Google Cloud (cloud target)
 - GitHub Actions (CI)
 
@@ -68,17 +77,17 @@ verified version, source URL, rationale, and tradeoffs.
 ## `DECISIONS.md` after init (excerpts)
 
 ```markdown
-## ADR-001: TypeScript 5.7.2
-Date: 2026-05-12
+## ADR-001: TypeScript <X.Y.Z>
+Date: <YYYY-MM-DD>
 Status: Accepted
 
 ### Decision
-Use TypeScript 5.7.2 (latest stable, verified at
-https://www.npmjs.com/package/typescript on 2026-05-12).
+Use TypeScript <X.Y.Z> (current stable, verified at
+https://www.npmjs.com/package/typescript on <YYYY-MM-DD>).
 
 ### Reason
 Strict mode catches common bugs at compile time. The team is
-TS-fluent. Next.js 15 ships first-class TS support.
+TS-fluent. Next.js <X> ships first-class TS support.
 
 ### Tradeoffs
 - Slightly slower iteration on greenfield code (type errors during
@@ -90,7 +99,7 @@ P1-T1 (scaffold).
 
 ```markdown
 ## ADR-006: Google Cloud as cloud target
-Date: 2026-05-12
+Date: <YYYY-MM-DD>
 Status: Accepted
 
 ### Decision
@@ -119,13 +128,13 @@ P1-T4 (cloud OIDC trust), P1-T5 (first IaC apply).
 ## Phase-1 `TASKS.md` after init (excerpts)
 
 ```markdown
-### P1-T1: Scaffold Next.js 15 + TypeScript + Tailwind project
+### P1-T1: Scaffold Next.js + TypeScript + Tailwind project
 Status: Ready
 Owner: AI Assistant
 Priority: High
 
 #### Goal
-Stand up the Next.js 15 / TypeScript / Tailwind / Vitest / ESLint
+Stand up the Next.js / TypeScript / Tailwind / Vitest / ESLint
 scaffold per ADR-001..ADR-005, with `.gitignore`, `.env.example`,
 project README, and a placeholder home page that renders.
 
@@ -133,7 +142,7 @@ project README, and a placeholder home page that renders.
 - none
 
 #### Step-by-Step Instructions
-1. `pnpm create next-app@15.1.0 . --ts --tailwind --eslint --app
+1. `pnpm create next-app@<X.Y.Z> . --ts --tailwind --eslint --app
    --src-dir --import-alias "@/*"` — confirm scaffold finishes clean.
 2. Add Vitest + @testing-library/react + jsdom; configure
    `vitest.config.ts` for the App Router. Verify `pnpm test` runs the
@@ -221,7 +230,7 @@ GCP project so CI deploys without long-lived service-account keys.
 ```markdown
 # Current State
 
-Last Updated: 2026-05-13
+Last Updated: <YYYY-MM-DD>
 
 ## Current Phase
 Phase 1: Foundation — In Progress.
@@ -230,7 +239,7 @@ Phase 1: Foundation — In Progress.
 `P1-T4: GitHub Actions OIDC trust to Google Cloud` — In Progress.
 
 ## What Exists Now
-- Next.js 15 + TS + Tailwind + Vitest scaffold (P1-T1).
+- Next.js + TS + Tailwind + Vitest scaffold (P1-T1).
 - CI workflow runs lint + typecheck + test + build on push and PR
   (P1-T2).
 - Terraform state bucket bootstrap with versioning + KMS encryption

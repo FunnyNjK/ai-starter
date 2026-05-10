@@ -13,13 +13,18 @@
 #   - Docs: https://github.com/openai/codex
 #
 # Optional env vars:
-#   - RUN_PHASE_NO_PUSH=1            — commit but skip push.
-#   - RUN_PHASE_CODEX_MODEL="..."    — pin a specific model.
+#   - RUN_PHASE_NO_PUSH=1                — commit but skip push.
+#   - RUN_PHASE_CODEX_MODEL="..."        — pin a specific model.
+#   - RUN_PHASE_CODEX_APPROVAL_FLAG="--ask-for-approval=never"
+#       — append your version's approval-bypass flag (name varies; verify
+#         with `codex exec --help`). Leave unset to omit.
 #
-# IMPORTANT: Codex CLI flag names evolve quickly. The flags below reflect a
-# common configuration (full workspace write + auto-approve). Verify the
-# current flag set against the Codex README before relying on this script
-# in production.
+# IMPORTANT: Codex CLI flag names evolve quickly. The defaults below stick
+# to the most universally supported flag (`--sandbox workspace-write`) and
+# let you opt in to version-specific extras via env vars. Verify with
+# `codex exec --help` before relying on this in production. Note that
+# `codex exec` and `codex exec resume` accept different flag sets — this
+# script uses separate arrays so they don't collide.
 #
 # Push behavior follows the Git Rules in /ai/AI_RULES.md: push after every
 # successful commit unless explicitly disabled. If a push fails (auth,
@@ -47,16 +52,35 @@ mkdir -p "$LOG_DIR"
 START_PROMPT="Please read /ai/START_HERE.md and follow it. Then pick up the next task per HANDOFF.md."
 END_PROMPT="Please read /ai/templates/CHAT_END_PROMPT.md and follow it."
 
-# Headless automation: full workspace write + auto-approve. Verify these flag
-# names against the current Codex CLI README — the CLI is evolving.
-CODEX_FLAGS=(
+# Headless automation. Codex CLI flag names evolve quickly — verify your
+# installed version with `codex exec --help` before relying on this.
+#
+# `codex exec` (initial call) and `codex exec resume` accept different flag
+# sets — resume inherits most settings from the original session — so we
+# keep them separate. The defaults below stick to the most universally
+# supported flag (`--sandbox workspace-write`) and let you opt in to
+# version-specific extras via env vars.
+CODEX_EXEC_FLAGS=(
   --sandbox workspace-write
-  --ask-for-approval never
 )
+
+CODEX_RESUME_FLAGS=()
+
+# Optional approval-bypass flag. The exact name varies by Codex version
+# (e.g. `--ask-for-approval never`, `--full-auto`, etc.). Verify with
+# `codex exec --help` and set this to whatever your version accepts:
+#   RUN_PHASE_CODEX_APPROVAL_FLAG="--ask-for-approval=never"
+# Leave unset if your version doesn't have one.
+if [ -n "${RUN_PHASE_CODEX_APPROVAL_FLAG:-}" ]; then
+  # Split on whitespace so users can pass either "--flag" or "--flag value".
+  read -r -a _approval <<< "$RUN_PHASE_CODEX_APPROVAL_FLAG"
+  CODEX_EXEC_FLAGS+=("${_approval[@]}")
+fi
 
 # Optional: pin model, e.g. RUN_PHASE_CODEX_MODEL="gpt-5-codex"
 if [ -n "${RUN_PHASE_CODEX_MODEL:-}" ]; then
-  CODEX_FLAGS+=(--model "$RUN_PHASE_CODEX_MODEL")
+  CODEX_EXEC_FLAGS+=(--model "$RUN_PHASE_CODEX_MODEL")
+  # Don't pass --model on resume; it's locked to the original session.
 fi
 
 echo "Starting Codex phase run: $TASKS tasks. Logs -> $LOG_DIR"
@@ -65,12 +89,17 @@ for i in $(seq 1 "$TASKS"); do
   printf '\n========== Task %d of %d ==========\n' "$i" "$TASKS"
 
   echo "[$(date +%H:%M:%S)] Step 1/3: working on next task (codex exec)..."
-  codex exec "${CODEX_FLAGS[@]}" "$START_PROMPT" \
+  codex exec "${CODEX_EXEC_FLAGS[@]}" "$START_PROMPT" \
     2>&1 | tee "$LOG_DIR/task_${i}_work.log"
 
   echo "[$(date +%H:%M:%S)] Step 2/3: writing handoff (codex exec resume --last)..."
-  codex exec resume --last "${CODEX_FLAGS[@]}" "$END_PROMPT" \
-    2>&1 | tee "$LOG_DIR/task_${i}_handoff.log"
+  if [ ${#CODEX_RESUME_FLAGS[@]} -gt 0 ]; then
+    codex exec resume --last "${CODEX_RESUME_FLAGS[@]}" "$END_PROMPT" \
+      2>&1 | tee "$LOG_DIR/task_${i}_handoff.log"
+  else
+    codex exec resume --last "$END_PROMPT" \
+      2>&1 | tee "$LOG_DIR/task_${i}_handoff.log"
+  fi
 
   echo "[$(date +%H:%M:%S)] Step 3/3: staging + committing + pushing..."
   if [ -n "$(git status --porcelain)" ]; then

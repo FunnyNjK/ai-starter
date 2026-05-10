@@ -13,9 +13,14 @@
 #   - Docs: https://docs.anthropic.com/en/docs/claude-code
 #
 # Optional env vars:
-#   - RUN_PHASE_NO_PUSH=1            — commit but skip push.
-#   - RUN_PHASE_CLAUDE_MODEL="..."   — pin a specific model
-#                                      (e.g. "claude-opus-4-7").
+#   - RUN_PHASE_NO_PUSH=1                — commit but skip push.
+#   - RUN_PHASE_CLAUDE_MODEL="..."       — pin a specific model
+#                                          (e.g. "claude-opus-4-7").
+#   - RUN_PHASE_CLAUDE_MAX_TURNS="100"   — cap turns per task. Some Claude
+#                                          Code versions support this
+#                                          flag; others don't. Verify
+#                                          with `claude --help` before
+#                                          setting. Leave unset to omit.
 #
 # Push behavior follows the Git Rules in /ai/AI_RULES.md: push after every
 # successful commit unless explicitly disabled. If a push fails (auth,
@@ -45,8 +50,14 @@ END_PROMPT="Please read /ai/templates/CHAT_END_PROMPT.md and follow it."
 
 CLAUDE_FLAGS=(
   --dangerously-skip-permissions
-  --max-turns 100
 )
+
+# Optional: cap turns per task. `--max-turns` is supported by some Claude
+# Code versions but not all; verify with `claude --help` before setting
+# RUN_PHASE_CLAUDE_MAX_TURNS, otherwise leave it unset.
+if [ -n "${RUN_PHASE_CLAUDE_MAX_TURNS:-}" ]; then
+  CLAUDE_FLAGS+=(--max-turns "$RUN_PHASE_CLAUDE_MAX_TURNS")
+fi
 
 # Optional: pin model, e.g. RUN_PHASE_CLAUDE_MODEL="claude-opus-4-7"
 if [ -n "${RUN_PHASE_CLAUDE_MODEL:-}" ]; then

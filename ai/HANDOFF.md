@@ -3,49 +3,41 @@
 Last Updated: 2026-05-10
 
 ## Current State Summary
-This repository contains the generic AI project starter (v0.5.2). The
-application has not yet been initialized from a user-provided app
-description, and no tech stack, hosting target, or tooling has been
-chosen.
+Generic AI project starter (v0.5.3). Not yet initialized — no
+application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-None — but v0.5.2 ran a full-repo audit and cleaned five low-severity
-drift issues (orphan CHAT_START_PROMPT, stale sister-document lists,
-DEVELOPER-NOTES leftover, generic free-tier examples). All
-cross-references are now consistent.
+None. v0.5.3 fixed five team-review issues: codex/claude harness
+flags, P0-T1 missing template sections, future-dated example, missing
+`.gitattributes`, HANDOFF drift.
 
 ## Active Task
 None
 
 ## Next Recommended Task
-P0-T1: pick the right entry point.
+**P0-T1: pick the right entry point.**
 - New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
 - Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
 - Already on older starter → `/ai/templates/REFRESH_PROMPT.md`
 
-The interview generates a customized init / adopt prompt; running that
-closes P0-T1.
+The KICKOFF interviews are the foolproof default. Direct paths
+(`INIT_PROMPT.md`, `ADOPT_PROMPT.md`) are for skip-the-interview users.
 
 ## What Is Blocked
-- Application-specific planning cannot begin until an app description
-  is provided.
+- Planning can't begin until an app description is provided.
 
 ## Important Instructions for Next AI
-- Read `/ai/START_HERE.md` first (the tool-native memory hooks
-  already point you here).
-- Follow the Context Loading Strategy in section 3.
-- Honor `/ai/AI_RULES.md` as non-negotiable — every (Hard) block applies.
-- Follow `/ai/templates/INIT_PROMPT.md` end-to-end for first-time init.
-- Reference `/ai/EXAMPLE_PROJECT.md` for the target shape of an
-  initialized project — but never copy its content.
-- Update all project tracking files before ending work, and include the
-  required self-critique section in the end-of-chat report.
+- Read `/ai/START_HERE.md` first (memory hooks point here).
+- Honor `/ai/AI_RULES.md` — every (Hard) block applies.
+- For first-time init, prefer the KICKOFF interview over direct
+  `INIT_PROMPT.md`; only skip on explicit user opt-out.
+- Reference `/ai/EXAMPLE_PROJECT.md` for shape — never copy its content.
+- Include the self-critique section in the end-of-chat report.
 
 ## Known Risks
-- If project files are not updated after each AI session, context will
-  drift.
-- If tasks skip the new Cost / Destructive Ops / Reasoning Checkpoint
-  rules, the AI may take expensive or risky actions silently.
+- Skipping planning-file updates causes drift between sessions.
+- Skipping Cost / Destructive Ops / Reasoning Checkpoint rules can
+  silently trigger expensive or risky actions.
 
 ## Tests / Checks Last Run
 None. Planning files only.

@@ -22,6 +22,7 @@ None
   (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`) — all
   three actors now consistently cross-reference each other as
   siblings (v0.5.2).
+- `.gitattributes` enforces LF line endings (v0.5.3).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.

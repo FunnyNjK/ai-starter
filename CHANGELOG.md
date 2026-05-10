@@ -1,11 +1,50 @@
 # Changelog
 
-Starter Version: 0.5.2
+Starter Version: 0.5.3
 Last Updated: 2026-05-10
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.5.3 - 2026-05-10
+
+Team-review fixes — seven issues across P1/P2/P3 priorities resolved.
+
+P1:
+- **`run-phase-codex.sh`**: split shared `CODEX_FLAGS` into separate
+  `CODEX_EXEC_FLAGS` (for `codex exec`) and `CODEX_RESUME_FLAGS` (for
+  `codex exec resume --last`) since the two commands accept different
+  flag sets. Dropped the hardcoded `--ask-for-approval never` (flag
+  name varies by Codex version); replaced with an opt-in
+  `RUN_PHASE_CODEX_APPROVAL_FLAG` env var so users can supply whatever
+  their installed CLI accepts. Default flags are now just
+  `--sandbox workspace-write`, the most universally supported.
+- **`run-phase.sh`**: dropped hardcoded `--max-turns 100` (not
+  supported in all Claude Code versions). Made it opt-in via
+  `RUN_PHASE_CLAUDE_MAX_TURNS` env var; default is no turn cap.
+- **`ai/TASKS.md` P0-T1**: expanded the live starter task to match
+  `TASK_TEMPLATE.md` — added Prerequisites, Step-by-Step Instructions,
+  concrete Verification, Security / Cost Considerations, Rollback /
+  Recovery, Known Blockers, Handoff Notes. Resolves the embarrassment
+  of the starter's own first task violating its own Hard rules.
+
+P2:
+- **`ai/EXAMPLE_PROJECT.md`**: replaced concrete future-dated versions
+  (e.g. "TypeScript 5.7.2 verified 2026-05-12") with placeholder
+  patterns (`<X.Y.Z>`, `<YYYY-MM-DD>`) and added a banner clarifying
+  that all versions and dates are illustrative; real init verifies live
+  from canonical sources. Stops users from copy-pasting stale pins.
+- **`.gitattributes`** added: `* text=auto eol=lf` plus explicit
+  `*.sh text eol=lf` and `*.md text eol=lf`. Prevents `core.autocrlf=true`
+  on Windows from corrupting bash scripts.
+
+P3:
+- **`ai/HANDOFF.md`**: trimmed from 51 to 43 lines (under the ≤50
+  target) and updated "Important Instructions for Next AI" to prefer
+  the KICKOFF interview over direct `INIT_PROMPT.md`.
+- **Release tags**: tagging `v0.5.2` retroactively at commit `f700530`
+  and `v0.5.3` at this commit. Pushed alongside.
 
 ## 0.5.2 - 2026-05-10
 
