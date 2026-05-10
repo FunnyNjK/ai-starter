@@ -9,28 +9,45 @@ Starter / Not initialized
 None
 
 ## What Exists Now
-- AI project starter files exist in `/ai`.
+- AI project starter files exist in `/ai/` (workflow, planning, rules,
+  templates, reference).
+- Tool-native memory hooks at the repo root (`CLAUDE.md`, `AGENTS.md`,
+  `.cursorrules`, `GEMINI.md`, `.github/copilot-instructions.md`) all
+  point at `/ai/START_HERE.md`.
+- Four phase-run harnesses (`run-phase.sh`, `run-phase-cursor.sh`,
+  `run-phase-codex.sh`, `run-phase-copilot.sh`) one per major agentic
+  AI CLI.
+- MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.
 
 ## What Works
 - The AI workflow is ready to drive a project initialization session.
+- 10 (Hard) rule blocks in `/ai/AI_RULES.md` constrain AI behavior across
+  Git, planning hygiene, versioning, security, infrastructure, cost,
+  destructive operations, reasoning checkpoints, blocked escalation,
+  and task quality.
 
 ## What Is Not Built Yet
 - Project name, description, scope, target users — not filled in.
-- Application code does not exist yet (this is just the `/ai` folder).
+- Application code does not exist yet (this is just the workflow).
 
 ## Known Problems
 - None.
 
 ## Important Files or Folders
-- `/ai/START_HERE.md` - main AI entry file
-- `/ai/PROJECT.md` - project definition (TBD until initialized)
-- `/ai/AI_RULES.md` - hard rules
-- `/ai/DECISIONS.md` - architecture decision records
-- `/ai/TASKS.md` - task tracker
-- `/ai/HANDOFF.md` - resume context
+- `/ai/START_HERE.md` — main AI entry file
+- `/ai/AI_RULES.md` — hard rules (10 (Hard) blocks)
+- `/ai/templates/INIT_PROMPT.md` — first-time initialization prompt
+- `/ai/templates/REFRESH_PROMPT.md` — older-project housekeeping prompt
+- `/ai/EXAMPLE_PROJECT.md` — worked reference example
+- `/ai/WORKFLOW.md` — branching, PRs, hotfix, blocked escalation
+- `/ai/SPEC.md`, `/ai/BUDGET.md` — placeholders for project behavior
+  + cost (filled at init)
+- `/ai/PROJECT.md`, `/ai/ARCHITECTURE.md`, `/ai/DECISIONS.md`,
+  `/ai/TASKS.md`, `/ai/HANDOFF.md` — core planning files
 
 ## Next Recommended Action
-Provide an application description and ask the AI to initialize the project
-files (P0-T1 in `/ai/TASKS.md`).
+Provide an application description and ask the AI to follow
+`/ai/templates/INIT_PROMPT.md` to initialize the project files
+(P0-T1 in `/ai/TASKS.md`).

@@ -1,12 +1,13 @@
 # Project Refresh Prompt
 
-Use this prompt against an EXISTING project that was started from an older
-version of `ai-starter`, to bring its `/ai` folder in line with the
-current conventions.
+Use this prompt against an EXISTING project that was started from an
+older version of `ai-starter`, to bring its `/ai` folder in line with
+the current conventions.
 
-This is a one-shot housekeeping pass. It does not change application code
-— only the `/ai` planning files, `README.md` if missing, and
-`AI_RULES.md`.
+This is a one-shot housekeeping pass. It does not change application
+code — only the `/ai` planning files, tool-native memory hook files,
+and root-level docs (README.md / SECURITY.md / CONTRIBUTING.md /
+LICENSE) where missing.
 
 ---
 
@@ -24,30 +25,30 @@ Read these files first, in order:
 6. /ai/HANDOFF.md
 7. /ai/TASKS.md
 
-Then perform the seven checks below. For each check, report what you
+Then perform the ten checks below. For each check, report what you
 found, what you changed, and link to the file(s) you touched. Do NOT
 proceed to the next check until the current one is reported.
 
-Throughout: never modify /DEVELOPER-NOTES.md (developer-owned). Never
-modify any file the user has flagged as personal/private. If you are
-unsure whether a file is in scope, ask before editing it.
+Throughout: never modify files the user has flagged as personal /
+private. If you are unsure whether a file is in scope, ask before
+editing it.
 ```
 
 ### Check 1 — Dependency / runtime version sweep (bidirectional)
 
 Cross-check every dependency, language version, and toolchain pin
 mentioned in `PROJECT.md`, `ARCHITECTURE.md`, `DEPLOYMENT.md`,
-`DEV_ENVIRONMENT.md`, and any ADR in `DECISIONS.md`, against the actual
-values declared in the project's manifest, lockfile, runtime version
-files, and CI workflows.
+`DEV_ENVIRONMENT.md`, and any ADR in `DECISIONS.md`, against the
+actual values declared in the project's manifest, lockfile, runtime
+version files, and CI workflows.
 
 If the docs say one version and the repo uses another, fix the docs to
 match the repo (NOT the other way around — the lockfile is the truth).
 
 If the repo is on a stale major (e.g., a runtime or framework that's
-several versions behind current LTS), flag it as a separate finding for
-the user — do NOT bump the repo silently. A version bump needs its own
-ADR and its own task.
+several versions behind current LTS), flag it as a separate finding
+for the user — do NOT bump the repo silently. A version bump needs its
+own ADR and its own task.
 
 ### Check 2 — Compact `CURRENT_STATE.md` to ≤ 80 lines
 
@@ -86,39 +87,77 @@ For every task in `TASKS.md` with status `Done`:
 `TASKS.md` after this pass should contain only `Active`, `Ready`,
 `Backlog`, `Blocked`, `Review` items. Update the `Last Updated:` date.
 
-### Check 5 — `README.md` exists at repo root
+### Check 5 — Required root-level docs exist
 
-Check whether `/README.md` exists at the repo root.
+Confirm each of these exists at the repo root. Where missing, create
+from the matching template.
 
-If it does NOT exist, create one with:
+- `README.md` — from `/ai/templates/README.template.md`
+- `LICENSE` — recorded in an ADR; if missing, ask the user which
+  license and write it.
+- `SECURITY.md` — from `/ai/templates/SECURITY.template.md`
+- `CONTRIBUTING.md` — from `/ai/templates/CONTRIBUTING.template.md`
 
-- The project name and a one-paragraph description (lifted from
-  `/ai/PROJECT.md`).
-- Tech-stack one-liner.
-- Quick-start commands and the expected local URL or entry point.
-- A pointer to `/ai/START_HERE.md` for the AI workflow.
-- A "Last Updated" line at the top.
+If a file already exists, leave it alone unless the user asks for a
+refresh.
 
-If it DOES exist, leave it alone unless the user asks for a refresh.
+### Check 6 — Tool-native memory hooks present
 
-### Check 6 — `AI_RULES.md` has the current hard rules
+Confirm these tool-recognized memory files exist at the project root,
+each pointing at `/ai/START_HERE.md`:
 
-Confirm `AI_RULES.md` contains all of these rule blocks. If any are
-missing, add them (do not duplicate if already present):
+- `CLAUDE.md` (Claude Code)
+- `AGENTS.md` (Codex CLI and several other agentic tools)
+- `.cursorrules` (Cursor)
+- `.github/copilot-instructions.md` (GitHub Copilot)
+- `GEMINI.md` (Gemini CLI)
 
-- "Git Rules (Hard)" — push after every successful commit unless
-  explicitly told otherwise; surface push failures; `origin/main` is
-  the source of truth for planning files.
-- "Planning-File Hygiene Rules (Hard)" — `TASKS.md` is active work
-  only (Done moves to `DONE_LOG.md`); `CURRENT_STATE.md` ≤ 80 lines;
-  `HANDOFF.md` ≤ 50 lines; add `Last Updated: YYYY-MM-DD` to every
-  planning file when changing it.
-- "General Rules", "Coding Rules", "Review Rules", "Handoff Rules"
-  blocks (cross-project standard).
+Where missing, create a one-line stub: "Always read /ai/START_HERE.md
+first when working in this repository." If a tool the team uses has a
+different convention, add a stub for it.
+
+### Check 7 — `AI_RULES.md` has the current hard rules
+
+Confirm `AI_RULES.md` contains all of these (Hard) rule blocks. If any
+are missing, add them (do not duplicate if already present):
+
+- Git Rules (Hard)
+- Planning-File Hygiene Rules (Hard)
+- Versioning Rules (Hard)
+- Security Rules (Hard)
+- Infrastructure & Hosting Rules (Hard)
+- Cost Rules (Hard)
+- Destructive Operations Rules (Hard)
+- Reasoning Checkpoint Rules (Hard)
+- Blocked Escalation Rule (Hard)
+- Task Quality Rules (Hard)
+- General Rules, Coding Rules, Review Rules, Handoff Rules
+  (cross-project standard)
+
+Also confirm `Handoff Rules` references the **self-critique** section
+in `CHAT_END_PROMPT.md`. Add the requirement if missing.
 
 Update the `Last Updated:` date if anything changed.
 
-### Check 7 — `origin/main` matches local `main`
+### Check 8 — `WORKFLOW.md`, `SPEC.md`, `BUDGET.md` exist
+
+Confirm `/ai/WORKFLOW.md`, `/ai/SPEC.md`, and `/ai/BUDGET.md` exist.
+Where missing, copy from the latest starter and prompt the user to
+fill in the project-specific sections.
+
+### Check 9 — Tasks meet Task Quality Rules
+
+For every task in `TASKS.md`, confirm it has:
+
+- `Prerequisites:` (or `none`)
+- A `Verification` section
+- A `Rollback / Recovery` section (or `not applicable`)
+- A `Cost Considerations` section (or `none`)
+
+If a task is missing any of these, flag it for the user and recommend
+backfilling — do not silently invent the missing content.
+
+### Check 10 — `origin/main` matches local `main`
 
 Run `git status` and `git log --oneline origin/main..HEAD` (or
 equivalent for the project's default branch).
@@ -135,7 +174,7 @@ equivalent for the project's default branch).
 
 ## Final report shape
 
-After all seven checks complete, the AI returns a single summary:
+After all ten checks complete, the AI returns a single summary:
 
 ```text
 Refresh complete.
@@ -143,8 +182,12 @@ Refresh complete.
 Files changed:
 - {list}
 
+Files created:
+- {list}
+
 Findings flagged for user attention (not auto-fixed):
 - {list, e.g., "Runtime X.Y → X.Z bump recommended (separate ADR + task)"}
+- {list, e.g., "5 tasks missing Verification — see TASKS.md P2-T3, P2-T7..."}
 
 Pending pushes:
 - {list, or "none"}

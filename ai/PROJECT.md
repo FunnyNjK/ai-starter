@@ -86,6 +86,29 @@ each). Honor the Infrastructure & Hosting Rules (Hard) in
 
 ---
 
+## Behavior Specification
+
+Concrete user flows, edge cases, performance budgets, accessibility
+targets, and compliance requirements live in `/ai/SPEC.md`. That file
+is the source of truth for Phase-2 task acceptance criteria.
+
+---
+
+## Budget
+
+Monthly cap, alert thresholds, free-tier limits, and cost-impacting
+changes live in `/ai/BUDGET.md`. Each cost-impacting infra change also
+gets an ADR per the Cost Rules in `/ai/AI_RULES.md`.
+
+---
+
+## License
+
+TBD - chosen at init (recorded as an ADR). The license text lives in
+`LICENSE` at the project root.
+
+---
+
 ## Repository Structure
 
 TBD once the project is scaffolded. Document the canonical layout here so

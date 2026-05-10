@@ -10,6 +10,9 @@ This is the sister document to `REFRESH_PROMPT.md`:
 - **REFRESH_PROMPT.md** — housekeeping pass on an existing project that's
   drifted from current conventions.
 
+For a worked example of what the output looks like, see
+`/ai/EXAMPLE_PROJECT.md`.
+
 ---
 
 ## Prompt to paste to the AI assistant
@@ -40,12 +43,16 @@ Because this is first-time initialization, load the full planning context
 instead of only the Fast Context set.
 Honor /ai/AI_RULES.md as non-negotiable. Pay particular attention to the
 (Hard) blocks — Git, Planning-File Hygiene, Versioning, Security,
-Infrastructure & Hosting, and Task Quality — because every step below
-references them.
+Infrastructure & Hosting, Cost, Destructive Operations, Reasoning
+Checkpoint, Blocked Escalation, and Task Quality — because every step
+below references them.
 
 Glance at /ai/templates/ — HANDOFF.template.md, CURRENT_STATE.template.md,
 and TASK_TEMPLATE.md are the target shapes for the files you'll write.
-REFRESH_PROMPT.md is for existing repos; ignore here.
+/ai/EXAMPLE_PROJECT.md shows what a fully-initialized project looks
+like. /ai/WORKFLOW.md defines branching, PRs, hotfixes, and how
+blockers are escalated. REFRESH_PROMPT.md is for existing repos; ignore
+here.
 
 ## Step 2 — Choose the tech stack and verify versions
 
@@ -121,13 +128,45 @@ Per the Security Rules in AI_RULES.md, decide and record as ADRs:
 Record each as an ADR. The project's `/ai/PROJECT.md` should point at
 these ADRs in its "Security Baseline" section.
 
-## Step 5 — Inspect the old repo (read-only, skip if greenfield)
+## Step 5 — Set the budget and cost guardrails
+
+Per the Cost Rules in AI_RULES.md:
+
+- Ask the user for a monthly budget cap in USD (overall, or per
+  environment) and record it in /ai/BUDGET.md.
+- Choose alert thresholds (50% / 80% / 100%, or as the user specifies)
+  and the notification channel — record both in /ai/BUDGET.md.
+- For each managed service chosen in Step 3, record the tier (free /
+  shared / dedicated / scale-to-zero), any free-tier limits being
+  relied on, and the escalation path when limits are exceeded.
+- Pre-populate /ai/BUDGET.md "Major cost contributors" with estimated
+  monthly cost for the major resources from Step 3.
+
+## Step 6 — Choose a license
+
+Ask the user what license the project ships under. Defaults to
+recommend, in rough order of permissiveness:
+
+- **MIT** — the standard "use however you want, keep the copyright
+  notice" choice. Recognized by GitHub, npm, PyPI, etc.
+- **Apache 2.0** — like MIT plus an explicit patent grant. Use when
+  patents matter.
+- **The Unlicense / CC0** — public-domain dedication. No attribution
+  required.
+- **BSL / proprietary** — when the project is closed-source or
+  source-available with restrictions.
+
+Write the chosen license text to `LICENSE` at the project root and
+record the choice as an ADR. Reference the license from `README.md`
+and `CONTRIBUTING.md`.
+
+## Step 7 — Inspect the old repo (read-only, skip if greenfield)
 
 Treat it as read-only. Never modify it. Catalog: pages or modules,
 content, copy, assets, brand (colors/fonts), navigation, integrations,
 features to drop, opportunities to improve.
 
-## Step 6 — Decide a design / migration direction
+## Step 8 — Decide a design / migration direction
 
 If migrating from an old repo, decide with the user whether to:
 
@@ -142,7 +181,24 @@ If migrating from an old repo, decide with the user whether to:
 Document the chosen direction (and any notable evolution choices) as
 ADRs.
 
-## Step 7 — Update planning files and queue tasks
+## Step 9 — Fill in /ai/SPEC.md
+
+For non-trivial projects (anything beyond a CRUD demo), populate
+/ai/SPEC.md with:
+
+- Core user flows (trigger, pre-conditions, happy path, failure modes,
+  authorization).
+- Edge cases and invariants.
+- Performance budgets.
+- Accessibility targets (WCAG conformance level).
+- Browser / device / runtime support.
+- Compliance / privacy / data-handling requirements (GDPR, CCPA,
+  HIPAA, etc., if any).
+
+This is the file Phase-2 task acceptance criteria are built from. If
+it's vague, the AI will write vague feature tasks.
+
+## Step 10 — Update planning files and queue tasks
 
 Make all /ai/*.md files project-specific. Mark P0-T1 done in TASKS.md
 and DONE_LOG.md.
@@ -151,7 +207,8 @@ Queue Phase-1 tasks. Phase 1 ALWAYS has at least these, in this order
 (each task names its prerequisites explicitly):
 
 1. Scaffold the project (language, framework, lint/format, test runner,
-   `.gitignore`, `.env.example` if applicable, project README).
+   `.gitignore`, `.env.example` if applicable, project README from
+   `/ai/templates/README.template.md`).
 2. Add CI workflow (lint, type-check if applicable, tests, build) — runs
    on push and pull request.
 3. Set up Terraform backend bootstrap (the encrypted state bucket /
@@ -165,10 +222,15 @@ Queue Phase-1 tasks. Phase 1 ALWAYS has at least these, in this order
 6. Dependency-update automation (Dependabot / Renovate) and SAST in CI.
 7. First production deployment of a placeholder app (not the real
    features yet) to prove the deploy pipeline works end-to-end.
+8. Wire cloud budget + alerts per /ai/BUDGET.md.
+9. Write SECURITY.md from `/ai/templates/SECURITY.template.md` and
+   CONTRIBUTING.md from `/ai/templates/CONTRIBUTING.template.md` at
+   the project root.
 
 Queue Phase 2 tasks for the actual feature work — one per major page,
 screen, module, or service from PROJECT.md and (if applicable) the
-migration inventory. Add improvement-list tasks too.
+migration inventory. Use /ai/SPEC.md as the source of truth for
+acceptance criteria. Add improvement-list tasks too.
 
 EVERY task must follow `/ai/templates/TASK_TEMPLATE.md` and satisfy the
 Task Quality Rules in AI_RULES.md:
@@ -183,7 +245,22 @@ CURRENT_STATE.md ≤ 80 lines. HANDOFF.md ≤ 50 lines. Use the templates
 in /ai/templates/. Add `Last Updated: YYYY-MM-DD` (today's UTC date) to
 the top of every planning file you touch.
 
-## Step 8 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
+## Step 11 — Tool-native memory hooks
+
+The starter ships with these AI-tool-recognized files at the project
+root pointing at `/ai/START_HERE.md`:
+
+- `CLAUDE.md` (Claude Code)
+- `AGENTS.md` (Codex CLI and several other agentic tools)
+- `.cursorrules` (Cursor)
+- `.github/copilot-instructions.md` (GitHub Copilot)
+- `GEMINI.md` (Gemini CLI)
+
+Verify these are present in the new project. If a tool the user uses
+has a different memory-file convention, add a one-line stub for it
+that says "Always read /ai/START_HERE.md first."
+
+## Step 12 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
 
 - Page / module mapping (old → new → status)
 - Asset mapping (old path → new path)
@@ -191,7 +268,7 @@ the top of every planning file you touch.
 - Drop list (with reasons)
 - Improvement list (each linked to a TASKS.md entry)
 
-## Step 9 — Environment variables
+## Step 13 — Environment variables
 
 Identify every env var the new project will need. Document them in
 /ai/DEPLOYMENT.md "Required Environment Variables", with which secret
@@ -205,14 +282,16 @@ not now.
 - Do NOT install dependencies yet.
 - Do NOT create real cloud resources yet (Phase 1 task).
 - Do NOT modify any read-only reference repo.
-- Do NOT modify /DEVELOPER-NOTES.md if present (developer-owned).
 - Use placeholders only, never real secrets.
 - Look up versions from canonical sources — never assume from
   training-data knowledge.
 - Push after every commit (Git Rules in AI_RULES.md).
+- Confirm before any destructive operation (Destructive Operations
+  Rules in AI_RULES.md).
+- Mark Blocked, do not silently work around (Blocked Escalation Rule).
 
 Begin with the Start-of-Chat summary (START_HERE.md section 5).
-End with the End-of-Chat report (START_HERE.md section 6) — and
-remember to update CURRENT_STATE, TASKS, HANDOFF, DONE_LOG to reflect
-the closed P0-T1.
+End with the End-of-Chat report (START_HERE.md section 6) — including
+the self-critique section — and remember to update CURRENT_STATE,
+TASKS, HANDOFF, DONE_LOG to reflect the closed P0-T1.
 ```

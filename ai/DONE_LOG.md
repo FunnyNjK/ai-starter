@@ -3,11 +3,61 @@
 Last Updated: 2026-05-10
 
 ## 2026-05-10
-- Created the generic AI project starter (`/ai` workflow only — no
-  opinions on stack, OS, hosting, or services).
+
+### Starter v0.4.0 — gap-fill hardening
+- Added `LICENSE` (MIT) at repo root.
+- Added tool-native memory hooks at the repo root all pointing at
+  `/ai/START_HERE.md`: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`,
+  `GEMINI.md`, and `.github/copilot-instructions.md`.
+- Added `.github/pull_request_template.md` with verification, security,
+  cost, and rollback checklists.
+- Added `/ai/WORKFLOW.md` defining branching strategy, PR workflow,
+  hotfix workflow, blocked / escalation pattern, and conflict
+  resolution.
+- Added `/ai/SPEC.md` placeholder for concrete behavior — user flows,
+  edge cases, performance budgets, accessibility, compliance.
+- Added `/ai/BUDGET.md` placeholder for monthly cost cap, alert
+  thresholds, free-tier limits, cost-impacting change log.
+- Added `/ai/EXAMPLE_PROJECT.md` — worked reference example showing
+  what a fully-initialized project looks like.
+- Added templates `/ai/templates/README.template.md`,
+  `SECURITY.template.md`, `CONTRIBUTING.template.md`, and
+  `INCIDENT_TEMPLATE.md`.
+- Added four new (Hard) rule blocks to `/ai/AI_RULES.md`: Cost Rules,
+  Destructive Operations Rules, Reasoning Checkpoint Rules, Blocked
+  Escalation Rule. Strengthened Task Quality Rules.
+- Restructured `/ai/templates/INIT_PROMPT.md` into 13 steps; added
+  budget, license, SPEC, root-doc generation, and tool-native memory
+  hook verification.
+- Updated `/ai/templates/CHAT_END_PROMPT.md` to require a self-critique
+  section.
+- Expanded `/ai/templates/TASK_TEMPLATE.md` with Cost Considerations
+  and Known Blockers.
+- Updated `/ai/templates/REFRESH_PROMPT.md` from 7 to 10 checks.
+- Updated `/ai/START_HERE.md`, `/ai/PROJECT.md`, `/ai/ARCHITECTURE.md`,
+  and `README.md` to reference the new files and license.
+
+### Starter v0.3.0 — versioning, security, infra, task quality (Hard)
+- Added Versioning Rules, Security Rules, Infrastructure & Hosting
+  Rules, Task Quality Rules to `/ai/AI_RULES.md`.
+- Restructured INIT_PROMPT.md with version verification, infrastructure
+  choices, and security baseline steps.
+- Expanded TASK_TEMPLATE, ARCHITECTURE, PROJECT to support the new
+  rules.
+
+### Starter v0.2.0 — stack-agnostic
+- Removed all opinionated defaults (Tommy's Edition WSL/Astro/Azure
+  stack). Generalized planning files, templates, prompts.
+- Replaced pre-populated stack-specific ADRs with a single ADR template.
+- Harmonized the four phase-run harnesses (Claude, Cursor, Codex,
+  Copilot) and added pre-flight CLI checks, optional model env vars,
+  tagged log directories.
+
+### Starter v0.1.0 — initial
+- Created the generic AI project starter (`/ai` workflow only).
 - Added `/ai/START_HERE.md` as the single AI entry point.
 - Added cross-project rules in `/ai/AI_RULES.md`.
-- Added project planning, architecture, task, testing, deployment, decision,
-  and handoff files as TBD placeholders.
-- Added templates for chat start/end, init, refresh, task, current state,
-  and handoff under `/ai/templates`.
+- Added project planning, architecture, task, testing, deployment,
+  decision, and handoff files as TBD placeholders.
+- Added templates for chat start/end, init, refresh, task, current
+  state, and handoff under `/ai/templates`.

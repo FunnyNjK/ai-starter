@@ -73,12 +73,63 @@ in `/ai/DECISIONS.md` if the change should persist.
 - **Network defaults**: private subnets for compute and data; security groups / NSGs / firewall rules deny by default; only explicitly allowlisted ingress.
 - **Environment parity**: dev / QA / prod use the same managed-service major versions. Differences are documented in `/ai/DEPLOYMENT.md`.
 
+## Cost Rules (Hard)
+
+- **Every project sets a monthly budget cap at init**, recorded in `/ai/BUDGET.md` with alert thresholds (e.g., 50% / 80% / 100%) wired to the cloud's native budget alerting (AWS Budgets, Azure Cost Management, Google Cloud Billing budgets).
+- **Cost-impacting infra changes** — adding a managed service, scaling up a tier, duplicating a region, enabling a paid third-party — require an ADR with the estimated monthly cost delta and an entry in `/ai/BUDGET.md` "Cost-impacting changes log".
+- **Monthly cost review** is the floor; the project's actual cadence is recorded in `/ai/BUDGET.md` "Review cadence". Update the file with actual-vs-budget numbers each review.
+- **Free-tier dependencies are flagged**: if the project relies on a free tier that could plausibly be exceeded (Postmark's 100/month, Cloudflare's free SSL, etc.), the limit and the escalation path are recorded in `/ai/BUDGET.md` "Free-tier and tier choices".
+- **Never optimize cost by removing security controls** (e.g., dropping TLS, disabling backups, opening firewalls, downgrading from managed to self-hosted). If cost pressure is real, the response is an ADR proposing a different architecture, not a silent quality cut.
+
+## Destructive Operations Rules (Hard)
+
+The AI must **confirm with the user before** taking any of the following actions, even if it would otherwise be in scope for the current task:
+
+- **File system**: deleting >50 lines of existing code without a like-for-like replacement; deleting whole files outside the current task's scope; mass renames or directory moves that affect more than a few files; `rm -rf` of any path; modifying files outside the working tree.
+- **Git**: force-push (`--force`); rebase or amend of commits already on `origin`; deleting branches that have commits not yet on another branch; resetting `main` or any shared branch; rewriting history in any form.
+- **Cloud / infrastructure**: terminating or deleting any cloud resource (databases, storage buckets, KMS keys, secrets, VPCs, clusters); applying a Terraform plan that includes `destroy` actions; rotating any secret currently in use; modifying IAM policies that could lock out humans or CI.
+- **Data**: dropping a database table; truncating data; running migrations that are not pure additions; bulk updates without a tested filter.
+- **Dependencies**: removing or downgrading packages already in production; changing language or runtime majors; changing the package manager.
+- **CI/CD**: disabling required checks; merging without CI green; bypassing branch protections.
+
+**Confirmation means**:
+
+1. State **what** you are about to do, **why**, and the **blast radius** (what's affected, who can see it).
+2. Wait for explicit user approval — "yes," "go ahead," "do it," or equivalent.
+3. Authorization is **scoped to the specific action**, not the class. "Yes, delete that branch" does not authorize deleting other branches.
+
+If the user pre-authorizes a class in the current chat ("yes, you can keep deleting unused worktree branches as you find them"), the scope of the standing approval must be explicit and time-bounded to that chat.
+
+## Reasoning Checkpoint Rules (Hard)
+
+- **Plan before acting on multi-step or multi-file work.** For any task that will touch more than ~3 files or take more than ~30 minutes of AI work, state the plan first (intended steps, files affected, expected outcome) and wait for user approval before starting.
+- **Mid-task course correction**: if your approach changes materially after starting (different library, different module structure, different deployment pattern), pause and surface the change before continuing.
+- **Pre-flight before destructive or expensive steps**: even within an approved plan, restate the specific destructive / expensive step and its blast radius immediately before doing it.
+- **Surface assumptions explicitly.** If the task requires an assumption you haven't verified, name it in your plan ("I'm assuming the database is empty / has no consumers / is the dev one") and ask if it's right.
+
+This rule prevents the most common AI failure mode: confidently barreling through a multi-step task on a wrong premise.
+
+## Blocked Escalation Rule (Hard)
+
+If the AI cannot make progress on a task — missing prerequisite, unclear requirement, conflicting instruction, external dependency, ambiguous architecture decision — the response is **Blocked**, not "best effort that ships anyway."
+
+Steps:
+
+1. Set the task's `Status: Blocked` in `TASKS.md`.
+2. Write the blocker in `HANDOFF.md` under "What Is Blocked": one line — what's blocking, what would unblock, who/what owns it.
+3. If the blocker requires a decision (architecture, scope, dependency choice), surface it to the user with a recommendation and the main tradeoff. Do not silently pick.
+4. Stop work on that task. Do NOT mark it Done. Do NOT silently work around the blocker with untested assumptions.
+5. Move to the next non-blocked task in `TASKS.md`, or surface that nothing is unblocked and wait.
+
+See `/ai/WORKFLOW.md` for the full blocked / escalation workflow.
+
 ## Task Quality Rules (Hard)
 
 - **Every task in `TASKS.md` lists `Prerequisites: <task IDs>`** (use `none` if there are none). The init prompt and any task-creation pass must populate this.
 - **When step ordering matters** (scaffold before CI, IAM before storage, network before compute, DB schema before app code that reads it, OIDC trust before first deploy, etc.), the task body lists steps in the required order, and each step's expected output / state.
 - **Every task includes a `Verification` section** the next task can rely on (e.g., "command X exits 0", "the URL responds 200", "`terraform plan` is empty", "the migration appears in `<list>`"). A task is not Done until its verification passes.
 - **Every task includes `Rollback / Recovery` notes** when partial failure would leave the project in a state that blocks subsequent tasks (cloud resources partially created, migration half-applied, secret rotated but not redeployed). Pure-code tasks where `git reset` suffices may say `not applicable`.
+- **Every task respects `Prerequisites`.** The AI must not start a task whose prerequisites are not yet `Done`. If a stop-the-line prerequisite is missing, mark the task Blocked per the Blocked Escalation Rule.
 
 ## Coding Rules
 
@@ -105,3 +156,15 @@ Every work session must end with updates to:
 - `/ai/TASKS.md`
 - `/ai/HANDOFF.md`
 - `/ai/DONE_LOG.md`
+
+The end-of-chat report (per `/ai/templates/CHAT_END_PROMPT.md`) must
+also include a **self-critique** section listing assumptions made,
+things skipped or deferred, and things the next session should
+double-check.
+
+## License Rule
+
+This `ai-starter` repository is MIT-licensed (see `LICENSE`). Projects
+initialized from it choose their own license at init time, recorded as
+an ADR in `/ai/DECISIONS.md` and shipped as `LICENSE` at the project
+root.

@@ -7,6 +7,11 @@ This is the only file an AI assistant needs to read first.
 After reading this file, the AI must follow the instructions below and
 reference the supporting files in `/ai` as needed.
 
+> **Tool-native memory hooks** at the project root (`CLAUDE.md`,
+> `AGENTS.md`, `.cursorrules`, `.github/copilot-instructions.md`,
+> `GEMINI.md`) all point here. If your AI tool auto-loaded one of those,
+> you're in the right place.
+
 ---
 
 ## 1. Purpose
@@ -72,12 +77,18 @@ Load these files when the current task touches their area:
   first-time initialization, README/project-description work.
 - `/ai/ARCHITECTURE.md` - system design, data flow, API boundaries,
   component structure, security model, or architecture changes.
+- `/ai/SPEC.md` - concrete behavior, user flows, edge cases, performance
+  budgets, accessibility targets, compliance. Load for any feature task.
 - `/ai/ROADMAP.md` - phase planning, prioritization, new task creation, or
   scope beyond the current task.
 - `/ai/TESTING.md` - test strategy, acceptance validation, coverage, CI test
   failures, or behavior changes that need tests.
 - `/ai/DEPLOYMENT.md` - hosting, CI/CD, environment variables, secrets,
   domains, release, or rollback work.
+- `/ai/BUDGET.md` - cost ceilings, alert thresholds, free-tier limits.
+  Load before adding cloud resources or scaling existing ones.
+- `/ai/WORKFLOW.md` - branching, PRs, hotfixes, blocked-escalation. Load
+  for any process or workflow question.
 - `/ai/DECISIONS.md` - dependency, architecture, security, deployment,
   data-model, or scope decisions. Prefer reading the relevant ADR section
   instead of the whole history when the task is narrow.
@@ -85,6 +96,9 @@ Load these files when the current task touches their area:
   setup, or environment troubleshooting.
 - `/ai/DONE_LOG.md` - historical implementation details when needed to
   understand why completed work happened. Do not load it by default.
+- `/ai/EXAMPLE_PROJECT.md` - reference example of a fully-initialized
+  project. Load only for orientation; never copy its content into a
+  real project.
 - `/ai/reference/*` - inactive reference material. Load only when the user
   explicitly asks about it.
 
@@ -103,24 +117,35 @@ and no template exists, ask before inventing a new permanent planning file.
 ## 4. First-Time Project Initialization
 
 If the project is still a starter project (PROJECT.md still has TBD sections
-or "Project Name: TBD"), the AI should ask for or use the provided application
-description and then update the starter files into project-specific files.
+or "Project Name: TBD"), follow `/ai/templates/INIT_PROMPT.md` end-to-end.
+That prompt covers: tech-stack version verification, infrastructure +
+deployment choices, security baseline, budget, license, SPEC, planning
+files, tasks, tool-native memory hooks, env vars, and migration inventory.
 
 The initialization process must update:
 
 - `/ai/PROJECT.md`
 - `/ai/CURRENT_STATE.md`
 - `/ai/ARCHITECTURE.md`
+- `/ai/SPEC.md`
 - `/ai/ROADMAP.md`
 - `/ai/TASKS.md`
 - `/ai/TESTING.md`
 - `/ai/DEPLOYMENT.md`
+- `/ai/BUDGET.md`
 - `/ai/DECISIONS.md` (add project-specific ADRs for each major choice)
 - `/ai/DEV_ENVIRONMENT.md` (document the chosen environment)
 - `/ai/HANDOFF.md`
 
-The AI must preserve `/ai/START_HERE.md` and `/ai/AI_RULES.md` as stable
-cross-project files unless explicitly told to modify them.
+It must also create at the project root:
+
+- `LICENSE` (chosen during init; recorded as an ADR).
+- `README.md`, `SECURITY.md`, `CONTRIBUTING.md` (from
+  `/ai/templates/*.template.md`).
+
+The AI must preserve `/ai/START_HERE.md`, `/ai/AI_RULES.md`, and
+`/ai/WORKFLOW.md` as stable cross-project files unless explicitly told
+to modify them.
 
 ---
 

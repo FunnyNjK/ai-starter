@@ -1,0 +1,76 @@
+# {Project Name}
+
+> One-paragraph description of what this project is and who it's for.
+> Lift this from `/ai/PROJECT.md` "Application Description" — keep it
+> short.
+
+## Tech stack
+
+- {Language and runtime, e.g. "TypeScript 5.x on Node 22 LTS"}
+- {Frontend framework / UI toolkit, if any}
+- {Backend framework / runtime, if any}
+- {Database(s), if any — note: managed in QA/prod, containerized for
+  local dev}
+- {Test framework}
+- {Package manager}
+- {Cloud target}
+- {IaC: Terraform / OpenTofu}
+- {CI: GitHub Actions / GitLab CI / etc.}
+
+See `/ai/PROJECT.md` for the full stack and `/ai/DECISIONS.md` for the
+rationale behind each choice.
+
+## Quick start
+
+```bash
+# 1. Install dependencies (replace with the project's actual command)
+{install command, e.g. pnpm install}
+
+# 2. Set up local secrets
+cp .env.example .env.local
+# edit .env.local — see /ai/DEPLOYMENT.md for what each variable does
+
+# 3. Start local stateful dependencies (DB, cache, etc.)
+{e.g. docker compose up -d}
+
+# 4. Run the dev server
+{e.g. pnpm dev}
+```
+
+The app should be live at {expected local URL, e.g. http://localhost:3000}.
+
+## Common commands
+
+| Command | Purpose |
+| ------- | ------- |
+| `{lint command}` | Run linter |
+| `{typecheck command}` | Type-check (if applicable) |
+| `{test command}` | Run tests |
+| `{build command}` | Production build |
+| `{format command}` | Format code |
+
+## AI workflow
+
+This project uses an AI-assisted development workflow. The `/ai/`
+folder is the project memory — planning, architecture, tasks,
+decisions, deployment, handoff.
+
+If you're an AI assistant: **read `/ai/START_HERE.md` first**.
+
+If you're a human: see [CONTRIBUTING.md](CONTRIBUTING.md) for dev-env
+setup, and `/ai/PROJECT.md` for what the project is.
+
+## Deployment
+
+See `/ai/DEPLOYMENT.md`.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting and
+supported versions. The project's security baseline is documented in
+`/ai/PROJECT.md` "Security Baseline" and `/ai/AI_RULES.md` Security
+Rules.
+
+## License
+
+{License name, e.g. MIT — see [LICENSE](LICENSE)}.

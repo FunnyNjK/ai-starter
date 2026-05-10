@@ -7,6 +7,10 @@ TBD until the project is initialized. Once initialized, this file should
 describe the system at a level a new contributor (human or AI) can use to
 get oriented quickly.
 
+For *what* the system does (user flows, edge cases, performance budgets,
+accessibility, compliance), see `/ai/SPEC.md`. This file is about *how*
+it's built.
+
 ---
 
 ## System Overview
@@ -105,13 +109,16 @@ See `/ai/PROJECT.md` for the canonical project structure once defined.
 ## Architecture Rules
 
 - Honor the (Hard) rules in `/ai/AI_RULES.md` (Versioning, Security,
-  Infrastructure & Hosting, Task Quality).
+  Infrastructure & Hosting, Cost, Destructive Operations, Reasoning
+  Checkpoint, Blocked Escalation, Task Quality).
 - Document new dependencies in `/ai/DECISIONS.md`.
 - Document architecture changes via ADR before or during implementation.
 - One canonical implementation per concern. If the same logic is needed
   in two places, extract to a shared module rather than duplicating.
 - No click-ops in QA or production — every cloud resource is created and
   modified through Terraform.
+- Cost-impacting infra changes (new managed service, scale-up, region
+  duplication) get an ADR and an entry in `/ai/BUDGET.md`.
 
 ---
 

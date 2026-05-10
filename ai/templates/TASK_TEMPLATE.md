@@ -11,7 +11,8 @@ TBD - one or two sentences. What this task achieves and why.
 ## Prerequisites
 - TBD - list of task IDs that must be `Done` before this task can start.
   Use `none` if this task has no prerequisites. The next AI session will
-  refuse to start a task whose prerequisites are not yet `Done`.
+  refuse to start a task whose prerequisites are not yet `Done` (per the
+  Task Quality Rules in `/ai/AI_RULES.md`).
 
 ## Scope Included
 - TBD
@@ -50,11 +51,22 @@ At least one verification step is required. The next task relies on it.
   applies (secrets handling, TLS, authz, rate limiting, dependency
   scanning, OIDC, secret store, network defaults, etc.).
 
+## Cost Considerations
+- TBD - if this task creates cloud resources, scales something up,
+  enables a paid third-party service, or otherwise affects monthly
+  spend, note the estimated delta and cross-reference `/ai/BUDGET.md`.
+  Use `none` for pure-code tasks with no infra impact.
+
 ## Rollback / Recovery
 - TBD - what to do if this task fails partway, especially if partial
   state would block subsequent tasks (cloud resources partially created,
   migration half-applied, secret rotated but not redeployed). Use
   `not applicable` for pure-code tasks where `git reset` is sufficient.
+
+## Known Blockers
+- TBD - anything that could cause this task to land in `Status: Blocked`
+  per the Blocked Escalation Rule in `/ai/AI_RULES.md`. Use `none` if
+  the task is fully scoped and self-contained.
 
 ## Dev Environment Constraints
 - TBD - any constraints from `/ai/DEV_ENVIRONMENT.md` that apply.
