@@ -3,23 +3,27 @@
 Last Updated: 2026-05-10
 
 ## Current State Summary
-This repository contains the generic AI project starter (v0.4.0). The
+This repository contains the generic AI project starter (v0.5.0). The
 application has not yet been initialized from a user-provided app
 description, and no tech stack, hosting target, or tooling has been
 chosen.
 
 ## Last Completed Task
-None — but starter v0.4.0 hardening landed on `origin/main`: license,
-tool-native memory hooks, workflow, spec, budget, example, and four
-new (Hard) rule blocks (Cost, Destructive Ops, Reasoning Checkpoint,
-Blocked Escalation).
+None — but starter v0.5.0 added first-mile UX: two `KICKOFF_*`
+interview prompts and the new `ADOPT_PROMPT.md` for brownfield
+retrofit. README now opens with a clear new-vs-existing fork.
 
 ## Active Task
 None
 
 ## Next Recommended Task
-P0-T1: Initialize project-specific AI files. Run
-`/ai/templates/INIT_PROMPT.md` against an application description.
+P0-T1: pick the right entry point.
+- New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
+- Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- Already on older starter → `/ai/templates/REFRESH_PROMPT.md`
+
+The interview generates a customized init / adopt prompt; running that
+closes P0-T1.
 
 ## What Is Blocked
 - Application-specific planning cannot begin until an app description

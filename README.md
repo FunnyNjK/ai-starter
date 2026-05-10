@@ -16,7 +16,28 @@ initialized application repo: the project name, purpose, content, tech stack,
 and tooling are intentionally left as TBD until the `/ai` folder is copied
 into a concrete project and initialized with an application description.
 
-## How to use
+## First time? Pick your starting point
+
+| Your situation | Paste this prompt into your AI tool |
+| --- | --- |
+| 🌱 **Starting something brand new** | `/ai/templates/KICKOFF_NEW_PROJECT.md` |
+| 🔧 **Adding this kit to an existing app** | `/ai/templates/KICKOFF_EXISTING_PROJECT.md` |
+| 🔄 **Already on an older version of this starter** | `/ai/templates/REFRESH_PROMPT.md` |
+
+The two `KICKOFF_*` prompts interview you one question at a time (with
+sensible defaults at every step) and then generate the customized prompt
+that does the actual setup. **They're the foolproof entry point — start
+there if you're not sure what to type.**
+
+If you already know exactly what you want, you can skip the interview:
+
+| Path | Direct prompt (skips the interview) |
+| --- | --- |
+| Greenfield init | `/ai/templates/INIT_PROMPT.md` |
+| Brownfield retrofit (catch up) | `/ai/templates/ADOPT_PROMPT.md` |
+| Existing project housekeeping | `/ai/templates/REFRESH_PROMPT.md` |
+
+## How to use (manual setup)
 
 1. **Copy** the contents of this repo into your new project. At minimum:
    - `/ai/` (the workflow + planning files)
@@ -26,23 +47,18 @@ into a concrete project and initialized with an application description.
    - `.github/pull_request_template.md`
    - `run-phase*.sh` if you want the autonomous-phase harnesses (one per
      supported AI CLI)
-2. In your AI assistant of choice, start a session with:
-
-   ```text
-   Read /ai/templates/INIT_PROMPT.md and follow it.
-
-   Application description:
-   <plain-English description of what you're building>
-   ```
-
-3. The assistant will run through the init steps: choose the tech stack
-   (looking up versions from canonical sources), choose the cloud + IaC
-   + managed services, choose the security baseline, set the budget,
-   choose a license, fill in `SPEC.md`, and queue ordered Phase-1 tasks.
+2. In your AI assistant of choice, paste one of the `KICKOFF_*` prompts
+   above. The AI will guide you the rest of the way.
 
 ## What's included
 
-- **Entry point**: `/ai/START_HERE.md` — single AI on-ramp.
+- **Friendly entry points**: `KICKOFF_NEW_PROJECT.md` and
+  `KICKOFF_EXISTING_PROJECT.md` interview you and generate the right
+  customized setup prompt.
+- **Setup actors**: `INIT_PROMPT.md` (greenfield), `ADOPT_PROMPT.md`
+  (brownfield retrofit), `REFRESH_PROMPT.md` (older-project housekeeping).
+- **AI on-ramp**: `/ai/START_HERE.md` — the single entry point every AI
+  session reads first.
 - **Planning files**: identity (`PROJECT.md`), behavior (`SPEC.md`),
   shape (`ARCHITECTURE.md`), state (`CURRENT_STATE.md`), work (`TASKS.md`,
   `ROADMAP.md`), decisions (`DECISIONS.md`), env (`DEV_ENVIRONMENT.md`),
@@ -51,9 +67,8 @@ into a concrete project and initialized with an application description.
 - **Hard rules** (`/ai/AI_RULES.md`): Git, planning hygiene, versioning,
   security, infrastructure, cost, destructive operations, reasoning
   checkpoints, blocked escalation, task quality.
-- **Templates** for tasks, chat start/end, init, refresh, README,
-  SECURITY, CONTRIBUTING, INCIDENT post-mortems, CURRENT_STATE,
-  HANDOFF.
+- **Templates** for tasks, chat start/end, README, SECURITY,
+  CONTRIBUTING, INCIDENT post-mortems, CURRENT_STATE, HANDOFF.
 - **Worked example** (`/ai/EXAMPLE_PROJECT.md`) — what a fully-initialized
   project looks like, for reference.
 - **Tool-native memory hooks** for Claude Code, Codex, Cursor, Copilot,
@@ -63,32 +78,23 @@ into a concrete project and initialized with an application description.
 
 ## What's NOT included
 
-- Any opinion about the language, framework, package manager, OS, third-party
-  services, or specific application code your project uses.
+- Any opinion about the language, framework, package manager, OS,
+  third-party services, or specific application code your project uses.
 - The application itself — this is just the workflow.
 
-The starter *does* take opinions on a few things to keep every project on
-solid ground: cloud target is AWS / Azure / GCP, infrastructure is Terraform,
-QA + Production stateful services are cloud-managed, CI auths via OIDC
-federation, secrets live in cloud secret stores, every task carries
-prerequisites + verification + rollback. Every one of these defaults can be
-overridden per project via an ADR — see `/ai/AI_RULES.md`.
+The starter *does* take opinions on a few things to keep every project
+on solid ground: cloud target is AWS / Azure / GCP, infrastructure is
+Terraform, QA + Production stateful services are cloud-managed, CI
+auths via OIDC federation, secrets live in cloud secret stores, every
+task carries prerequisites + verification + rollback. Every one of
+these defaults can be overridden per project via an ADR — see
+`/ai/AI_RULES.md`.
 
 ## Single rule
 
-Tell your AI assistant to read **`/ai/START_HERE.md`** first. The tool-native
-memory hook files at the project root all redirect there, so most modern AI
-tools will auto-load it for you.
-
-## Refreshing an older project
-
-If you have an older project that was started from a previous version of
-this starter, point an AI assistant at **`/ai/templates/REFRESH_PROMPT.md`**.
-It's a one-shot housekeeping pass that compacts long-running planning files,
-archives completed tasks, ensures the (Hard) rules and tool-native memory
-hooks are current, regenerates root docs (README / SECURITY / CONTRIBUTING /
-LICENSE) where missing, and verifies that the local branch matches the
-remote.
+Tell your AI assistant to read **`/ai/START_HERE.md`** first. The
+tool-native memory hook files at the project root all redirect there, so
+most modern AI tools will auto-load it for you.
 
 ## License
 

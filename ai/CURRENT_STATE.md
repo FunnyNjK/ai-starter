@@ -17,6 +17,9 @@ None
 - Four phase-run harnesses (`run-phase.sh`, `run-phase-cursor.sh`,
   `run-phase-codex.sh`, `run-phase-copilot.sh`) one per major agentic
   AI CLI.
+- Friendly interview prompts (`KICKOFF_NEW_PROJECT.md`,
+  `KICKOFF_EXISTING_PROJECT.md`) and three setup actors
+  (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.
@@ -48,6 +51,11 @@ None
   `/ai/TASKS.md`, `/ai/HANDOFF.md` — core planning files
 
 ## Next Recommended Action
-Provide an application description and ask the AI to follow
-`/ai/templates/INIT_PROMPT.md` to initialize the project files
-(P0-T1 in `/ai/TASKS.md`).
+Pick the right entry point and paste it into your AI tool:
+
+- New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
+- Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- Already on an older starter version → `/ai/templates/REFRESH_PROMPT.md`
+
+The interview prompts then generate the right customized init / adopt
+prompt for P0-T1.

@@ -1,11 +1,35 @@
 # Changelog
 
-Starter Version: 0.4.0
+Starter Version: 0.5.0
 Last Updated: 2026-05-10
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.5.0 - 2026-05-10
+
+First-mile UX: friendly interview prompts for new users plus a third
+sibling actor for the brownfield retrofit case.
+
+- Added `/ai/templates/KICKOFF_NEW_PROJECT.md` — paste-and-go interview
+  prompt for greenfield projects. Asks one question at a time with
+  examples and "I don't know — pick a sensible default" at every step,
+  then generates a customized `INIT_PROMPT.md` invocation.
+- Added `/ai/templates/KICKOFF_EXISTING_PROJECT.md` — interview prompt
+  for adopting the kit into an existing app. Inspects the project
+  first, then asks only what can't be inferred, then routes to either
+  `ADOPT_PROMPT.md` (catch up) or `INIT_PROMPT.md` (start fresh).
+- Added `/ai/templates/ADOPT_PROMPT.md` — third sibling alongside INIT
+  and REFRESH. Reverse-engineers `/ai/` planning files from an
+  existing project's manifests / lockfiles / configs / framework
+  conventions. Backfills retroactive ADRs. Identifies gaps against
+  the Hard rules and queues them as Phase-1 catch-up tasks. Does not
+  modify application code.
+- Updated `README.md` with a "First time? Pick your starting point"
+  fork at the top — the `KICKOFF_*` prompts are now the foolproof
+  entry point, with direct paths for confident users who want to skip
+  the interview.
 
 ## 0.4.0 - 2026-05-10
 

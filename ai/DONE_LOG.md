@@ -4,6 +4,22 @@ Last Updated: 2026-05-10
 
 ## 2026-05-10
 
+### Starter v0.5.0 — first-mile UX
+- Added `/ai/templates/KICKOFF_NEW_PROJECT.md` — interview prompt for
+  greenfield projects. One question at a time, sensible defaults at
+  every step, generates a customized `INIT_PROMPT.md` invocation.
+- Added `/ai/templates/KICKOFF_EXISTING_PROJECT.md` — interview prompt
+  for adopting the kit into an existing app. Inspects first, asks only
+  what can't be inferred, routes to ADOPT (catch up) or INIT (start
+  fresh).
+- Added `/ai/templates/ADOPT_PROMPT.md` — third sibling actor (with
+  INIT and REFRESH). Reverse-engineers planning files from existing
+  code, backfills retroactive ADRs, queues catch-up tasks for gaps
+  against Hard rules. Does not modify application code.
+- Updated `README.md` with a "First time? Pick your starting point"
+  fork at the top — `KICKOFF_*` prompts are now the foolproof entry
+  point.
+
 ### Starter v0.4.0 — gap-fill hardening
 - Added `LICENSE` (MIT) at repo root.
 - Added tool-native memory hooks at the repo root all pointing at
