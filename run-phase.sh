@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# run-phase.sh — run N consecutive tasks autonomously, then stop.
+# run-phase.sh — run N consecutive tasks autonomously via Claude Code (`claude`).
 # Each task: work → handoff → commit → push.
-#
-# This script is an example harness written against the Claude Code CLI
-# (`claude`). If you use a different AI CLI, replace the invocations below
-# with your tool's equivalent — the surrounding workflow (start prompt,
-# end prompt, commit, push) is tool-agnostic.
 #
 # Usage:
 #   ./run-phase.sh <num_tasks>                    # commit + push (default)
 #   RUN_PHASE_NO_PUSH=1 ./run-phase.sh <num_tasks> # commit, skip push
+#
+# Prerequisites:
+#   - Claude Code CLI installed: npm install -g @anthropic-ai/claude-code
+#   - Authenticate once: `claude` (interactive flow) or set ANTHROPIC_API_KEY
+#     for headless / CI use.
+#   - Docs: https://docs.anthropic.com/en/docs/claude-code
+#
+# Optional env vars:
+#   - RUN_PHASE_NO_PUSH=1            — commit but skip push.
+#   - RUN_PHASE_CLAUDE_MODEL="..."   — pin a specific model
+#                                      (e.g. "claude-opus-4-7").
 #
 # Push behavior follows the Git Rules in /ai/AI_RULES.md: push after every
 # successful commit unless explicitly disabled. If a push fails (auth,
@@ -20,9 +26,18 @@
 
 set -euo pipefail
 
+# Prefer common user-local install paths.
+export PATH="${HOME}/.local/bin:${HOME}/.npm-global/bin:${PATH}"
+if ! command -v claude >/dev/null 2>&1; then
+  echo "error: 'claude' not found." >&2
+  echo "  Install: npm install -g @anthropic-ai/claude-code" >&2
+  echo "  Docs:    https://docs.anthropic.com/en/docs/claude-code" >&2
+  exit 127
+fi
+
 TASKS=${1:?Usage: $0 <num_tasks>   e.g.  ./run-phase.sh 8}
 
-LOG_DIR="ai/logs/run_$(date +%Y%m%d_%H%M%S)"
+LOG_DIR="ai/logs/run_claude_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$LOG_DIR"
 
 START_PROMPT="Please read /ai/START_HERE.md and follow it. Then pick up the next task per HANDOFF.md."
@@ -33,34 +48,39 @@ CLAUDE_FLAGS=(
   --max-turns 100
 )
 
-echo "Starting phase run: $TASKS tasks. Logs -> $LOG_DIR"
+# Optional: pin model, e.g. RUN_PHASE_CLAUDE_MODEL="claude-opus-4-7"
+if [ -n "${RUN_PHASE_CLAUDE_MODEL:-}" ]; then
+  CLAUDE_FLAGS+=(--model "$RUN_PHASE_CLAUDE_MODEL")
+fi
+
+echo "Starting Claude phase run: $TASKS tasks. Logs -> $LOG_DIR"
 
 for i in $(seq 1 "$TASKS"); do
   printf '\n========== Task %d of %d ==========\n' "$i" "$TASKS"
 
-  echo "[$(date +%H:%M:%S)] Step 1/3: working on next task..."
+  echo "[$(date +%H:%M:%S)] Step 1/3: working on next task (claude -p)..."
   claude -p "$START_PROMPT" "${CLAUDE_FLAGS[@]}" \
     2>&1 | tee "$LOG_DIR/task_${i}_work.log"
 
-  echo "[$(date +%H:%M:%S)] Step 2/3: writing handoff..."
+  echo "[$(date +%H:%M:%S)] Step 2/3: writing handoff (claude --continue -p)..."
   claude --continue -p "$END_PROMPT" "${CLAUDE_FLAGS[@]}" \
     2>&1 | tee "$LOG_DIR/task_${i}_handoff.log"
 
   echo "[$(date +%H:%M:%S)] Step 3/3: staging + committing + pushing..."
   if [ -n "$(git status --porcelain)" ]; then
     # Pull a subject line from the handoff log; fall back to generic.
-SUBJECT=$(awk '
-  /^[*]*Work completed:[*]*/ {
-    sub(/^[*]*Work completed:[*]*[[:space:]]*/, "")
-    if (length($0) > 0) { print; exit }
-    inheader = 1; next
-  }
-  inheader && /^[[:space:]]*$/ { next }
-  inheader { sub(/^[*-][[:space:]]*/, ""); print; exit }
-' "$LOG_DIR/task_${i}_handoff.log" 2>/dev/null \
-| sed 's/`//g; s/\*\*//g' \
-| cut -c1-72 || true)
-    [ -z "$SUBJECT" ] && SUBJECT="Phase task $i (auto)"
+    SUBJECT=$(awk '
+      /^[*]*Work completed:[*]*/ {
+        sub(/^[*]*Work completed:[*]*[[:space:]]*/, "")
+        if (length($0) > 0) { print; exit }
+        inheader = 1; next
+      }
+      inheader && /^[[:space:]]*$/ { next }
+      inheader { sub(/^[*-][[:space:]]*/, ""); print; exit }
+    ' "$LOG_DIR/task_${i}_handoff.log" 2>/dev/null \
+    | sed 's/`//g; s/\*\*//g' \
+    | cut -c1-72 || true)
+    [ -z "$SUBJECT" ] && SUBJECT="Phase task $i (auto, Claude)"
 
     git add -A
     git commit -m "$SUBJECT" \
@@ -92,5 +112,5 @@ SUBJECT=$(awk '
 done
 
 echo
-echo "🎉 Phase complete: $TASKS tasks done."
+echo "🎉 Claude phase complete: $TASKS tasks done."
 echo "Logs: $LOG_DIR"
