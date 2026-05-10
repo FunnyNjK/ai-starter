@@ -4,6 +4,14 @@ Last Updated: 2026-05-10
 
 ## 2026-05-10
 
+### Starter v0.5.1 — close the first-mile UX gap
+- Updated `/ai/START_HERE.md` Section 4: when an uninitialized
+  starter is detected, the AI now recommends the friendly
+  `KICKOFF_*` interview prompts by default instead of going straight
+  to `INIT_PROMPT.md`. Direct paths remain available for users who
+  explicitly opt out. Ensures the foolproof flow is reached even when
+  users skip the README and rely on tool-native memory hooks.
+
 ### Starter v0.5.0 — first-mile UX
 - Added `/ai/templates/KICKOFF_NEW_PROJECT.md` — interview prompt for
   greenfield projects. One question at a time, sensible defaults at

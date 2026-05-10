@@ -116,13 +116,29 @@ and no template exists, ask before inventing a new permanent planning file.
 
 ## 4. First-Time Project Initialization
 
-If the project is still a starter project (PROJECT.md still has TBD sections
-or "Project Name: TBD"), follow `/ai/templates/INIT_PROMPT.md` end-to-end.
-That prompt covers: tech-stack version verification, infrastructure +
-deployment choices, security baseline, budget, license, SPEC, planning
-files, tasks, tool-native memory hooks, env vars, and migration inventory.
+If the project is still a starter project (PROJECT.md still has TBD
+sections or "Project Name: TBD"), the AI must STOP and recommend the
+friendly entry point instead of starting work directly:
 
-The initialization process must update:
+> "This looks like a fresh `ai-starter` project that hasn't been
+> initialized yet. The friendliest path is to run one of the kickoff
+> interviews — they'll ask you the right questions one at a time and
+> generate a customized setup prompt for you:
+>
+> - **New project (greenfield)** → `/ai/templates/KICKOFF_NEW_PROJECT.md`
+> - **Adopting into an existing app** → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+>
+> Want me to run one of those now? If you already know exactly what you
+> want and would rather skip the interview, I can run
+> `/ai/templates/INIT_PROMPT.md` (greenfield) or
+> `/ai/templates/ADOPT_PROMPT.md` (brownfield retrofit) directly."
+
+Only proceed with `INIT_PROMPT.md` / `ADOPT_PROMPT.md` directly if the
+user explicitly opts out of the interview. Defaulting to the interview
+is the foolproof path; the direct prompts are for confident users who
+know what they want.
+
+Whichever path is taken, the initialization process must update:
 
 - `/ai/PROJECT.md`
 - `/ai/CURRENT_STATE.md`

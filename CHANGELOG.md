@@ -1,11 +1,21 @@
 # Changelog
 
-Starter Version: 0.5.0
+Starter Version: 0.5.1
 Last Updated: 2026-05-10
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.5.1 - 2026-05-10
+
+- Closed first-mile UX gap: `/ai/START_HERE.md` Section 4 now routes
+  users to the friendly `KICKOFF_*` interview prompts by default
+  instead of `INIT_PROMPT.md` directly. The direct prompts are still
+  available for users who explicitly opt out of the interview. This
+  ensures users who never read the README still land in the foolproof
+  entry path when an AI tool auto-loads `START_HERE.md` via a
+  tool-native memory hook.
 
 ## 0.5.0 - 2026-05-10
 

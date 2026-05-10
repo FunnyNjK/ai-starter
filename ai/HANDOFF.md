@@ -3,15 +3,17 @@
 Last Updated: 2026-05-10
 
 ## Current State Summary
-This repository contains the generic AI project starter (v0.5.0). The
+This repository contains the generic AI project starter (v0.5.1). The
 application has not yet been initialized from a user-provided app
 description, and no tech stack, hosting target, or tooling has been
 chosen.
 
 ## Last Completed Task
-None — but starter v0.5.0 added first-mile UX: two `KICKOFF_*`
-interview prompts and the new `ADOPT_PROMPT.md` for brownfield
-retrofit. README now opens with a clear new-vs-existing fork.
+None — but v0.5.1 closed the first-mile UX gap so any AI session that
+auto-loads `/ai/START_HERE.md` via a tool-native memory hook is now
+routed to the friendly `KICKOFF_*` interview by default, regardless of
+whether the user read the README. v0.5.0 added the kickoff prompts and
+ADOPT_PROMPT.
 
 ## Active Task
 None
