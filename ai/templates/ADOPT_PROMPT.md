@@ -295,7 +295,6 @@ anything you're uncertain about in the inspection.
 - Do NOT pin dependency versions in ADRs from training-data
   knowledge. Verify every version against the lockfile or canonical
   source as of today.
-- Do NOT modify `/DEVELOPER-NOTES.md` if present.
 - Honor Destructive Operations and Reasoning Checkpoint rules — for
   anything that feels risky, confirm before doing it.
 - Push after every commit (Git Rules).

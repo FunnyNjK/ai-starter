@@ -3,17 +3,16 @@
 Last Updated: 2026-05-10
 
 ## Current State Summary
-This repository contains the generic AI project starter (v0.5.1). The
+This repository contains the generic AI project starter (v0.5.2). The
 application has not yet been initialized from a user-provided app
 description, and no tech stack, hosting target, or tooling has been
 chosen.
 
 ## Last Completed Task
-None — but v0.5.1 closed the first-mile UX gap so any AI session that
-auto-loads `/ai/START_HERE.md` via a tool-native memory hook is now
-routed to the friendly `KICKOFF_*` interview by default, regardless of
-whether the user read the README. v0.5.0 added the kickoff prompts and
-ADOPT_PROMPT.
+None — but v0.5.2 ran a full-repo audit and cleaned five low-severity
+drift issues (orphan CHAT_START_PROMPT, stale sister-document lists,
+DEVELOPER-NOTES leftover, generic free-tier examples). All
+cross-references are now consistent.
 
 ## Active Task
 None

@@ -4,6 +4,18 @@ Last Updated: 2026-05-10
 
 ## 2026-05-10
 
+### Starter v0.5.2 — audit cleanup
+Full-repo audit found five low-severity drift issues; all fixed:
+- Deleted orphan `ai/templates/CHAT_START_PROMPT.md` (zero inbound
+  references; stale conditional-context list).
+- Updated `INIT_PROMPT.md` sister-documents list to include ADOPT
+  (was a v0.5.0 oversight).
+- Removed stale `DEVELOPER-NOTES.md` reminder from `ADOPT_PROMPT.md`
+  (file deleted in v0.2.0).
+- Added consistent "sister documents" intro to `REFRESH_PROMPT.md`.
+- Replaced specific Postmark/Cloudflare free-tier examples in
+  `AI_RULES.md` Cost Rules with generic ones.
+
 ### Starter v0.5.1 — close the first-mile UX gap
 - Updated `/ai/START_HERE.md` Section 4: when an uninitialized
   starter is detected, the AI now recommends the friendly

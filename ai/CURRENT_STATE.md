@@ -19,7 +19,9 @@ None
   AI CLI.
 - Friendly interview prompts (`KICKOFF_NEW_PROJECT.md`,
   `KICKOFF_EXISTING_PROJECT.md`) and three setup actors
-  (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`).
+  (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`) — all
+  three actors now consistently cross-reference each other as
+  siblings (v0.5.2).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.

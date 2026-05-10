@@ -78,7 +78,7 @@ in `/ai/DECISIONS.md` if the change should persist.
 - **Every project sets a monthly budget cap at init**, recorded in `/ai/BUDGET.md` with alert thresholds (e.g., 50% / 80% / 100%) wired to the cloud's native budget alerting (AWS Budgets, Azure Cost Management, Google Cloud Billing budgets).
 - **Cost-impacting infra changes** — adding a managed service, scaling up a tier, duplicating a region, enabling a paid third-party — require an ADR with the estimated monthly cost delta and an entry in `/ai/BUDGET.md` "Cost-impacting changes log".
 - **Monthly cost review** is the floor; the project's actual cadence is recorded in `/ai/BUDGET.md` "Review cadence". Update the file with actual-vs-budget numbers each review.
-- **Free-tier dependencies are flagged**: if the project relies on a free tier that could plausibly be exceeded (Postmark's 100/month, Cloudflare's free SSL, etc.), the limit and the escalation path are recorded in `/ai/BUDGET.md` "Free-tier and tier choices".
+- **Free-tier dependencies are flagged**: if the project relies on a free or low-tier limit that could plausibly be exceeded (an email API's monthly send cap, a CDN's bandwidth cap, a database's row / connection limit, an analytics tool's event quota, etc.), the limit and the escalation path are recorded in `/ai/BUDGET.md` "Free-tier and tier choices".
 - **Never optimize cost by removing security controls** (e.g., dropping TLS, disabling backups, opening firewalls, downgrading from managed to self-hosted). If cost pressure is real, the response is an ADR proposing a different architecture, not a silent quality cut.
 
 ## Destructive Operations Rules (Hard)

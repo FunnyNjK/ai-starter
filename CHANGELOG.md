@@ -1,11 +1,34 @@
 # Changelog
 
-Starter Version: 0.5.1
+Starter Version: 0.5.2
 Last Updated: 2026-05-10
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.5.2 - 2026-05-10
+
+Audit pass — drift cleanup found in a complete review:
+
+- Deleted `ai/templates/CHAT_START_PROMPT.md`. Orphan file with zero
+  inbound references and a stale conditional-context list (missing
+  `SPEC.md`, `BUDGET.md`, `WORKFLOW.md`, `EXAMPLE_PROJECT.md`).
+  Redundant with `/ai/START_HERE.md` plus the tool-native memory
+  hooks.
+- Updated `ai/templates/INIT_PROMPT.md` "sister documents" intro to
+  list all three siblings (INIT, ADOPT, REFRESH); previously only
+  mentioned INIT and REFRESH because it predated ADOPT.
+- Removed stale `Do NOT modify /DEVELOPER-NOTES.md` line from
+  `ai/templates/ADOPT_PROMPT.md`. `DEVELOPER-NOTES.md` was deleted
+  back in v0.2.0; the reminder was harmless but obsolete.
+- Added a "sister documents" intro to `ai/templates/REFRESH_PROMPT.md`
+  matching the shape of INIT and ADOPT; routes users to ADOPT for
+  in-place existing apps without `/ai/` and to INIT/KICKOFF for new
+  projects.
+- De-Tommyfied the free-tier examples in `ai/AI_RULES.md` Cost Rules
+  (was "Postmark's 100/month, Cloudflare's free SSL"; now generic
+  examples like email-API send caps, CDN bandwidth, DB row limits).
 
 ## 0.5.1 - 2026-05-10
 

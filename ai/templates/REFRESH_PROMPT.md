@@ -9,6 +9,19 @@ code — only the `/ai` planning files, tool-native memory hook files,
 and root-level docs (README.md / SECURITY.md / CONTRIBUTING.md /
 LICENSE) where missing.
 
+This is one of three sibling actor prompts:
+
+- **INIT_PROMPT.md** — first-time setup of a new project (greenfield
+  or migrate-from-old-repo).
+- **ADOPT_PROMPT.md** — retrofit `/ai/` onto an in-place existing app
+  that does NOT already have `/ai/`.
+- **REFRESH_PROMPT.md** (this file) — housekeeping pass on a project
+  that already has `/ai/` from an older starter version.
+
+If the project does NOT already have an `/ai/` folder, use
+`ADOPT_PROMPT.md` instead. If it's a brand-new project, use
+`INIT_PROMPT.md` (or the friendlier `KICKOFF_NEW_PROJECT.md`).
+
 ---
 
 ## Prompt to paste to the AI assistant

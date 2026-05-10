@@ -4,11 +4,19 @@ Use this prompt against a FRESH project that was just cloned from the
 `ai-starter` template, to convert the generic starter files into
 project-specific planning files.
 
-This is the sister document to `REFRESH_PROMPT.md`:
+This is one of three sibling actor prompts:
 
-- **INIT_PROMPT.md** — first-time setup of a new project (P0-T1).
-- **REFRESH_PROMPT.md** — housekeeping pass on an existing project that's
-  drifted from current conventions.
+- **INIT_PROMPT.md** (this file) — first-time setup of a new project
+  (P0-T1), greenfield or migrate-from-old-repo.
+- **ADOPT_PROMPT.md** — retrofit `/ai/` onto an in-place existing app;
+  reverse-engineer the planning files without changing app code.
+- **REFRESH_PROMPT.md** — housekeeping pass on a project that already
+  has `/ai/` from an older starter version.
+
+For the friendly entry point that interviews the user and generates a
+customized version of one of the above, see
+`/ai/templates/KICKOFF_NEW_PROJECT.md` (greenfield) or
+`/ai/templates/KICKOFF_EXISTING_PROJECT.md` (brownfield).
 
 For a worked example of what the output looks like, see
 `/ai/EXAMPLE_PROJECT.md`.
