@@ -3,16 +3,16 @@
 Last Updated: 2026-05-10
 
 ## Current State Summary
-Generic AI project starter (v0.5.4). Not yet initialized — no
+Generic AI project starter (v0.5.5). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-None. v0.5.4 fixed six downstream-init hygiene issues found while
-reviewing the first real init: DONE_LOG now ships empty, INIT/ADOPT
-got an explicit "replace starter-history + remove starter-setup
-files" step, SHA in DONE_LOG is now optional (no more
-`commit: pending`), TASK_TEMPLATE heading levels corrected, and the
-CONTRIBUTING template lists all four AI branch prefixes.
+None. v0.5.5 closes the foundation-vs-product trap: KICKOFF and
+INIT/ADOPT now refuse foundation-shaped and architecture-only
+application descriptions and loop with the user until they describe a
+concrete user-facing feature loop ("users sign up, [verb] [object],
+and get [outcome]"). Phase-2 tasks now plan around real product
+features, not just infrastructure.
 
 ## Active Task
 None

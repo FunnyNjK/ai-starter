@@ -62,7 +62,54 @@ like. /ai/WORKFLOW.md defines branching, PRs, hotfixes, and how
 blockers are escalated. REFRESH_PROMPT.md is for existing repos; ignore
 here.
 
-## Step 2 — Choose the tech stack and verify versions
+## Step 2 — Validate the application description (gate before everything else)
+
+Before choosing any tech stack or infrastructure, validate that the
+user's application description (from the kickoff NOTES block, or from
+the user's chat message) describes a *real product* — what end users
+*do* — and not just infrastructure, architecture, or a reusable
+foundation.
+
+**Refuse to proceed past this step if the description**:
+
+- Uses **foundation / template / starter / scaffold / base / skeleton
+  / boilerplate** language without naming a concrete user-facing
+  feature loop. Examples that should refuse: "a foundation for B2C
+  SaaS apps", "a secure starter template", "a scaffold for future
+  products".
+- Is **architecture-only**: a list of surfaces, services, or
+  technologies without saying what users *do*. Examples that should
+  refuse: "a SaaS with marketing, web app, API, worker", "an Azure app
+  with Clerk + Plaid + Postmark + Stripe", "a multi-tenant Next.js +
+  Postgres stack".
+
+When refused, ask the user (and loop until satisfied):
+
+> "The description so far is more about infrastructure than product.
+> This starter plans infrastructure as *supporting work for a real
+> product*, not as the product itself. What does an end user actually
+> *do* with this app — concrete feature loop, e.g. 'users sign up,
+> then [verb] [object], and get [outcome]'?"
+
+A valid answer looks like:
+
+- "Users sign up, link bank accounts via Plaid, categorize
+  transactions, set monthly budgets, and get alerts when over."
+- "Team leads create projects, add tasks, assign teammates, set due
+  dates, and move tasks across a kanban board."
+- "Visitors read marketing pages, fill out a contact form, and I get
+  an email."
+
+If the user insists they only want a reusable foundation, point out
+that `ai-starter` itself already plays that role (they can fork it for
+each new project) and ask one more time for the actual product. If
+they still cannot describe a product, **mark the task `Blocked` per
+the Blocked Escalation Rule** and stop — don't manufacture features.
+
+Once the description is product-shaped, proceed to Step 3. Every later
+step assumes you know what users *do* with this app.
+
+## Step 3 — Choose the tech stack and verify versions
 
 Use the user's application description (and the old repo, if any) to
 choose:
@@ -87,7 +134,7 @@ ADR-001, ADR-002, ...) with: decision, the version, the date verified,
 the canonical source URL, rationale, and trade-offs. Ask the user before
 locking in choices that materially change the project's shape.
 
-## Step 3 — Choose infrastructure and deployment
+## Step 4 — Choose infrastructure and deployment
 
 Per the Infrastructure & Hosting Rules in AI_RULES.md:
 
@@ -116,7 +163,7 @@ Per the Infrastructure & Hosting Rules in AI_RULES.md:
 If any of the above defaults need to be overridden for this project,
 write an ADR explaining why. Do not silently deviate.
 
-## Step 4 — Choose the security baseline
+## Step 5 — Choose the security baseline
 
 Per the Security Rules in AI_RULES.md, decide and record as ADRs:
 
@@ -136,7 +183,7 @@ Per the Security Rules in AI_RULES.md, decide and record as ADRs:
 Record each as an ADR. The project's `/ai/PROJECT.md` should point at
 these ADRs in its "Security Baseline" section.
 
-## Step 5 — Set the budget and cost guardrails
+## Step 6 — Set the budget and cost guardrails
 
 Per the Cost Rules in AI_RULES.md:
 
@@ -144,13 +191,13 @@ Per the Cost Rules in AI_RULES.md:
   environment) and record it in /ai/BUDGET.md.
 - Choose alert thresholds (50% / 80% / 100%, or as the user specifies)
   and the notification channel — record both in /ai/BUDGET.md.
-- For each managed service chosen in Step 3, record the tier (free /
+- For each managed service chosen in Step 4, record the tier (free /
   shared / dedicated / scale-to-zero), any free-tier limits being
   relied on, and the escalation path when limits are exceeded.
 - Pre-populate /ai/BUDGET.md "Major cost contributors" with estimated
-  monthly cost for the major resources from Step 3.
+  monthly cost for the major resources from Step 4.
 
-## Step 6 — Choose a license
+## Step 7 — Choose a license
 
 Ask the user what license the project ships under. Defaults to
 recommend, in rough order of permissiveness:
@@ -168,13 +215,13 @@ Write the chosen license text to `LICENSE` at the project root and
 record the choice as an ADR. Reference the license from `README.md`
 and `CONTRIBUTING.md`.
 
-## Step 7 — Inspect the old repo (read-only, skip if greenfield)
+## Step 8 — Inspect the old repo (read-only, skip if greenfield)
 
 Treat it as read-only. Never modify it. Catalog: pages or modules,
 content, copy, assets, brand (colors/fonts), navigation, integrations,
 features to drop, opportunities to improve.
 
-## Step 8 — Decide a design / migration direction
+## Step 9 — Decide a design / migration direction
 
 If migrating from an old repo, decide with the user whether to:
 
@@ -189,7 +236,7 @@ If migrating from an old repo, decide with the user whether to:
 Document the chosen direction (and any notable evolution choices) as
 ADRs.
 
-## Step 9 — Fill in /ai/SPEC.md
+## Step 10 — Fill in /ai/SPEC.md
 
 For non-trivial projects (anything beyond a CRUD demo), populate
 /ai/SPEC.md with:
@@ -206,7 +253,7 @@ For non-trivial projects (anything beyond a CRUD demo), populate
 This is the file Phase-2 task acceptance criteria are built from. If
 it's vague, the AI will write vague feature tasks.
 
-## Step 10 — Update planning files and queue tasks
+## Step 11 — Update planning files and queue tasks
 
 Make all /ai/*.md files project-specific. Mark P0-T1 done in TASKS.md
 and DONE_LOG.md.
@@ -253,7 +300,7 @@ CURRENT_STATE.md ≤ 80 lines. HANDOFF.md ≤ 50 lines. Use the templates
 in /ai/templates/. Add `Last Updated: YYYY-MM-DD` (today's UTC date) to
 the top of every planning file you touch.
 
-## Step 11 — Tool-native memory hooks
+## Step 12 — Tool-native memory hooks
 
 The starter ships with these AI-tool-recognized files at the project
 root pointing at `/ai/START_HERE.md`:
@@ -268,7 +315,7 @@ Verify these are present in the new project. If a tool the user uses
 has a different memory-file convention, add a one-line stub for it
 that says "Always read /ai/START_HERE.md first."
 
-## Step 12 — Replace starter-history files and remove starter-setup files
+## Step 13 — Replace starter-history files and remove starter-setup files
 
 The starter ships with files that exist to bootstrap *new* projects and
 files that track the *starter's own* history. After P0-T1, both
@@ -327,7 +374,7 @@ Keep:
 If the user has a specific reason to keep any of the deleted files,
 honor that — but the default is to delete.
 
-## Step 13 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
+## Step 14 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
 
 - Page / module mapping (old → new → status)
 - Asset mapping (old path → new path)
@@ -335,7 +382,7 @@ honor that — but the default is to delete.
 - Drop list (with reasons)
 - Improvement list (each linked to a TASKS.md entry)
 
-## Step 14 — Environment variables
+## Step 15 — Environment variables
 
 Identify every env var the new project will need. Document them in
 /ai/DEPLOYMENT.md "Required Environment Variables", with which secret

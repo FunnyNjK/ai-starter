@@ -141,6 +141,28 @@ from their files:
 
 1. **Project purpose / users / goals / non-goals** — only ask the bits
    the existing README doesn't already cover. Read README first.
+
+   **Validate the purpose answer.** Whether you read it from the README
+   or get it from the user, the answer must describe what end users
+   *do* with the product — a concrete feature loop, not infrastructure
+   or architecture.
+
+   If the README (or user) describes the project as a "foundation",
+   "template", "starter", "scaffold", "base", "skeleton", or
+   "boilerplate" — or as a list of services and surfaces ("a SaaS with
+   marketing site, web app, API, worker") without saying what users
+   *do* — push back:
+
+   > "Got it on the architecture, but I need to understand what the
+   > app actually *does* for an end user. What feature do they use?
+   > What's the core loop — sign up, then what?"
+
+   Loop until you have a concrete feature loop. The existing
+   architecture becomes supporting infrastructure under feature work,
+   not the product itself. If the existing project genuinely has no
+   user-facing feature yet (it really is just chassis), recommend
+   stopping the adopt session and re-running this kickoff after the
+   user has decided what the actual product does.
 2. **Compliance / regulatory** — same as the new-project interview.
 3. **Cloud preference** — for catch-up, this should usually match what
    the project already deploys to (e.g., Vercel → ask if they want to

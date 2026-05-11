@@ -108,6 +108,17 @@ state. Use the templates in `/ai/templates/` for shape.
 ### `/ai/PROJECT.md`
 - Name, application description, users, goals, non-goals — from the
   user's interview answers and the existing README.
+- **Validate the application description.** It must describe what end
+  users *do* with the product — a concrete feature loop, not
+  infrastructure or architecture.
+  - REFUSE: "a foundation for X", "a template for Y", "a SaaS with
+    marketing/web/API/worker", "an app using Clerk + Plaid + Postmark".
+  - REQUIRE: "Users sign up, [verb] [object], and get [outcome]."
+  - If the existing README is foundation/architecture-shaped AND the
+    user can't articulate a real feature loop, stop and surface the
+    gap. Do NOT invent product features. Mark the adopt task `Blocked`
+    per the Blocked Escalation Rule and ask the user to clarify before
+    continuing.
 - **Tech Stack** section: list every choice you can confirm from
   manifests + lockfiles. Pin the exact installed version (lockfile is
   truth) and note the source of that fact (e.g., "TypeScript 5.4.3

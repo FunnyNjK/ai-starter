@@ -25,6 +25,9 @@ None
 - `.gitattributes` enforces LF line endings (v0.5.3).
 - INIT/ADOPT prompts now include explicit "replace starter-history files
   and remove starter-setup files" steps; DONE_LOG ships empty (v0.5.4).
+- KICKOFF and INIT/ADOPT refuse foundation/architecture-only application
+  descriptions and loop until the user describes a real user-facing
+  feature loop (v0.5.5).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.

@@ -45,14 +45,72 @@ they (or you) can run it.
 
 ## Questions to ask, in this order
 
-1. **What are you building?** One paragraph, plain English.
-   Examples:
-     - "A team task tracker for engineering teams of 2-15 people, web only."
-     - "A static marketing site for my consulting business, with a contact form."
-     - "An internal admin tool for our customer support team to look up orders."
-   "I don't know yet" → ask one follow-up about the rough domain
-   (consumer SaaS / internal tool / marketing site / API / mobile / data
-   pipeline) before moving on.
+1. **What does the app DO for users?** A concrete user-facing feature
+   loop, in plain English. The goal is to know what end users *do* with
+   the product, not how it's built.
+
+   Good answers (concrete user behavior):
+     - "Users sign up, link their bank accounts via Plaid, see all
+       transactions in one place, categorize them, set monthly budgets,
+       and get alerts when they go over."
+     - "Engineering team leads create projects, add tasks, assign them
+       to teammates, set due dates, and move them across a kanban
+       board."
+     - "Visitors read marketing pages about my consulting practice,
+       fill out a contact form, and I get an email."
+     - "Customer-support agents search orders by email / phone /
+       order-number, view order history, issue refunds, and add notes
+       to a customer record."
+
+   **REJECT these answer shapes** — keep asking until the user gives a
+   real feature loop:
+
+   - **Foundation / template / starter / scaffold / base / skeleton /
+     boilerplate** language without a concrete user-facing product.
+     Example triggers: "a foundation for B2C SaaS apps", "a secure
+     starter template I can reuse", "a scaffold for future products".
+
+     Follow-up to the user:
+
+     > "That sounds like infrastructure work, not a product. This
+     > starter plans infrastructure as *supporting work for a real
+     > product*, not as the product itself. What does the app actually
+     > *do* for an end user — what feature do they use?"
+
+     Loop until they describe a real feature loop. **If they insist
+     they only want a reusable foundation,** point out that
+     `ai-starter` itself already plays that role — they can fork it for
+     each new project — and ask one more time what *this specific
+     project's product* is. If they still can't describe a product,
+     stop the interview, do not generate an init prompt, and report
+     back to the user that the project shape is unclear.
+
+   - **Architecture-only listings** (lists of surfaces, services, or
+     technologies) without user behavior. Example triggers: "a SaaS
+     with a marketing site, web app, API, and worker", "an Azure app
+     using Clerk, Plaid, Postmark, and Stripe", "a multi-tenant React +
+     Next.js + Postgres stack".
+
+     Follow-up:
+
+     > "You've told me about the surfaces and services, but what does a
+     > user *do* with this app? Pretend I'm a brand-new user who just
+     > signed up — what's the very first thing I do that gives me value,
+     > and what do I keep coming back to do?"
+
+     Loop until they describe a real feature loop. The architecture
+     they listed becomes Phase-1 supporting infrastructure under Phase-2
+     feature tasks, NOT the product itself.
+
+   - **"I don't know yet"** — ask about the rough domain (consumer
+     SaaS / internal tool / marketing site / API / mobile / data
+     pipeline) AND the core problem they're solving for users, then
+     try the question again.
+
+   **The interview cannot proceed past Question 1 without a concrete
+   feature-loop answer.** Every later question (audience, goals,
+   non-goals, compliance, cloud, budget, license, stack) assumes you
+   already know what users do.
 
 2. **Who is it for?** End users / internal team / public web visitors / etc.
    Examples:

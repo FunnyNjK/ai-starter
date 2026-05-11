@@ -1,11 +1,60 @@
 # Changelog
 
-Starter Version: 0.5.4
+Starter Version: 0.5.5
 Last Updated: 2026-05-10
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.5.5 - 2026-05-10
+
+Make the kit actually build the app the user describes — not just
+infrastructure that *could* host one.
+
+**Problem this fixes**: the first real init (`secure-app-template`)
+ended up planning ~14 Phase-2 tasks that were all foundation work
+(auth, API skeleton, worker skeleton, GDPR controls, observability,
+billing-flagged-off) and zero product features. The user's
+description ("a B2C consumer SaaS foundation") was infrastructure-
+shaped — and the AI took it literally. After Phase 2, there was no
+actual product to ship; just a chassis ready to host one.
+
+The fix: the kickoff interview and INIT/ADOPT actors now refuse
+foundation-shaped and architecture-only application descriptions, and
+loop with the user until they describe what end users actually *do*
+with the app.
+
+- **`ai/templates/KICKOFF_NEW_PROJECT.md` Question 1**: now strict.
+  Asks "What does the app DO for users?" and gives concrete
+  feature-loop examples. REJECTS:
+  - Foundation / template / starter / scaffold / base / skeleton /
+    boilerplate language without a concrete user-facing product.
+  - Architecture-only listings (lists of surfaces, services,
+    technologies) without saying what users *do*.
+
+  Loops with a clarifying question until the answer is product-shaped
+  ("users sign up, [verb] [object], and get [outcome]"). If the user
+  insists they only want a foundation, the interview stops and reports
+  back — `ai-starter` itself already plays that role.
+
+- **`ai/templates/KICKOFF_EXISTING_PROJECT.md` Step 4 purpose
+  question**: same logic applied when reading the existing README or
+  asking the user. Existing architecture becomes supporting
+  infrastructure under feature work, not the product itself.
+
+- **`ai/templates/INIT_PROMPT.md` Step 2** (new) — application-
+  description validation gate. Refuses to proceed past Step 2 if the
+  description is foundation- or architecture-shaped. Loops with the
+  user, or marks the task `Blocked` if no product can be articulated.
+  Subsequent steps renumbered (Step 3 = tech stack ... Step 15 = env
+  vars; total 15 steps, was 14).
+
+- **`ai/templates/ADOPT_PROMPT.md` Step 3 `/ai/PROJECT.md` section**:
+  validates the inferred application description before populating
+  `PROJECT.md`. If the existing README is foundation/architecture-
+  shaped AND the user can't articulate a real feature loop, the adopt
+  stops and surfaces the gap rather than inventing features.
 
 ## 0.5.4 - 2026-05-10
 
