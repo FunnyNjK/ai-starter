@@ -268,7 +268,66 @@ Verify these are present in the new project. If a tool the user uses
 has a different memory-file convention, add a one-line stub for it
 that says "Always read /ai/START_HERE.md first."
 
-## Step 12 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
+## Step 12 — Replace starter-history files and remove starter-setup files
+
+The starter ships with files that exist to bootstrap *new* projects and
+files that track the *starter's own* history. After P0-T1, both
+categories must be replaced or removed so downstream projects don't
+inherit the wrong content.
+
+### Replace starter-history files
+
+- **`CHANGELOG.md`** — currently contains the `ai-starter` template's
+  own release history (header starts with `Starter Version:`). Overwrite
+  with a fresh project changelog scaffolding:
+
+  ```markdown
+  # Changelog
+
+  Last Updated: <YYYY-MM-DD>
+
+  ## Unreleased
+  - Project planning initialized (P0-T1).
+  ```
+
+  Downstream projects add real entries as they cut their own releases.
+
+- **`/ai/DONE_LOG.md`** — should already be empty in a recent starter,
+  but if it contains starter-release entries, clear them and seed only
+  the P0-T1 entry for this project.
+
+### Remove starter-setup files
+
+These exist to run *this very init session* and have no use afterward.
+Delete them:
+
+- `ai/templates/KICKOFF_NEW_PROJECT.md`
+- `ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- `ai/templates/INIT_PROMPT.md` (you're inside this one — delete on the
+  way out)
+- `ai/templates/ADOPT_PROMPT.md`
+- `ai/templates/README.template.md` (already used to generate `README.md`)
+- `ai/templates/SECURITY.template.md` (already used)
+- `ai/templates/CONTRIBUTING.template.md` (already used)
+- `ai/EXAMPLE_PROJECT.md` (illustrative reference for un-initialized
+  projects)
+- `ai/reference/PROMPT_LIBRARY.md` (general AI prompt patterns;
+  optional)
+- The whole `ai/reference/` directory if it ends up empty.
+
+Keep:
+
+- `ai/templates/REFRESH_PROMPT.md` (future starter upgrades)
+- `ai/templates/TASK_TEMPLATE.md` (new tasks)
+- `ai/templates/INCIDENT_TEMPLATE.md` (post-mortems)
+- `ai/templates/CHAT_END_PROMPT.md` (used at end of every session)
+- `ai/templates/CURRENT_STATE.template.md`,
+  `ai/templates/HANDOFF.template.md` (refresh-pass shape)
+
+If the user has a specific reason to keep any of the deleted files,
+honor that — but the default is to delete.
+
+## Step 13 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
 
 - Page / module mapping (old → new → status)
 - Asset mapping (old path → new path)
@@ -276,7 +335,7 @@ that says "Always read /ai/START_HERE.md first."
 - Drop list (with reasons)
 - Improvement list (each linked to a TASKS.md entry)
 
-## Step 13 — Environment variables
+## Step 14 — Environment variables
 
 Identify every env var the new project will need. Document them in
 /ai/DEPLOYMENT.md "Required Environment Variables", with which secret

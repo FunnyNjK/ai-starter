@@ -3,13 +3,16 @@
 Last Updated: 2026-05-10
 
 ## Current State Summary
-Generic AI project starter (v0.5.3). Not yet initialized — no
+Generic AI project starter (v0.5.4). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-None. v0.5.3 fixed five team-review issues: codex/claude harness
-flags, P0-T1 missing template sections, future-dated example, missing
-`.gitattributes`, HANDOFF drift.
+None. v0.5.4 fixed six downstream-init hygiene issues found while
+reviewing the first real init: DONE_LOG now ships empty, INIT/ADOPT
+got an explicit "replace starter-history + remove starter-setup
+files" step, SHA in DONE_LOG is now optional (no more
+`commit: pending`), TASK_TEMPLATE heading levels corrected, and the
+CONTRIBUTING template lists all four AI branch prefixes.
 
 ## Active Task
 None

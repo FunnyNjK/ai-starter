@@ -275,7 +275,62 @@ non-invasive (no behavior change) and means the next AI session
 auto-loads the workflow. Skip files that already exist with
 project-specific content.
 
-## Step 6 — Self-critique + handoff
+## Step 6 — Replace starter-history files and remove starter-setup files
+
+Same cleanup as INIT_PROMPT Step 12, with one nuance: in an
+adopt-into-existing-app session, the project may already have its own
+`CHANGELOG.md` and `DONE_LOG.md` with real content. Detect intent
+before overwriting.
+
+### `CHANGELOG.md` at the project root
+
+- If the file is **missing** OR contains the `ai-starter` template's
+  release header (starts with `Starter Version:`), replace with fresh
+  project changelog scaffolding:
+
+  ```markdown
+  # Changelog
+
+  Last Updated: <YYYY-MM-DD>
+
+  ## Unreleased
+  - ai-starter workflow adopted (P0-T1).
+  ```
+
+- If the file already has **project-specific** entries (existing
+  release history, real Unreleased notes), leave it alone and add a
+  new "ai-starter workflow adopted" line under the existing Unreleased
+  section instead.
+
+### `/ai/DONE_LOG.md`
+
+- Should ship from the starter empty. If it has starter-release
+  entries, clear them. Seed with this project's adopt entry.
+
+### Remove starter-setup files
+
+These exist to bootstrap *new* projects and have no use after adopt.
+Delete:
+
+- `ai/templates/KICKOFF_NEW_PROJECT.md`
+- `ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- `ai/templates/INIT_PROMPT.md`
+- `ai/templates/ADOPT_PROMPT.md` (you're inside this one — delete on
+  the way out)
+- `ai/templates/README.template.md`, `SECURITY.template.md`,
+  `CONTRIBUTING.template.md` (only if the user *did* generate
+  corresponding root docs from them in this session; otherwise leave
+  for follow-up tasks to use)
+- `ai/EXAMPLE_PROJECT.md`
+- `ai/reference/PROMPT_LIBRARY.md` (optional)
+
+Keep:
+
+- `ai/templates/REFRESH_PROMPT.md`, `TASK_TEMPLATE.md`,
+  `INCIDENT_TEMPLATE.md`, `CHAT_END_PROMPT.md`,
+  `CURRENT_STATE.template.md`, `HANDOFF.template.md`.
+
+## Step 7 — Self-critique + handoff
 
 End the session per `/ai/templates/CHAT_END_PROMPT.md`. The
 self-critique section is especially important here — list every

@@ -29,7 +29,7 @@ in `/ai/DECISIONS.md` if the change should persist.
 ## Planning-File Hygiene Rules (Hard)
 
 - **`TASKS.md` holds active and upcoming work only.** When a task moves to Done:
-  1. Add a one-line entry under the matching date in `DONE_LOG.md` with the task ID, title, and key commit hash(es).
+  1. Add a one-line entry under the matching date in `DONE_LOG.md` with the task ID and title. Commit hash(es) are **optional** — `git log --grep=<task-id>` recovers them — but recommended for big or non-obvious commits where the SHA is already known. Never write `commit: pending` as a placeholder; either include the real SHA or omit it.
   2. Remove the full task block from `TASKS.md` (or replace it with a one-line pointer like `### P2-T8: Build Monitoring service page — Done; see DONE_LOG.md`).
   3. Do NOT keep multi-paragraph "what was built" prose inside `TASKS.md`.
 - **`CURRENT_STATE.md` is a snapshot, not a transcript.** Target ≤ 80 lines. It answers: where are we right now, what works, what's broken, what's next. Implementation detail belongs in `DONE_LOG.md`, not here.

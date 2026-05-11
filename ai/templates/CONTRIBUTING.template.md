@@ -25,7 +25,9 @@ detail (versions, common pitfalls, troubleshooting).
 ## Project conventions
 
 - **Branch naming**: `feat/<slug>`, `fix/<slug>`, `chore/<slug>`,
-  `hotfix/<slug>`. See `/ai/WORKFLOW.md`.
+  `hotfix/<slug>`. AI-driven branches use `claude/<slug>`,
+  `cursor/<slug>`, `codex/<slug>`, or `copilot/<slug>` (matching the
+  phase harness in use). See `/ai/WORKFLOW.md`.
 - **Commit messages**: short imperative, ~70 chars max. Match the
   existing style in `git log`.
 - **Code style**: enforced via the project's linter and formatter.

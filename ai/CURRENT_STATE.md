@@ -23,6 +23,8 @@ None
   three actors now consistently cross-reference each other as
   siblings (v0.5.2).
 - `.gitattributes` enforces LF line endings (v0.5.3).
+- INIT/ADOPT prompts now include explicit "replace starter-history files
+  and remove starter-setup files" steps; DONE_LOG ships empty (v0.5.4).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.

@@ -1,11 +1,52 @@
 # Changelog
 
-Starter Version: 0.5.3
+Starter Version: 0.5.4
 Last Updated: 2026-05-10
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.5.4 - 2026-05-10
+
+Downstream-init hygiene pass — fixes patterns that caused
+starter-template residue to leak into the first real project initialized
+from this kit (`secure-app-template`).
+
+- **`ai/DONE_LOG.md` ships empty.** Previously held the starter's own
+  release notes, which downstream projects inherited verbatim. Now
+  contains only a placeholder + a note explaining that the starter's
+  own release history lives in `CHANGELOG.md` and git tags. Init seeds
+  the first entry (P0-T1) per project.
+- **INIT_PROMPT and ADOPT_PROMPT gain a new "replace starter-history
+  files and remove starter-setup files" step** (INIT Step 12, ADOPT
+  Step 6). It instructs the AI to:
+  - Replace `CHANGELOG.md` (currently the starter's release log) with
+    a fresh project changelog scaffolding. ADOPT detects existing
+    project-specific content and leaves it alone.
+  - Delete `ai/templates/KICKOFF_NEW_PROJECT.md`,
+    `KICKOFF_EXISTING_PROJECT.md`, `INIT_PROMPT.md`, `ADOPT_PROMPT.md`,
+    `README.template.md`, `SECURITY.template.md`,
+    `CONTRIBUTING.template.md`, `ai/EXAMPLE_PROJECT.md`, and
+    `ai/reference/PROMPT_LIBRARY.md` after their job is done.
+  - Keep `REFRESH_PROMPT.md`, `TASK_TEMPLATE.md`, `INCIDENT_TEMPLATE.md`,
+    `CHAT_END_PROMPT.md`, `CURRENT_STATE.template.md`, and
+    `HANDOFF.template.md` (all useful post-init).
+- **AI_RULES.md Planning-File Hygiene Rule: commit SHA is now optional
+  in `DONE_LOG.md` entries.** Previously the rule said entries must
+  include "key commit hash(es)", but the end-of-chat ritual writes
+  entries *before* the commit, so the SHA isn't known yet — producing
+  `commit: pending` placeholders that go stale. New rule: task ID and
+  title are required; commit hash is recommended when already known but
+  `git log --grep=<task-id>` recovers it. Never write
+  `commit: pending`.
+- **`ai/templates/TASK_TEMPLATE.md` heading levels fixed.** Subsections
+  were `##` (H2), which jumped *above* the task title (`###`, H3) when
+  rendered inside `TASKS.md`. Now `####` (H4), correctly nested.
+- **`ai/templates/CONTRIBUTING.template.md` branching section** now
+  explicitly lists all four AI-harness branch prefixes (`claude/`,
+  `cursor/`, `codex/`, `copilot/`). Previously the AI improvised when
+  generating downstream CONTRIBUTING.md.
 
 ## 0.5.3 - 2026-05-10
 
