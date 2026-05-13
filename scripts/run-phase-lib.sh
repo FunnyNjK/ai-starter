@@ -67,6 +67,55 @@ rpl_end_prompt() {
 }
 
 # ---------------------------------------------------------------------------
+# rpl_preflight — keep unattended phase runs on their own branch and make
+# sure pre-existing local edits are not swept into automated commits.
+# ---------------------------------------------------------------------------
+rpl_preflight() {
+  local expected branch target_branch status_output
+  expected=$(printf '%s' "${TOOL_NAME:?TOOL_NAME must be set}" | tr '[:upper:]' '[:lower:]')
+
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    err "error: run the phase harness from inside a git worktree."
+    exit 1
+  fi
+
+  status_output=$(git status --porcelain --untracked-files=normal)
+  if [ -n "$status_output" ] && [ "${RUN_PHASE_ALLOW_DIRTY:-0}" != "1" ]; then
+    err "error: working tree is dirty before the phase run starts."
+    err "The harness only commits changes made during the run. Commit,"
+    err "stash, or discard these files first, or set RUN_PHASE_ALLOW_DIRTY=1"
+    err "if you intentionally want to include them:"
+    printf '%s\n' "$status_output" | sed 's/^/  /' >&2
+    exit 1
+  fi
+  if [ -n "$status_output" ]; then
+    err "warning: RUN_PHASE_ALLOW_DIRTY=1 set; pre-existing dirty files may be committed."
+  fi
+
+  branch=$(git symbolic-ref --quiet --short HEAD || true)
+  if [ -z "$branch" ]; then
+    err "error: detached HEAD. Check out a branch before running the phase harness."
+    exit 1
+  fi
+
+  case "$branch" in
+    "$expected"/*)
+      log "Preflight: branch '$branch' matches expected $expected/* prefix."
+      ;;
+    *)
+      if [ "${RUN_PHASE_AUTO_BRANCH:-1}" = "0" ]; then
+        err "error: current branch '$branch' does not match expected $expected/* prefix."
+        err "Create/switch to a $expected/* branch, or unset RUN_PHASE_AUTO_BRANCH=0."
+        exit 1
+      fi
+      target_branch="${expected}/phase-$(date +%Y%m%d-%H%M%S)"
+      log "Preflight: creating AI work branch '$target_branch' from '$branch'."
+      git checkout -b "$target_branch"
+      ;;
+  esac
+}
+
+# ---------------------------------------------------------------------------
 # rpl_extract_subject — parse a commit subject from the handoff log.
 # Looks for the "Work completed:" header per /ai/templates/CHAT_END_PROMPT.md.
 # Usage: SUBJECT=$(rpl_extract_subject "$LOG_DIR/task_${i}_handoff.log" "<fallback>")
@@ -76,9 +125,14 @@ rpl_extract_subject() {
   local fallback="$2"
   local subject
   subject=$(awk '
-    /^[*]*Work completed:[*]*/ {
-      sub(/^[*]*Work completed:[*]*[[:space:]]*/, "")
-      if (length($0) > 0) { print; exit }
+    /Work completed/ {
+      line = $0
+      gsub(/`/, "", line)
+      gsub(/\*/, "", line)
+      sub(/^[[:space:]]*[-][[:space:]]*/, "", line)
+      sub(/^Work completed[[:space:]]*/, "", line)
+      sub(/^[^[:alnum:]]+[[:space:]]*/, "", line)
+      if (length(line) > 0) { print line; exit }
       inheader = 1; next
     }
     inheader && /^[[:space:]]*$/ { next }

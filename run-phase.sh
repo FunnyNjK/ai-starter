@@ -28,6 +28,10 @@
 #                                          flag; others don't. Verify
 #                                          with `claude --help` before
 #                                          setting. Leave unset to omit.
+#   - RUN_PHASE_AUTO_BRANCH=0            — fail instead of auto-creating
+#                                          a claude/* branch when needed.
+#   - RUN_PHASE_ALLOW_DIRTY=1            — allow a dirty worktree before
+#                                          the run starts. NOT recommended.
 #   - RUN_PHASE_ALLOWLIST_REGEX="..."    — extra ERE restricting which
 #                                          changed paths may be staged
 #                                          (in addition to the built-in
@@ -68,6 +72,8 @@ rpl_require_tool claude \
   "https://docs.anthropic.com/en/docs/claude-code"
 
 TASKS=${1:?Usage: $0 <num_tasks>   e.g.  ./run-phase.sh 8}
+
+rpl_preflight
 
 LOG_DIR=$(rpl_init_log_dir)
 START_PROMPT=$(rpl_start_prompt)

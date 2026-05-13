@@ -1,11 +1,35 @@
 # Changelog
 
-Starter Version: 0.6.1
+Starter Version: 0.6.2
 Last Updated: 2026-05-13
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.6.2 - 2026-05-13
+
+- **Brownfield adoption flow fixed.** `ADOPT_PROMPT.md` and
+  `KICKOFF_EXISTING_PROJECT.md` now distinguish between a freshly copied
+  starter `/ai/` folder (continue with ADOPT), a missing `/ai/` folder
+  (copy starter files first), and an already project-specific `/ai/`
+  folder (use REFRESH). This removes the previous "must not have `/ai/`
+  but must read `/ai/START_HERE.md`" contradiction.
+- **Security CI template no longer overclaims.** The default security
+  workflow template is now a guardrail that fails when dependency-update
+  config or real language-specific SAST is missing. `INIT_PROMPT.md`
+  now tells the AI to replace or extend the guard with actual scanners
+  chosen in ADRs.
+- **Phase harness preflight.** The shared phase-run library now refuses
+  dirty worktrees by default and auto-creates the matching AI-prefixed
+  branch (`claude/*`, `codex/*`, `cursor/*`, or `copilot/*`) before
+  unattended work. Escape hatches are explicit environment variables.
+- **Automated commit subjects fixed.** The shared subject parser now
+  recognizes the current `CHAT_END_PROMPT.md` "Work completed" bullet
+  format, reducing generic fallback commit messages.
+- **CI and docs cleanup.** Lint CI now runs on every branch push and PR,
+  validates both Python helper scripts, and README no longer references
+  a deleted chat-start template.
 
 ## 0.6.1 - 2026-05-13
 

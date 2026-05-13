@@ -68,13 +68,24 @@ Survey the repo. Focus on signals, not exhaustive detail. Look at:
 - `tests/`, `__tests__/`, `*.test.*`, `*.spec.*` — for test framework
   and rough coverage shape.
 - Any existing `/ai/` folder or files like `CLAUDE.md`, `AGENTS.md`,
-  `.cursorrules` — if these exist, the project may already be on an
-  older `ai-starter`; recommend `REFRESH_PROMPT.md` instead.
+  `.cursorrules` — if these exist, inspect whether `/ai/PROJECT.md` is
+  still starter-generic (`Project Name` = `TBD`) or already
+  project-specific.
 
-If `/ai/` already exists, STOP and tell the user:
+If `/ai/` already exists and `/ai/PROJECT.md` is already
+project-specific, STOP and tell the user:
 
   This project already has /ai/ — it looks like an older ai-starter
   version. Use /ai/templates/REFRESH_PROMPT.md instead of this kickoff.
+
+If `/ai/` exists but is still starter-generic, continue. That means the
+starter was copied in but not adopted yet, which is exactly the ADOPT
+path.
+
+If `/ai/` is missing, continue the inspection, but the generated
+ADOPT_PROMPT must begin by telling the user to copy the starter files
+into this repo before running the adopt pass. ADOPT needs the starter
+templates locally.
 
 Otherwise, produce a "what I see" summary like:
 

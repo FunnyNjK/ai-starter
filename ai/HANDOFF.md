@@ -3,16 +3,14 @@
 Last Updated: 2026-05-13
 
 ## Current State Summary
-Generic AI project starter (v0.6.1). Not yet initialized — no
+Generic AI project starter (v0.6.2). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-None. v0.6.1 ships mark-task-done script + configurable push + security CI scaffold.
-phase-script library with safe staging (no more `git add -A`,
-sensitive paths refused fail-closed), a Python planning-file linter
-enforcing the Task Quality / Hygiene Hard Rules, GitHub Actions CI
-running shellcheck + the linter, and a web-app decision-tree doc
-(`docs/CHOOSING_WEBAPP_PATH.md`) the kickoff interview can reference.
+Starter maintenance v0.6.2: fixed brownfield ADOPT routing, replaced the
+security-CI placeholder with failing guardrails, added phase-harness
+preflight branch/dirty-worktree checks, fixed commit-subject parsing,
+and expanded CI validation.
 
 ## Active Task
 None
@@ -43,4 +41,9 @@ The KICKOFF interviews are the foolproof default. Direct paths
   silently trigger expensive or risky actions.
 
 ## Tests / Checks Last Run
-None. Planning files only.
+- `python3 scripts/lint-planning.py` — pass (0 errors, 0 warnings).
+- `PYTHONPYCACHEPREFIX=/private/tmp/ai-starter-pycache python3 -m py_compile scripts/lint-planning.py scripts/mark-task-done.py` — pass.
+- `bash -n run-phase.sh run-phase-codex.sh run-phase-cursor.sh run-phase-copilot.sh scripts/run-phase-lib.sh` — pass.
+- `rpl_extract_subject` + `rpl_preflight` smoke tests — pass (dirty refusal exits 1 as expected).
+- `git diff --check` — pass.
+- `shellcheck` not run locally (not installed); CI installs it.

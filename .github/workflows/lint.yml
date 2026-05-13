@@ -2,7 +2,6 @@ name: lint
 
 on:
   push:
-    branches: [main]
   pull_request:
 
 permissions:
@@ -31,5 +30,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Validate Python helper scripts
+        run: python3 -m py_compile scripts/lint-planning.py scripts/mark-task-done.py
       - name: Lint planning markdown
         run: python3 scripts/lint-planning.py

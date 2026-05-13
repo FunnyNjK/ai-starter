@@ -23,6 +23,10 @@
 # Optional env vars:
 #   - RUN_PHASE_NO_PUSH=1            — commit but skip push.
 #   - RUN_PHASE_COPILOT_MODEL="..."  — pin a specific model.
+#   - RUN_PHASE_AUTO_BRANCH=0        — fail instead of auto-creating
+#                                      a copilot/* branch when needed.
+#   - RUN_PHASE_ALLOW_DIRTY=1        — allow a dirty worktree before
+#                                      the run starts. NOT recommended.
 #   - RUN_PHASE_ALLOWLIST_REGEX="..." — extra ERE restricting which
 #                                       changed paths may be staged.
 #   - RUN_PHASE_FORCE_UNSAFE=1       — override sensitive-path
@@ -61,6 +65,8 @@ rpl_require_tool copilot \
   "https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli"
 
 TASKS=${1:?Usage: $0 <num_tasks>   e.g.  ./run-phase-copilot.sh 8}
+
+rpl_preflight
 
 LOG_DIR=$(rpl_init_log_dir)
 START_PROMPT=$(rpl_start_prompt)

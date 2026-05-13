@@ -265,8 +265,11 @@ Queue Phase-1 tasks. Phase 1 ALWAYS has at least these, in this order
    `.gitignore`, `.env.example` if applicable, project README from
    `/ai/templates/README.template.md`).
 2. Add CI workflows: lint, type-check if applicable, tests, build, and
-   scaffold the security workflow from `/ai/templates/ci-security.template.yml`
-   (runs on push and pull request).
+   real language-specific security scanning. Use
+   `/ai/templates/ci-security.template.yml` only as a guardrail scaffold:
+   replace or extend it with the SAST / SCA tools chosen in ADRs
+   (CodeQL, Bandit, Semgrep, Trivy, etc.) so CI runs an actual scanner
+   instead of a placeholder.
 3. Set up Terraform backend bootstrap (the encrypted state bucket /
    container / lock table). This is typically a one-time bootstrap with
    manual cloud auth, documented as a runbook, then handed off to IaC.

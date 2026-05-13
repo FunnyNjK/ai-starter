@@ -1,16 +1,21 @@
 # Project Adopt Prompt
 
-Use this prompt against an EXISTING project that does NOT yet have an
-`/ai/` folder, to retrofit the `ai-starter` workflow on top of the
+Use this prompt against an EXISTING project after the `ai-starter`
+files have been copied into it, to retrofit the workflow on top of the
 current code without changing how the app works. This is the
 **catch-up** path.
+
+If the project does not have `/ai/` yet, copy the starter files into it
+first. If the project already has a project-specific `/ai/` folder from
+an older starter version, use `REFRESH_PROMPT.md` instead.
 
 This is the third sibling in the family:
 
 - **INIT_PROMPT.md** — first-time setup of a new project (greenfield
   or migrate-from-old-repo).
-- **ADOPT_PROMPT.md** (this file) — retrofit `/ai/` onto an
-  in-place existing app; reverse-engineer the planning files.
+- **ADOPT_PROMPT.md** (this file) — retrofit the freshly copied
+  starter `/ai/` folder onto an in-place existing app; reverse-engineer
+  the planning files.
 - **REFRESH_PROMPT.md** — housekeeping pass on a project that already
   has `/ai/` from an older starter version.
 
@@ -50,8 +55,13 @@ PRE-IDENTIFIED GAPS (from kickoff, if any):
 
 Before editing files, confirm:
 
-- The project DOES NOT already have `/ai/` (if it does, stop and use
-  REFRESH_PROMPT instead).
+- The project has the starter `/ai/` files available. If `/ai/` is
+  missing, stop and ask the user to copy the starter into this repo
+  before continuing.
+- If `/ai/PROJECT.md` is already project-specific (not starter-generic
+  / TBD), stop and use REFRESH_PROMPT instead.
+- If `/ai/PROJECT.md` is still starter-generic (Project Name = TBD),
+  continue with ADOPT.
 - The user wants the catch-up path (preserve existing code; add
   workflow on top), not start-fresh (which goes through INIT_PROMPT).
 - No real secrets are in your context (placeholders only).

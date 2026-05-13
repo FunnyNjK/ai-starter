@@ -1,4 +1,4 @@
-name: Security Scanning
+name: Security Guardrails
 
 on:
   push:
@@ -9,25 +9,32 @@ on:
     - cron: '30 2 * * 0' # Weekly
 
 jobs:
-  sast:
-    name: SAST (Placeholder)
+  dependency-update-config:
+    name: Dependency update config required
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run SAST Scanner
+      - name: Require Dependabot or Renovate
         run: |
-          echo "Replace this with your language-specific SAST (e.g. CodeQL, Trivy, Bandit, etc.)"
-          echo "This file satisfies the Day-1 SAST requirement in AI_RULES.md"
+          test -f ".github/dependabot.yml" || test -f "renovate.json" || test -f ".github/renovate.json"
 
-  dependabot:
-    name: Dependabot Configuration Note
+  sast-config:
+    name: Real SAST workflow required
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check for dependabot.yml
+      - name: Require language-specific SAST
         run: |
-          if [ -f ".github/dependabot.yml" ]; then
-            echo "dependabot.yml found."
-          else
-            echo "Remember to create .github/dependabot.yml to satisfy the Dependency Scanning rule."
-          fi
+          while IFS= read -r workflow; do
+            if ! grep -q "Real SAST workflow required" "$workflow"; then
+              echo "Language-specific SAST workflow found: $workflow"
+              exit 0
+            fi
+          done < <(find .github/workflows -maxdepth 1 -type f \
+            \( -name "*codeql*.yml" -o -name "*codeql*.yaml" \
+               -o -name "*sast*.yml" -o -name "*sast*.yaml" \
+               -o -name "*security-scan*.yml" -o -name "*security-scan*.yaml" \))
+
+          echo "No real SAST workflow found."
+          echo "Replace this guard with CodeQL, Bandit, Semgrep, Trivy, or the scanner chosen in /ai/DECISIONS.md."
+          exit 1

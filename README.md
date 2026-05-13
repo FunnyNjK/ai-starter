@@ -79,7 +79,7 @@ If you already know exactly what you want, you can skip the interview:
 - **Hard rules** (`/ai/AI_RULES.md`): Git, planning hygiene, versioning,
   security, infrastructure, cost, destructive operations, reasoning
   checkpoints, blocked escalation, task quality.
-- **Templates** for tasks, chat start/end, README, SECURITY,
+- **Templates** for tasks, chat end / handoff, README, SECURITY,
   CONTRIBUTING, INCIDENT post-mortems, CI security, CURRENT_STATE, HANDOFF.
 - **Worked example** (`/ai/EXAMPLE_PROJECT.md`) — what a fully-initialized
   project looks like, for reference.
