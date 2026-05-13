@@ -9,71 +9,71 @@ Starter / Not initialized
 None
 
 ## What Exists Now
-- AI project starter files exist in `/ai/` (workflow, planning, rules,
+- AI project starter files in `/ai/` (workflow, planning, rules,
   templates, reference).
-- Tool-native memory hooks at the repo root (`CLAUDE.md`, `AGENTS.md`,
-  `.cursorrules`, `GEMINI.md`, `.github/copilot-instructions.md`) all
-  point at `/ai/START_HERE.md`.
+- Tool-native memory hooks at the repo root (`CLAUDE.md`,
+  `AGENTS.md`, `.cursorrules`, `GEMINI.md`,
+  `.github/copilot-instructions.md`) all point at
+  `/ai/START_HERE.md`.
 - Four phase-run harnesses (`run-phase.sh`, `run-phase-cursor.sh`,
-  `run-phase-codex.sh`, `run-phase-copilot.sh`) one per major agentic
-  AI CLI.
+  `run-phase-codex.sh`, `run-phase-copilot.sh`) one per major
+  agentic AI CLI, sharing `scripts/run-phase-lib.sh`.
 - Friendly interview prompts (`KICKOFF_NEW_PROJECT.md`,
   `KICKOFF_EXISTING_PROJECT.md`) and three setup actors
-  (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`) — all
-  three actors now consistently cross-reference each other as
-  siblings (v0.5.2).
-- `.gitattributes` enforces LF line endings (v0.5.3).
-- INIT/ADOPT prompts now include explicit "replace starter-history files
-  and remove starter-setup files" steps; DONE_LOG ships empty (v0.5.4).
-- KICKOFF and INIT/ADOPT refuse foundation/architecture-only application
-  descriptions and loop until the user describes a real user-facing
-  feature loop (v0.5.5).
-- Phase harnesses now share `scripts/run-phase-lib.sh` (safe staging
-  refuses secrets/keys/local DBs fail-closed; four tool adapters
-  preserved). v0.6.2 adds dirty-worktree preflight, AI branch
-  auto-creation, and fixed commit-subject parsing.
-- Planning linter at `scripts/lint-planning.py` enforces Task Quality /
-  Hygiene Hard Rules. CI runs shellcheck, planning lint, and Python
-  helper syntax validation on every branch push and PR. The security CI
-  template is now a failing guardrail until real SAST / dependency
-  update config is present (v0.6.2).
-- `docs/CHOOSING_WEBAPP_PATH.md` is the web-app decision tree (v0.6.1).
+  (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`).
+- v1.0.0 conceptual model: behavioral diagnostic (D1-D5) classifies
+  projects into 1-N components per `/docs/PROJECT_SHAPE_GALLERY.md`,
+  picks rungs per component, sets a complexity tier (solo prototype
+  / small team / production), runs per-component dimension walks
+  pre-filled from rung defaults, asks cross-component questions
+  (monorepo, versioning, shared identity/CI/design), builds a
+  composite Mermaid diagram, runs a budget reality check, and ends
+  with a Pre-flight self-check before generating the INIT prompt.
+- **`/docs/PROJECT_SHAPE_GALLERY.md`** — reference catalog of 9
+  component types × 4-6 rungs each, with role-labeled Mermaid
+  diagrams and default-dimensions blocks.
+- **Rule Applicability** in `AI_RULES.md` — Infrastructure & Hosting
+  and Cost Hard rules are conditional on hosted-component presence
+  and tier; the resolved rule set is recorded in `/ai/PROJECT.md`.
+- `.gitattributes` enforces LF line endings.
+- Planning linter (`scripts/lint-planning.py`) enforces Task Quality
+  / Hygiene Hard Rules. CI runs shellcheck, planning lint, and
+  Python helper syntax validation on every branch push and PR.
+  Security CI template is a failing guardrail until real
+  SAST/dependency-update config is present.
+- `docs/CHOOSING_WEBAPP_PATH.md` is the web-app decision tree
+  (complement to the gallery).
 - MIT-licensed (`LICENSE`).
-- Application-specific project details have not yet been filled in.
+- Application-specific project details have not been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.
 
 ## What Works
-- The AI workflow is ready to drive a project initialization session.
-- 10 (Hard) rule blocks in `/ai/AI_RULES.md` constrain AI behavior across
-  Git, planning hygiene, versioning, security, infrastructure, cost,
-  destructive operations, reasoning checkpoints, blocked escalation,
-  and task quality.
+- The AI workflow is ready to drive a project initialization session
+  for any of the 9 component shapes (or composites).
+- All 10 (Hard) rule blocks in `/ai/AI_RULES.md` apply with tier-
+  and component-aware conditionality.
+- Kickoff templates have Pre-flight self-checks that force example/
+  default offering, dimension coverage, diagram renders, budget
+  reality check, and verbatim user confirmation.
 
 ## What Is Not Built Yet
 - Project name, description, scope, target users — not filled in.
-- Application code does not exist yet (this is just the workflow).
+- Application code does not exist (this is just the workflow).
 
 ## Known Problems
 - None.
 
 ## Important Files or Folders
-- `/ai/START_HERE.md` — main AI entry file
-- `/ai/AI_RULES.md` — hard rules (10 (Hard) blocks)
-- `/ai/templates/INIT_PROMPT.md` — first-time initialization prompt
-- `/ai/templates/REFRESH_PROMPT.md` — older-project housekeeping prompt
-- `/ai/EXAMPLE_PROJECT.md` — worked reference example
-- `/ai/WORKFLOW.md` — branching, PRs, hotfix, blocked escalation
-- `/ai/SPEC.md`, `/ai/BUDGET.md` — placeholders for project behavior
-  + cost (filled at init)
-- `/ai/PROJECT.md`, `/ai/ARCHITECTURE.md`, `/ai/DECISIONS.md`,
-  `/ai/TASKS.md`, `/ai/HANDOFF.md` — core planning files
+- `/ai/START_HERE.md`, `/ai/AI_RULES.md` (10 blocks + Applicability)
+- `/ai/templates/KICKOFF_NEW_PROJECT.md`,
+  `/ai/templates/KICKOFF_EXISTING_PROJECT.md` — v1.0.0 interviews
+- `/ai/templates/INIT_PROMPT.md` — v1.0.0 with components + tier
+- `/docs/PROJECT_SHAPE_GALLERY.md` — component+rung reference
+- `/ai/EXAMPLE_PROJECT.md`, `/ai/WORKFLOW.md`, `/ai/PROJECT.md`,
+  `/ai/ARCHITECTURE.md`, `/ai/DECISIONS.md`, `/ai/TASKS.md`,
+  `/ai/HANDOFF.md`
 
 ## Next Recommended Action
-Pick the right entry point and paste it into your AI tool:
-
 - New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
 - Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
-- Already on an older starter version → `/ai/templates/REFRESH_PROMPT.md`
-
-The interview prompts then generate the right customized init / adopt
-prompt for P0-T1.
+- Older starter version → `/ai/templates/REFRESH_PROMPT.md`

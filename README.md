@@ -29,13 +29,20 @@ sensible defaults at every step) and then generate the customized prompt
 that does the actual setup. **They're the foolproof entry point — start
 there if you're not sure what to type.**
 
+> **Not building a web app?** As of v1.0.0, this kit supports nine
+> component types — web app, static site, API service, CLI tool,
+> library/SDK, mobile app, desktop app, data/ML pipeline, and
+> plugin/extension — and real projects are usually composites of
+> 1–N of them. See [docs/PROJECT_SHAPE_GALLERY.md](docs/PROJECT_SHAPE_GALLERY.md)
+> for the full catalog with Mermaid diagrams at each complexity rung.
+>
 > Building a web app and not sure which *kind* you're building?
 > See [docs/CHOOSING_WEBAPP_PATH.md](docs/CHOOSING_WEBAPP_PATH.md) —
 > a decision tree (with Mermaid diagram) covering static sites, SPAs,
 > CRUD apps, SaaS, e-commerce, AI apps, realtime / collaboration,
 > internal dashboards, public/private/sensitive surfaces, payments,
-> external API + AI cost, and deployment shape. It's the map behind
-> the questions the kickoff interview asks.
+> external API + AI cost, and deployment shape. It complements the
+> shape gallery for the web-specific decision tree.
 
 If you already know exactly what you want, you can skip the interview:
 

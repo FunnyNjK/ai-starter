@@ -1,11 +1,121 @@
 # Changelog
 
-Starter Version: 0.6.2
+Starter Version: 1.0.0
 Last Updated: 2026-05-13
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 1.0.0 - 2026-05-13
+
+**What 1.0.0 commits to.** The kit's conceptual model is settled:
+kickoff → init → planning files → phase work. Future major versions
+will be intentional, not exploratory. Specifically, the kit will not
+break the following without a major version bump:
+- The kickoff → INIT → ADOPT → REFRESH flow.
+- The shape of `/ai/` planning files (PROJECT, ARCHITECTURE,
+  CURRENT_STATE, HANDOFF, TASKS, DECISIONS, SPEC, ROADMAP, BUDGET,
+  TESTING, DEPLOYMENT, DEV_ENVIRONMENT, WORKFLOW, DONE_LOG).
+- The component model (1–N components per project, per the gallery).
+- The tier model (solo prototype / small team / production).
+- The (Hard) rule blocks in `AI_RULES.md` and their applicability
+  semantics.
+
+Minor versions (1.x) may add components, rungs, optional rules, or
+templates. Patch versions (1.x.y) are pure fixes.
+
+**Major changes from 0.x:**
+
+- **Project Shape Gallery** (`/docs/PROJECT_SHAPE_GALLERY.md`). New
+  reference catalog of 9 component types (web app, static site, API
+  service, CLI tool, library/SDK, mobile app, desktop app, data/ML
+  pipeline, plugin/extension), each with 4-6 rungs from simplest to
+  most complex. Each rung carries a Mermaid diagram, an examples
+  list, and a default-dimensions block the kickoff uses to pre-fill
+  the dimension walk. Cross-references the existing
+  `docs/CHOOSING_WEBAPP_PATH.md`. Composite-project examples
+  included.
+- **Composite component model.** Projects are now treated as 1-N
+  components (not single shapes). A typical SaaS is "marketing
+  static + web app + API service". A typical dev tool is "library +
+  CLI + docs site". Per-component dimensions, per-component
+  Phase-1 tasks, composite Mermaid diagram, cross-component
+  decisions (monorepo vs. multi-repo, lockstep vs. independent
+  versioning, shared identity/CI/design).
+- **Behavioral diagnostic in kickoff.** The new-project kickoff
+  begins with a feature-loop question (Q1) followed by D1–D5 — five
+  behavioral questions that classify the project into components.
+  The AI proposes a component set in plain language and waits for
+  explicit user confirmation before proceeding. The
+  existing-project kickoff infers components from repo signals
+  before asking.
+- **Complexity tier dial.** Solo prototype / small team / production.
+  Tier governs which Hard rule blocks apply — solo prototype
+  downgrades Infrastructure & Hosting Hard rules to recommendations
+  until tier changes; production adds on-call / SLO / DR
+  requirements.
+- **Rule Applicability section in `AI_RULES.md`.** Some blocks
+  (Infrastructure & Hosting, Cost) are now conditional on whether
+  the project has hosted components and the tier. The resolved rule
+  set is recorded in `/ai/PROJECT.md` "Rules in force" so every
+  session inherits the same picture.
+- **Per-component rung pick.** For each component, the kickoff
+  shows the rung ladder from the gallery and asks "which rung is
+  closest?" The picked rung pre-fills default dimensions so the
+  dimension walk only asks about deviations.
+- **INIT_PROMPT.md** updated to inherit the component set, tier,
+  per-component dimension defaults, and composite diagram from the
+  kickoff NOTES block. Phase-1 task list is now per-component and
+  tier-conditional. Pre-flight self-check expanded to verify
+  per-component dimension coverage, rule applicability decisions,
+  and the composite diagram in `ARCHITECTURE.md`.
+
+## 0.7.0 - 2026-05-13
+
+Kickoff hardening pass — addresses documented adherence failures in real
+kickoff sessions where the AI skipped examples/defaults, skipped
+follow-up dimensions, skipped summary-confirm, and shipped budget-stack
+mismatches into INIT.
+
+- **Per-question structured kickoff format.** Both
+  `KICKOFF_NEW_PROJECT.md` and `KICKOFF_EXISTING_PROJECT.md` now use a
+  per-question slot-fill shape (Ask / Offer examples / Offer "you pick"
+  default / Reject / Probe / Capture slot / Update diagram). Summary
+  blocks are now slot-filled verbatim instead of paraphrased.
+- **Q9 dimension checklist (mandatory).** The stack question now walks
+  15 explicit dimensions (frontend, backend, language, database, ORM,
+  auth provider, authz model, caching, object storage, queues, email,
+  payments, observability, test framework, package manager).
+  Dimensions the user defers are captured as open questions, never
+  silently invented. The brownfield kickoff applies the same checklist
+  to dimensions it can't infer from the repo.
+- **Compliance walk-through.** Q5 now names GDPR / CCPA / HIPAA / PCI /
+  SOC 2 / data residency / other explicitly with one-sentence
+  triggers, so the user doesn't have to guess what might apply.
+- **Live Mermaid system diagram.** The AI now maintains a running
+  `flowchart LR` diagram across the interview and re-renders at Q1, Q6,
+  Q9, and Q10 (new-project) or after inspection, gap surfacing, and
+  summary (existing-project) with explicit "Does this match what you're
+  picturing?" checkpoints. The final diagram is included in the
+  generated INIT/ADOPT prompt's NOTES block and committed to
+  `/ai/ARCHITECTURE.md` "System Overview" during init.
+- **Budget reality check (mandatory).** After the summary and before
+  generating the prompt, the AI now looks up live floor costs for the
+  chosen managed services, sums the unavoidable monthly floor, and
+  surfaces any tension against the user's cap (raise-the-cap vs.
+  scale-to-zero alternatives) before the user commits.
+- **Pre-flight self-check (mandatory).** Both kickoffs and
+  `INIT_PROMPT.md` now require an explicit checkbox self-check before
+  generating the next prompt / declaring P0-T1 done. The kickoff
+  checks cover examples-offered, defaults-offered, dimension coverage,
+  diagram renders, slot-filled summary, verbatim user confirmation,
+  and budget check. The init check covers ADR completeness, no silent
+  TBDs, diagram in ARCHITECTURE.md, line caps, fresh
+  `Last Updated` dates, and a green planning lint.
+- **Worked Q1 example.** Both kickoff templates now include a
+  good/bad worked example of the Q1 ask shape so the AI mirrors the
+  right turn structure instead of asking bare questions.
 
 ## 0.6.2 - 2026-05-13
 

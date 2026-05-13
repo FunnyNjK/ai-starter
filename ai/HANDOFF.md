@@ -3,14 +3,17 @@
 Last Updated: 2026-05-13
 
 ## Current State Summary
-Generic AI project starter (v0.6.2). Not yet initialized — no
+Generic AI project starter (v1.0.0). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-Starter maintenance v0.6.2: fixed brownfield ADOPT routing, replaced the
-security-CI placeholder with failing guardrails, added phase-harness
-preflight branch/dirty-worktree checks, fixed commit-subject parsing,
-and expanded CI validation.
+Starter v1.0.0 release. Introduced behavioral-diagnostic kickoff
+(D1-D5) → composite component model (1-N components per project
+per `/docs/PROJECT_SHAPE_GALLERY.md`), complexity tier dial,
+per-component rung pick + dimension walk, cross-component
+decisions, composite Mermaid diagram, and rule applicability in
+AI_RULES.md. 1.0.0 commits the kit's conceptual model — future
+breaking changes require a major version bump.
 
 ## Active Task
 None
@@ -19,21 +22,24 @@ None
 **P0-T1: pick the right entry point.**
 - New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
 - Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
-- Already on older starter → `/ai/templates/REFRESH_PROMPT.md`
+- Older starter version → `/ai/templates/REFRESH_PROMPT.md`
 
 The KICKOFF interviews are the foolproof default. Direct paths
-(`INIT_PROMPT.md`, `ADOPT_PROMPT.md`) are for skip-the-interview users.
+(`INIT_PROMPT.md`, `ADOPT_PROMPT.md`) are for skip-the-interview
+users.
 
 ## What Is Blocked
 - Planning can't begin until an app description is provided.
 
 ## Important Instructions for Next AI
 - Read `/ai/START_HERE.md` first (memory hooks point here).
-- Honor `/ai/AI_RULES.md` — every (Hard) block applies.
-- For first-time init, prefer the KICKOFF interview over direct
-  `INIT_PROMPT.md`; only skip on explicit user opt-out.
-- Reference `/ai/EXAMPLE_PROJECT.md` for shape — never copy its content.
-- Include the self-critique section in the end-of-chat report.
+- Honor `/ai/AI_RULES.md` — every applicable (Hard) block applies.
+- The new Rule Applicability section makes some blocks conditional
+  on tier and component set; resolve them explicitly in
+  `/ai/PROJECT.md`.
+- Both kickoffs now require an explicit pre-flight self-check
+  before generating the init prompt. Do not skip it.
+- Reference `/docs/PROJECT_SHAPE_GALLERY.md` for component rungs.
 
 ## Known Risks
 - Skipping planning-file updates causes drift between sessions.
@@ -41,9 +47,4 @@ The KICKOFF interviews are the foolproof default. Direct paths
   silently trigger expensive or risky actions.
 
 ## Tests / Checks Last Run
-- `python3 scripts/lint-planning.py` — pass (0 errors, 0 warnings).
-- `PYTHONPYCACHEPREFIX=/private/tmp/ai-starter-pycache python3 -m py_compile scripts/lint-planning.py scripts/mark-task-done.py` — pass.
-- `bash -n run-phase.sh run-phase-codex.sh run-phase-cursor.sh run-phase-copilot.sh scripts/run-phase-lib.sh` — pass.
-- `rpl_extract_subject` + `rpl_preflight` smoke tests — pass (dirty refusal exits 1 as expected).
-- `git diff --check` — pass.
-- `shellcheck` not run locally (not installed); CI installs it.
+- `python3 scripts/lint-planning.py` — pass after v1.0.0 edits.

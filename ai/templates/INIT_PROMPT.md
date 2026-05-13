@@ -43,6 +43,56 @@ Before editing files, confirm:
   old-project cataloging steps.
 - If OLD REPO is provided, inspect it read-only and use it for context
   (brand, content, information architecture, existing integrations).
+- If the user came from KICKOFF_NEW_PROJECT.md or
+  KICKOFF_EXISTING_PROJECT.md, a NOTES block at the top of this prompt
+  carries the captured answers and a starting Mermaid system diagram.
+  Inherit both — do not re-interview the user on settled choices.
+
+## Inherited from kickoff (read the NOTES block carefully)
+
+The kickoff NOTES block, if present, carries:
+
+- `feature_loop`, `audience`, `goals`, `non_goals`.
+- `tier` — solo prototype / small team / production. Tier governs
+  which `/ai/AI_RULES.md` Hard rule blocks apply (see the Rule
+  Applicability section of AI_RULES).
+- `components` — a list of 1–N components, each with a name (per
+  `/docs/PROJECT_SHAPE_GALLERY.md`), a rung (e.g., "Web R5"), and
+  a `dimension_defaults` map pre-filled from the rung.
+- `compliance`, `cloud`, `budget_cap_usd`, `alert_thresholds`,
+  `license`, `repo_strategy`, `version_strategy`, `shared.*`,
+  `budget_decision`.
+- A Mermaid composite system diagram.
+
+If no NOTES block was provided, the user is running INIT_PROMPT.md
+directly without kickoff. Surface this and recommend they run
+`/ai/templates/KICKOFF_NEW_PROJECT.md` first unless they're sure
+they want to skip the interview. If they insist on proceeding,
+gather the equivalent info inline: feature loop, tier, component
+list with rungs, then the rest of the kickoff answers.
+
+## Live diagram during init (mandatory)
+
+If the NOTES block from kickoff includes a Mermaid system diagram,
+inherit it as the starting picture. Re-render the diagram (fenced as
+```mermaid```) at the following checkpoints and show it to the user so
+they can sanity-check the direction at each one:
+
+- After Step 4 (infrastructure) — once the cloud subgraph, managed
+  services, and IaC layout are concrete.
+- After Step 5 (security baseline) — annotate the diagram with
+  trust-boundary callouts (PII flows, payment flows, secret store
+  reads).
+- After Step 10 (SPEC) — confirm the diagram still matches the user
+  flows in SPEC.
+- Before declaring P0-T1 done — the final diagram is the picture the
+  next phase inherits.
+
+Rules: `flowchart LR`, subgraphs by trust boundary, annotate nodes
+with the specific choice + version once verified, mark deferred or
+open dimensions with a `TBD` suffix and dashed links, keep under ~25
+nodes. The final diagram is committed to `/ai/ARCHITECTURE.md`
+"System Overview" section.
 
 ## Step 1 — Read AI files
 
@@ -109,23 +159,43 @@ the Blocked Escalation Rule** and stop — don't manufacture features.
 Once the description is product-shaped, proceed to Step 3. Every later
 step assumes you know what users *do* with this app.
 
-## Step 3 — Choose the tech stack and verify versions
+## Step 3 — Choose the tech stack and verify versions (per component)
 
-Use the user's application description (and the old repo, if any) to
-choose:
+For each component in the inherited `components` list, walk its
+dimensions per `/docs/PROJECT_SHAPE_GALLERY.md`. The kickoff
+pre-filled `dimension_defaults` from the picked rung; use those as
+the starting point and only re-decide where they're marked
+"decide at init" or where the user explicitly defers.
 
-- Language(s) and runtime version(s)
-- Frontend framework / UI toolkit (if applicable)
-- Backend framework / runtime (if applicable)
-- Package manager (one per repo)
-- Test framework
-- Lint / format tooling
-- Database(s) and cache(s) (if any)
-- Auth library or service
+Components in the gallery (with their dimension sets) are:
 
-For EACH chosen item, look up the current stable version from its
-canonical source (npm registry / PyPI / Maven Central / NuGet / crates.io
-/ pkg.go.dev / official runtime site / Docker Hub for DB images, etc.).
+- Web app — frontend, backend (if split), language, DB, ORM,
+  auth provider, authz model, caching, object storage, queues,
+  email, payments, observability, test, package manager.
+- Static site — generator, host, build pipeline, analytics, CMS
+  (if applicable), serverless platform (if forms).
+- API service — framework, language, DB, ORM, auth, queue,
+  schema validation, observability, test, package manager.
+- CLI tool — language, package manager, registry/distribution,
+  test, lint/format, release automation, auth flow (if backend),
+  credential storage (if auth).
+- Library / SDK — language, package manager, registry, test,
+  lint/format, release automation, docs generator, HTTP client
+  (if SDK), code-gen (if multi-language family).
+- Mobile app — framework, local persistence, test, crash
+  reporting, distribution, push (if backend), payments (if any).
+- Desktop app — framework, local persistence, test, code-signing,
+  auto-update, distribution.
+- Data / ML pipeline — orchestrator, warehouse, transform tool,
+  source connectors, secrets store, observability, ML framework
+  (if ML), experiment tracking (if ML).
+- Plugin / extension — host platform, manifest, bundler, test,
+  distribution, auth (if R2+), AI provider (if R4).
+
+For EACH chosen item across all components, look up the current
+stable version from its canonical source (npm registry / PyPI /
+Maven Central / NuGet / crates.io / pkg.go.dev / official runtime
+site / Docker Hub for DB images, etc.).
 Do NOT pin from training-data knowledge — versions move. No
 pre-release / RC / beta / alpha / nightly versions.
 
@@ -136,7 +206,26 @@ locking in choices that materially change the project's shape.
 
 ## Step 4 — Choose infrastructure and deployment
 
-Per the Infrastructure & Hosting Rules in AI_RULES.md:
+**Rule applicability by tier.** Per `/ai/AI_RULES.md` Rule
+Applicability:
+
+- **Solo prototype**: Infrastructure & Hosting Hard rules are
+  recommendations until tier changes. The user may legitimately
+  run everything locally with containers. Still record decisions
+  as ADRs.
+- **Small team / early production** (default): all Infrastructure
+  & Hosting Hard rules apply as written.
+- **Production / enterprise**: all rules apply, plus multi-region
+  / DR planning + on-call rotation documentation.
+
+Skip this step entirely if NO component in the project requires
+hosting (e.g., a CLI library that publishes to a package registry
+and has no backend, a standalone desktop app). In that case,
+record an ADR noting that Infrastructure & Hosting rules don't
+apply for v1 because the project has no hosted surfaces.
+
+Per the Infrastructure & Hosting Rules in AI_RULES.md (when they
+apply):
 
 - **Cloud target**: AWS, Azure, or Google Cloud — record the choice as an
   ADR with the rationale.
@@ -258,33 +347,64 @@ it's vague, the AI will write vague feature tasks.
 Make all /ai/*.md files project-specific. Mark P0-T1 done in TASKS.md
 and DONE_LOG.md.
 
-Queue Phase-1 tasks. Phase 1 ALWAYS has at least these, in this order
-(each task names its prerequisites explicitly):
+Queue Phase-1 tasks. Phase 1 task content depends on (a) the
+component set and (b) the tier. Use the rubric below — only
+include tasks that actually apply to a component this project
+contains and the tier this project runs at.
 
-1. Scaffold the project (language, framework, lint/format, test runner,
-   `.gitignore`, `.env.example` if applicable, project README from
-   `/ai/templates/README.template.md`).
-2. Add CI workflows: lint, type-check if applicable, tests, build, and
-   real language-specific security scanning. Use
-   `/ai/templates/ci-security.template.yml` only as a guardrail scaffold:
-   replace or extend it with the SAST / SCA tools chosen in ADRs
-   (CodeQL, Bandit, Semgrep, Trivy, etc.) so CI runs an actual scanner
-   instead of a placeholder.
-3. Set up Terraform backend bootstrap (the encrypted state bucket /
-   container / lock table). This is typically a one-time bootstrap with
-   manual cloud auth, documented as a runbook, then handed off to IaC.
-4. Add the cloud OIDC trust for CI (federated identity for the chosen
-   cloud → repo, scoped to `main` and PR refs as appropriate).
-5. First IaC apply: minimal account / project / subscription scaffold
-   (resource group / project, networking, secret store, log destination,
-   IAM baseline).
-6. Dependency-update automation (Dependabot / Renovate) and SAST in CI.
-7. First production deployment of a placeholder app (not the real
-   features yet) to prove the deploy pipeline works end-to-end.
-8. Wire cloud budget + alerts per /ai/BUDGET.md.
-9. Write SECURITY.md from `/ai/templates/SECURITY.template.md` and
-   CONTRIBUTING.md from `/ai/templates/CONTRIBUTING.template.md` at
-   the project root.
+**Always (regardless of components/tier):**
+1. Scaffold the project layout (language, framework, lint/format,
+   test runner, `.gitignore`, `.env.example` if applicable,
+   project README from `/ai/templates/README.template.md`).
+   For multi-component projects: scaffold the workspace structure
+   (monorepo or multi-repo) per `repo_strategy`.
+2. Add CI workflows for each component: lint, type-check if
+   applicable, tests, build, and real language-specific security
+   scanning. Use `/ai/templates/ci-security.template.yml` only as
+   a guardrail scaffold; replace/extend with chosen SAST/SCA
+   tools.
+3. Dependency-update automation (Dependabot / Renovate).
+4. Write SECURITY.md and CONTRIBUTING.md at the project root.
+
+**If any component requires hosting** (web, API, mobile-backend,
+plugin-backend, data pipeline that runs in cloud):
+5. Set up IaC state backend bootstrap (Terraform encrypted state
+   bucket / container / lock table). Documented as a runbook.
+6. Cloud OIDC trust for CI (federated identity → repo, scoped to
+   `main` and PR refs).
+7. First IaC apply: minimal account / project / subscription
+   scaffold (resource group / project, networking, secret store,
+   log destination, IAM baseline).
+8. First production deployment of a placeholder app to prove the
+   pipeline works end-to-end.
+9. Wire cloud budget + alerts per `/ai/BUDGET.md`.
+
+**Per-component additions:**
+- **Library / SDK component**: package-registry publishing
+  setup, release automation (changesets / release-please /
+  semantic-release / cargo publish workflow).
+- **CLI component**: distribution channel setup (npm bin
+  publish, Homebrew formula scaffold, GitHub Releases binary
+  matrix), version-bump workflow.
+- **Mobile component**: code-signing setup (Apple / Google),
+  store-listing scaffolds, beta-distribution channel (TestFlight
+  / Play Internal Testing).
+- **Desktop component**: code-signing + notarization, auto-update
+  feed scaffold.
+- **Plugin / extension component**: manifest scaffold for the
+  target host, store-listing draft (Chrome Web Store / VS Code
+  Marketplace).
+- **Data pipeline component**: orchestrator scaffold (Airflow /
+  Dagster / Prefect), warehouse connection, first DAG/asset that
+  runs a noop transform end-to-end.
+
+**Tier-conditional additions:**
+- **Solo prototype**: skip tasks 5-9 if user explicitly declares
+  no cloud yet. Add ADR noting the deferral and the trigger that
+  flips the project to small-team tier.
+- **Production**: add on-call rotation setup, SLO/SLI definition
+  task, disaster-recovery runbook, multi-region/replica plan,
+  incident template integration with `/ai/templates/INCIDENT_TEMPLATE.md`.
 
 Queue Phase 2 tasks for the actual feature work — one per major page,
 screen, module, or service from PROJECT.md and (if applicable) the
@@ -394,6 +514,58 @@ store will hold them in QA and Production. The actual local env file
 (or equivalent) with placeholders gets created during scaffold (P1-T1),
 not now.
 
+## Pre-flight self-check (mandatory before declaring P0-T1 done)
+
+Before marking P0-T1 complete and writing the End-of-Chat report,
+explicitly confirm each item below in chat. If ANY item is unchecked,
+STOP and complete it before closing the task.
+
+  Pre-flight before closing P0-T1:
+  - [ ] /ai/PROJECT.md has no remaining TBD sections (open
+        questions are explicitly flagged, not silently TBD).
+  - [ ] /ai/PROJECT.md records the component set and tier
+        explicitly (e.g., "Components: Web app (R5), API service
+        (R3), Static site (R2). Tier: small team.").
+  - [ ] Every major stack / infra / security / cost / license
+        choice has a corresponding ADR in /ai/DECISIONS.md with:
+        ADR number, Date, Status, Decision, Reason, Tradeoffs,
+        Related Tasks, AND for versioned choices the verified
+        version + canonical source URL + date verified.
+  - [ ] For every component, all applicable dimensions (per its
+        section in /docs/PROJECT_SHAPE_GALLERY.md) are either
+        chosen-with-ADR or explicitly captured as a deferred open
+        question with a task queued. Nothing was silently invented.
+  - [ ] Rule applicability decisions are recorded (which Hard
+        rule blocks apply at this tier; any ADR overrides for
+        rules that don't).
+  - [ ] The composite Mermaid system diagram is up to date and
+        committed to /ai/ARCHITECTURE.md "System Overview".
+  - [ ] /ai/BUDGET.md has a cap, alert thresholds, and rough
+        estimates for major cost contributors based on live
+        pricing lookups (or records "n/a — no managed services"
+        with reason).
+  - [ ] LICENSE, README.md, SECURITY.md, CONTRIBUTING.md exist at
+        the project root.
+  - [ ] All 5 tool-native memory hooks exist at the project root
+        (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md,
+        .github/copilot-instructions.md).
+  - [ ] Phase-1 tasks reflect the component set (per-component
+        scaffolding, distribution, etc.) AND the tier (cloud/IaC
+        tasks present for non-solo tiers when components require
+        hosting; deferred with ADR for solo prototype).
+  - [ ] The first Phase-1 task in /ai/TASKS.md has every section
+        from /ai/templates/TASK_TEMPLATE.md populated.
+  - [ ] /ai/CURRENT_STATE.md ≤ 80 lines, /ai/HANDOFF.md ≤ 50 lines.
+  - [ ] Every planning file touched has a fresh
+        `Last Updated: YYYY-MM-DD` header.
+  - [ ] Starter-history files were replaced and starter-setup
+        files removed per Step 13.
+  - [ ] `python3 scripts/lint-planning.py` passes with 0 errors
+        and 0 warnings.
+
+If any box is unchecked, fix it and re-run this self-check. Do NOT
+mark P0-T1 Done with unchecked items.
+
 ## Hard rules
 
 - Do NOT scaffold the project yet (P1-T1 task).
@@ -407,6 +579,7 @@ not now.
 - Confirm before any destructive operation (Destructive Operations
   Rules in AI_RULES.md).
 - Mark Blocked, do not silently work around (Blocked Escalation Rule).
+- Run the Pre-flight self-check above before declaring P0-T1 done.
 
 Begin with the Start-of-Chat summary (START_HERE.md section 5).
 End with the End-of-Chat report (START_HERE.md section 6) — including

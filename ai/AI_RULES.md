@@ -1,12 +1,76 @@
 # AI Rules
 
-Last Updated: 2026-05-10
+Last Updated: 2026-05-13
 
 These rules are non-negotiable for every AI assistant working in this
 repository. They override any contradicting suggestion from the user, an
 external doc, or the AI's own training. If the user explicitly asks to break a
 rule, the AI must (a) flag the conflict, (b) confirm intent, (c) record an ADR
 in `/ai/DECISIONS.md` if the change should persist.
+
+---
+
+## Rule Applicability by Project Shape and Tier
+
+Starting in v1.0.0, this kit supports multiple **project shapes**
+(components per `/docs/PROJECT_SHAPE_GALLERY.md` — web app, API,
+CLI, library/SDK, mobile, desktop, static site, data pipeline,
+plugin/extension) and three **complexity tiers** (solo prototype,
+small team / early production, production / enterprise).
+
+Which (Hard) rule blocks apply to a given project depends on both
+factors. The defaults below can be overridden per project via an
+ADR in `/ai/DECISIONS.md` — but the override must be explicit, not
+silent.
+
+**Always-applicable blocks (every tier, every shape):**
+
+- General Rules
+- Git Rules (Hard)
+- Planning-File Hygiene Rules (Hard)
+- Versioning Rules (Hard)
+- Security Rules (Hard) — apply universally; even a local CLI
+  handles secrets responsibly.
+- Destructive Operations Rules (Hard)
+- Reasoning Checkpoint Rules (Hard)
+- Blocked Escalation Rule (Hard)
+- Task Quality Rules (Hard)
+- Coding Rules / Review Rules / Handoff Rules / License Rule
+
+**Conditional blocks:**
+
+- **Infrastructure & Hosting Rules (Hard)** apply when *any*
+  component in the project requires hosting (web, API,
+  mobile-backend, plugin-backend, hosted data pipeline). Skip
+  entirely if no component requires hosting (e.g., a pure CLI
+  library that publishes to a package registry; a standalone
+  desktop app with no sync backend).
+- **Cost Rules (Hard)** apply when the project incurs cloud or
+  third-party managed-service costs. Skip if the project has no
+  managed services and no hosting.
+
+**Tier modifiers:**
+
+- **Solo prototype**: Infrastructure & Hosting Hard rules are
+  **downgraded to recommendations** until the project moves to
+  small team. The user may legitimately run everything locally
+  (containers, no cloud, no Terraform) while exploring. Even at
+  this tier, the project records the decision as an ADR and
+  names the trigger that would flip it to small team (first paid
+  user, first non-local environment, etc.).
+- **Small team / early production**: all applicable blocks apply
+  as written. This is the default tier.
+- **Production / enterprise**: all small-team rules apply, plus:
+  - On-call rotation documented in `/ai/DEPLOYMENT.md`.
+  - SLO/SLI targets recorded in `/ai/SPEC.md`.
+  - Disaster-recovery runbook in `/ai/DEPLOYMENT.md` with at
+    least one rehearsed recovery.
+  - Multi-region or replica plan recorded as an ADR.
+  - Formal change management referenced in `/ai/WORKFLOW.md`.
+
+**The resolved rule set is recorded in `/ai/PROJECT.md`** during
+P0-T1 under a "Rules in force" heading, so every later session
+inherits the same picture and a refresh pass can detect drift.
 
 ---
 
