@@ -1,6 +1,6 @@
 # Current State
 
-Last Updated: 2026-05-10
+Last Updated: 2026-05-13
 
 ## Current Phase
 Starter / Not initialized
@@ -28,6 +28,11 @@ None
 - KICKOFF and INIT/ADOPT refuse foundation/architecture-only application
   descriptions and loop until the user describes a real user-facing
   feature loop (v0.5.5).
+- Phase harnesses now share `scripts/run-phase-lib.sh` (safe staging
+  refuses secrets/keys/local DBs fail-closed; four tool adapters
+  preserved). Planning linter at `scripts/lint-planning.py` enforces
+  Task Quality / Hygiene Hard Rules. CI runs shellcheck + linter.
+  `docs/CHOOSING_WEBAPP_PATH.md` is the web-app decision tree (v0.6.0).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.
