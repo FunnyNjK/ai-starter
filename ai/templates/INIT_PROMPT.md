@@ -264,8 +264,9 @@ Queue Phase-1 tasks. Phase 1 ALWAYS has at least these, in this order
 1. Scaffold the project (language, framework, lint/format, test runner,
    `.gitignore`, `.env.example` if applicable, project README from
    `/ai/templates/README.template.md`).
-2. Add CI workflow (lint, type-check if applicable, tests, build) — runs
-   on push and pull request.
+2. Add CI workflows: lint, type-check if applicable, tests, build, and
+   scaffold the security workflow from `/ai/templates/ci-security.template.yml`
+   (runs on push and pull request).
 3. Set up Terraform backend bootstrap (the encrypted state bucket /
    container / lock table). This is typically a one-time bootstrap with
    manual cloud auth, documented as a runbook, then handed off to IaC.

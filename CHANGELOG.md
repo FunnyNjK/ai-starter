@@ -1,11 +1,17 @@
 # Changelog
 
-Starter Version: 0.6.0
+Starter Version: 0.6.1
 Last Updated: 2026-05-13
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.6.1 - 2026-05-13
+
+- **Task-completion automation** (`scripts/mark-task-done.py`). Helper script that reliably finds a task block in `TASKS.md`, removes it, and appends the title to `DONE_LOG.md` under the current date. Prevents markdown-parsing errors during autonomous task completion.
+- **Configurable git push behavior** (`SYNC_MODE=batch`). The shared phase harness now respects `SYNC_MODE=batch` or `RUN_PHASE_NO_PUSH=1` to skip pushing after every commit. Useful for rapid, autonomous iterations without network latency or CI clutter. Documented the override in `AI_RULES.md`.
+- **Default security CI workflow**. Added `ai/templates/ci-security.template.yml` for Day-1 Dependabot and SAST scanning, and wired `INIT_PROMPT.md` to scaffold it automatically.
 
 ## 0.6.0 - 2026-05-13
 

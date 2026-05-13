@@ -21,7 +21,7 @@ in `/ai/DECISIONS.md` if the change should persist.
 
 ## Git Rules (Hard)
 
-- **Push after every successful commit.** When the harness runs a commit, run `git push` immediately after, in the same step. Do NOT leave commits sitting on the local branch waiting for a future push.
+- **Push after every successful commit.** When the harness runs a commit, run `git push` immediately after, in the same step. Do NOT leave commits sitting on the local branch waiting for a future push. (This can be overridden by setting `SYNC_MODE=batch` or `RUN_PHASE_NO_PUSH=1` in the environment for rapid autonomous iterations).
 - **Exception:** if the user (or the task itself) explicitly says "do not push," "no push," `[no-push]` in the commit message, or asks for a WIP / draft commit, skip the push. Otherwise push is the default.
 - **If push fails** (auth, network, non-fast-forward), surface the error in the chat response and stop — do not silently continue. The next AI session must not be told "X is committed" when it isn't on `origin`.
 - **`origin/main` is the source of truth.** `CURRENT_STATE.md`, `HANDOFF.md`, and `DONE_LOG.md` describe what's on `origin`, not what's on the local branch. If the local branch is ahead of origin, that's a bug to fix, not a state to document.

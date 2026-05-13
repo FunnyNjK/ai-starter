@@ -3,11 +3,11 @@
 Last Updated: 2026-05-13
 
 ## Current State Summary
-Generic AI project starter (v0.6.0). Not yet initialized — no
+Generic AI project starter (v0.6.1). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-None. v0.6.0 ships harness + lint + docs upgrades: shared
+None. v0.6.1 ships mark-task-done script + configurable push + security CI scaffold.
 phase-script library with safe staging (no more `git add -A`,
 sensitive paths refused fail-closed), a Python planning-file linter
 enforcing the Task Quality / Hygiene Hard Rules, GitHub Actions CI

@@ -80,7 +80,7 @@ If you already know exactly what you want, you can skip the interview:
   security, infrastructure, cost, destructive operations, reasoning
   checkpoints, blocked escalation, task quality.
 - **Templates** for tasks, chat start/end, README, SECURITY,
-  CONTRIBUTING, INCIDENT post-mortems, CURRENT_STATE, HANDOFF.
+  CONTRIBUTING, INCIDENT post-mortems, CI security, CURRENT_STATE, HANDOFF.
 - **Worked example** (`/ai/EXAMPLE_PROJECT.md`) — what a fully-initialized
   project looks like, for reference.
 - **Tool-native memory hooks** for Claude Code, Codex, Cursor, Copilot,
@@ -94,6 +94,9 @@ If you already know exactly what you want, you can skip the interview:
   task in `TASKS.md` and every ADR in `DECISIONS.md` has the required
   sections per `/ai/AI_RULES.md` Task Quality and Hygiene Rules, and
   that `CURRENT_STATE.md` / `HANDOFF.md` stay under their line caps.
+- **Task completion helper** (`scripts/mark-task-done.py`) — reliably moves
+  completed tasks from `TASKS.md` to `DONE_LOG.md` to prevent markdown
+  parsing issues during autonomous runs.
   Run from repo root:
 
   ```bash

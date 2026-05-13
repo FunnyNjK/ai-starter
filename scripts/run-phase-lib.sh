@@ -239,7 +239,8 @@ rpl_safe_stage() {
 #
 # Reads:
 #   TOOL_SCRIPT          — script basename for commit footer.
-#   RUN_PHASE_NO_PUSH=1  — commit but skip push.
+#   RUN_PHASE_NO_PUSH=1  — commit but skip push (legacy).
+#   SYNC_MODE=batch      — commit but skip push.
 #
 # Exit codes:
 #   0   committed (and pushed if push not disabled)
@@ -272,8 +273,8 @@ rpl_commit_and_push() {
              -m "Automated commit by $script. Log: $log_path"
   log "📝 Committed: $subject"
 
-  if [ "${RUN_PHASE_NO_PUSH:-0}" = "1" ]; then
-    log "⏭  RUN_PHASE_NO_PUSH=1 set — skipping push."
+  if [ "${RUN_PHASE_NO_PUSH:-0}" = "1" ] || [ "${SYNC_MODE:-immediate}" = "batch" ]; then
+    log "⏭  RUN_PHASE_NO_PUSH=1 or SYNC_MODE=batch set — skipping push."
     return 0
   fi
 

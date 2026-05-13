@@ -32,7 +32,7 @@ None
   refuses secrets/keys/local DBs fail-closed; four tool adapters
   preserved). Planning linter at `scripts/lint-planning.py` enforces
   Task Quality / Hygiene Hard Rules. CI runs shellcheck + linter.
-  `docs/CHOOSING_WEBAPP_PATH.md` is the web-app decision tree (v0.6.0).
+  `docs/CHOOSING_WEBAPP_PATH.md` is the web-app decision tree (v0.6.1).
 - MIT-licensed (`LICENSE`).
 - Application-specific project details have not yet been filled in.
 - No tech stack, hosting target, or tooling has been chosen yet.
