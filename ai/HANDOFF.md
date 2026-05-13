@@ -7,13 +7,13 @@ Generic AI project starter (v1.0.0). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-Starter v1.0.0 release. Introduced behavioral-diagnostic kickoff
-(D1-D5) → composite component model (1-N components per project
-per `/docs/PROJECT_SHAPE_GALLERY.md`), complexity tier dial,
-per-component rung pick + dimension walk, cross-component
-decisions, composite Mermaid diagram, and rule applicability in
-AI_RULES.md. 1.0.0 commits the kit's conceptual model — future
-breaking changes require a major version bump.
+Starter v1.0.0 release. Composite component model (1-N components
+per gallery), behavioral-diagnostic kickoff (D1-D5), complexity
+tier dial, per-component rung pick + dimension walk, cross-
+component decisions, composite Mermaid diagram, and rule
+applicability in AI_RULES.md. ADOPT and REFRESH updated for v1.0.0
+inheritance; PROJECT.md template ships with Components / Tier /
+Rules-in-force slots; EXAMPLE_PROJECT.md shows the v1.0.0 shape.
 
 ## Active Task
 None

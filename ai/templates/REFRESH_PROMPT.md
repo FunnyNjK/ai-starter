@@ -38,7 +38,7 @@ Read these files first, in order:
 6. /ai/HANDOFF.md
 7. /ai/TASKS.md
 
-Then perform the ten checks below. For each check, report what you
+Then perform the eleven checks below. For each check, report what you
 found, what you changed, and link to the file(s) you touched. Do NOT
 proceed to the next check until the current one is reported.
 
@@ -147,6 +147,13 @@ are missing, add them (do not duplicate if already present):
 - General Rules, Coding Rules, Review Rules, Handoff Rules
   (cross-project standard)
 
+**v1.0.0+**: also confirm the **Rule Applicability by Project Shape
+and Tier** section is present at the top of `AI_RULES.md`. If
+missing, copy it from the current starter and adapt the
+conditionally-applicable blocks (Infrastructure & Hosting, Cost) per
+this project's tier and component set. The resolved rule set
+belongs in `/ai/PROJECT.md` "Rules in force" — see Check 10.
+
 Also confirm `Handoff Rules` references the **self-critique** section
 in `CHAT_END_PROMPT.md`. Add the requirement if missing.
 
@@ -170,7 +177,48 @@ For every task in `TASKS.md`, confirm it has:
 If a task is missing any of these, flag it for the user and recommend
 backfilling — do not silently invent the missing content.
 
-### Check 10 — `origin/main` matches local `main`
+### Check 10 — v1.0.0 component / tier / rule applicability backfill
+
+If this project was initialized from a pre-1.0.0 starter, its
+planning files won't have the v1.0.0 concepts (components per
+`/docs/PROJECT_SHAPE_GALLERY.md`, complexity tier, Rule
+Applicability). Backfill them:
+
+1. **Components**. Read `/ai/PROJECT.md`, `/ai/ARCHITECTURE.md`,
+   and the repo tree. Infer the component set per the gallery
+   (web app, API service, static site, CLI, library/SDK, mobile,
+   desktop, data/ML pipeline, plugin/extension — 1-N per
+   project). Pick a rung per component from observed dimensions.
+   Add a "Components" section to `/ai/PROJECT.md` listing each
+   with its rung. Surface uncertainty rather than guessing — if
+   you can't tell whether a `cli/` directory is a real shipped
+   CLI or an internal admin script, ask.
+
+2. **Tier**. Infer from signals: solo prototype (no CI, no IaC,
+   single contributor, no cloud config); small team (CI present,
+   managed hosting, multiple contributors); production (multi-
+   region, on-call docs, SLOs/SLAs in README/runbooks). Add a
+   "Tier" section to `/ai/PROJECT.md`. Confirm with the user
+   before committing.
+
+3. **Rules in force**. Per the Rule Applicability section of
+   `/ai/AI_RULES.md`, resolve which (Hard) rule blocks apply at
+   the inferred tier with the inferred component set. Record in a
+   "Rules in force" section of `/ai/PROJECT.md`. Note any existing
+   ADR overrides (e.g., self-hosted Postgres, non-default cloud)
+   so they're visible alongside the resolved set.
+
+4. **Composite Mermaid diagram**. If `/ai/ARCHITECTURE.md`
+   "System Overview" is `TBD` or prose-only, build a composite
+   `flowchart LR` from the inferred components and commit it
+   there. Role-labeled nodes (no vendor names in the diagram —
+   versioned products live in ADRs).
+
+If the project's `/ai/PROJECT.md` already has Components / Tier /
+Rules-in-force sections, this check is a no-op — verify they're
+current and move on.
+
+### Check 11 — `origin/main` matches local `main`
 
 Run `git status` and `git log --oneline origin/main..HEAD` (or
 equivalent for the project's default branch).
@@ -187,7 +235,7 @@ equivalent for the project's default branch).
 
 ## Final report shape
 
-After all ten checks complete, the AI returns a single summary:
+After all eleven checks complete, the AI returns a single summary:
 
 ```text
 Refresh complete.

@@ -50,6 +50,39 @@ Engineering team leads at small startups (Seed / Series A).
 
 ---
 
+## Components
+
+(v1.0.0+ — captured at P0-T1 from the kickoff component proposal.)
+
+- **Web app** (primary) — rung Web R4: server-rendered web app
+  with managed DB. Single Next.js deployable owning users +
+  data.
+  - Why this rung: TaskTrack is one app surface, no separate
+    API needed at this scale.
+- **Static site** (supporting) — rung Static R2: SSG marketing
+  + docs hosted alongside the web app.
+  - Why this rung: a small marketing surface is cheaper to ship
+    as static than mixed into the Next.js app.
+
+## Tier
+
+Small team / early production. CI present, deploys to managed
+hosting, multiple contributors expected. Trigger to flip to
+production tier: first paying customer + multi-region requirement.
+
+## Rules in force
+
+- Always applicable: Git, Planning-File Hygiene, Versioning,
+  Security, Destructive Operations, Reasoning Checkpoint, Blocked
+  Escalation, Task Quality, General / Coding / Review / Handoff.
+- **Infrastructure & Hosting Rules**: apply (web app requires
+  hosting; Cloud SQL is managed DB; Cloud Run is managed
+  compute).
+- **Cost Rules**: apply (managed services + paid CI).
+- ADR overrides: none.
+
+---
+
 ## Tech Stack
 
 (Illustrative versions — your init will pin current stable from

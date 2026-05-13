@@ -70,6 +70,22 @@ templates. Patch versions (1.x.y) are pure fixes.
   tier-conditional. Pre-flight self-check expanded to verify
   per-component dimension coverage, rule applicability decisions,
   and the composite diagram in `ARCHITECTURE.md`.
+- **ADOPT_PROMPT.md** updated for v1.0.0: NOTES block inheritance
+  (components / tier / rungs / composite diagram), PROJECT.md
+  backfill now includes Components / Tier / Rules-in-force,
+  ARCHITECTURE.md System Overview gets the composite Mermaid,
+  catch-up tasks are tagged by component and gated by tier-applicable
+  Hard rules.
+- **REFRESH_PROMPT.md** gains a new Check 10 (v1.0.0 component /
+  tier / rule applicability backfill) for pre-1.0.0 projects
+  migrating forward. Check 7 also verifies the Rule Applicability
+  section is present in `AI_RULES.md`.
+- **PROJECT.md template** ships with explicit Components / Tier /
+  Rules-in-force sections so INIT writes them in consistent
+  locations across all projects.
+- **EXAMPLE_PROJECT.md** updated to show the TaskTrack example with
+  Components (Web R4 + Static R2), Tier (small team), and Rules-
+  in-force sections — giving INIT a concrete reference shape.
 
 ## 0.7.0 - 2026-05-13
 

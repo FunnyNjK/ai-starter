@@ -1,6 +1,6 @@
 # Project
 
-Last Updated: 2026-05-10
+Last Updated: 2026-05-13
 
 ## Project Name
 TBD
@@ -20,6 +20,60 @@ TBD
 
 ## Explicit Non-Goals
 - TBD
+
+---
+
+## Components
+
+TBD — filled in during P0-T1 from the kickoff component proposal.
+Real projects are usually 1–N components. See
+`/docs/PROJECT_SHAPE_GALLERY.md` for the catalog and rung ladders.
+
+Format per component:
+
+- **{Component name}** ({primary | supporting}) — rung
+  {rung_id}: {short rung description}.
+  - Why this rung: {one sentence}.
+  - Key dimensions: see ADRs.
+
+Examples (delete after filling in):
+
+- **Web app** (primary) — rung Web R5: web + API split + storage +
+  payments + email + admin.
+- **API service** (supporting) — rung API R3: REST + DB + auth +
+  queue. Owned by this project; called by the web app.
+- **Static site** (supporting) — rung Static R2: SSG marketing site.
+
+## Tier
+
+TBD — one of:
+
+- **Solo prototype** — one developer, exploring. Infrastructure &
+  Hosting Hard rules downgraded to recommendations until tier
+  changes. Trigger to flip to small team: {first paid user,
+  first non-local environment, etc.}
+- **Small team / early production** (default) — all applicable
+  Hard rules apply.
+- **Production / enterprise** — adds on-call rotation, SLO/SLI
+  targets, DR runbook, multi-region/replica plan, formal change
+  management.
+
+## Rules in force
+
+Which `/ai/AI_RULES.md` (Hard) rule blocks apply to this project,
+resolved per Rule Applicability section + tier + component set.
+
+Always applicable:
+- Git Rules, Planning-File Hygiene Rules, Versioning Rules,
+  Security Rules, Destructive Operations Rules, Reasoning
+  Checkpoint Rules, Blocked Escalation Rule, Task Quality Rules.
+
+Conditionally applicable:
+- **Infrastructure & Hosting Rules**: {apply | downgraded to
+  recommendations (solo) | skip (no hosted components)}.
+- **Cost Rules**: {apply | skip (no managed services)}.
+
+ADR overrides (if any): {list ADR numbers and what each overrides}.
 
 ---
 

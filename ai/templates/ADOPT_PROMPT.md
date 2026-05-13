@@ -39,7 +39,25 @@ INSPECTION SUMMARY (filled in by the kickoff interview, or by you on a
 re-inspection):
 {paste from KICKOFF_EXISTING_PROJECT.md output, or re-inspect now}
 
-USER-SUPPLIED ANSWERS:
+INHERITED FROM KICKOFF (v1.0.0 NOTES block):
+- feature_loop, audience, goals, non_goals
+- tier: {solo prototype | small team | production}
+- components: list of {name, primary/supporting, rung_id,
+  dimension_defaults} per `/docs/PROJECT_SHAPE_GALLERY.md`
+- compliance, cloud (or "keep current X with override ADR"),
+  budget_cap_usd, alert_thresholds, license
+- repo_strategy, version_strategy, shared.* (if multiple
+  components)
+- budget_decision
+- Composite Mermaid system diagram
+
+If no NOTES block is present, the user is running ADOPT_PROMPT.md
+directly without kickoff. Surface this and recommend
+`/ai/templates/KICKOFF_EXISTING_PROJECT.md` first. If they insist
+on proceeding, gather equivalent info inline (inspect + ask for
+tier + propose components + per-component rung pick).
+
+USER-SUPPLIED ANSWERS (already captured in NOTES if from kickoff):
 - Project purpose / users / goals / non-goals: {fill in}
 - Compliance / regulatory: {list or "none"}
 - Cloud preference: {AWS / Azure / GCP / "keep current X with override ADR"}
@@ -118,6 +136,14 @@ state. Use the templates in `/ai/templates/` for shape.
 ### `/ai/PROJECT.md`
 - Name, application description, users, goals, non-goals — from the
   user's interview answers and the existing README.
+- **Components** section: list each inferred component with its rung
+  from `/docs/PROJECT_SHAPE_GALLERY.md`. Primary / supporting label
+  for each.
+- **Tier** section: the inherited (or inferred) tier.
+- **Rules in force** section: which Hard rule blocks apply per the
+  Rule Applicability section of `/ai/AI_RULES.md`. Note any ADR
+  overrides (e.g., "Vercel hosting — ADR-XYZ overrides
+  Infrastructure & Hosting Rules cloud target").
 - **Validate the application description.** It must describe what end
   users *do* with the product — a concrete feature loop, not
   infrastructure or architecture.
@@ -141,9 +167,11 @@ state. Use the templates in `/ai/templates/` for shape.
 - **Repository Structure**: describe what's actually there.
 
 ### `/ai/ARCHITECTURE.md`
-- System Overview, Major Components, Data Flow, External Services —
-  inferred from the file structure, framework conventions, and config
-  files (e.g., a Next.js App Router app has a known shape).
+- System Overview — paste the composite Mermaid diagram from the
+  kickoff NOTES block (or build one from inspection if missing).
+- Major Components, Data Flow, External Services — inferred from
+  the file structure, framework conventions, and config files
+  (e.g., a Next.js App Router app has a known shape).
 - Security Model, Infrastructure & Hosting — describe what IS
   configured now. Where the project doesn't yet meet the Hard rule
   baseline, write `TBD (catch-up task P1-T?)` and link to the task
@@ -239,8 +267,17 @@ state. Use the templates in `/ai/templates/` for shape.
 ## Step 4 — Identify and queue catch-up tasks
 
 For every gap between the project's current state and the starter's
-Hard rules, queue a Phase-1 catch-up task using
-`/ai/templates/TASK_TEMPLATE.md`. Common gaps:
+**applicable** Hard rules (per tier + component set + Rule
+Applicability section of `/ai/AI_RULES.md`), queue a Phase-1
+catch-up task using `/ai/templates/TASK_TEMPLATE.md`. Tag each task
+with the component it belongs to (e.g., `[web]`, `[api]`,
+`[shared]`) so multi-component projects can route ownership.
+
+Solo prototype tier: skip cloud / IaC / SAST gap tasks if the user
+explicitly defers them; record the deferral as an ADR with the
+trigger that would re-open the tasks.
+
+Common gaps:
 
 - **Tool-native memory hooks missing** — add `CLAUDE.md`, `AGENTS.md`,
   `.cursorrules`, `GEMINI.md`, `.github/copilot-instructions.md`
