@@ -29,6 +29,14 @@ sensible defaults at every step) and then generate the customized prompt
 that does the actual setup. **They're the foolproof entry point — start
 there if you're not sure what to type.**
 
+> Building a web app and not sure which *kind* you're building?
+> See [docs/CHOOSING_WEBAPP_PATH.md](docs/CHOOSING_WEBAPP_PATH.md) —
+> a decision tree (with Mermaid diagram) covering static sites, SPAs,
+> CRUD apps, SaaS, e-commerce, AI apps, realtime / collaboration,
+> internal dashboards, public/private/sensitive surfaces, payments,
+> external API + AI cost, and deployment shape. It's the map behind
+> the questions the kickoff interview asks.
+
 If you already know exactly what you want, you can skip the interview:
 
 | Path | Direct prompt (skips the interview) |
@@ -46,7 +54,11 @@ If you already know exactly what you want, you can skip the interview:
      auto-load `/ai/START_HERE.md` for whatever AI tool you're using)
    - `.github/pull_request_template.md`
    - `run-phase*.sh` if you want the autonomous-phase harnesses (one per
-     supported AI CLI)
+     supported AI CLI) — they require `scripts/run-phase-lib.sh`
+   - `scripts/lint-planning.py` + `.github/workflows/lint.yml` if you
+     want the planning-file linter (and CI) to come along
+   - `docs/CHOOSING_WEBAPP_PATH.md` if you want the web-app decision
+     tree alongside the starter
 2. In your AI assistant of choice, paste one of the `KICKOFF_*` prompts
    above. The AI will guide you the rest of the way.
 
@@ -74,7 +86,22 @@ If you already know exactly what you want, you can skip the interview:
 - **Tool-native memory hooks** for Claude Code, Codex, Cursor, Copilot,
   and Gemini.
 - **Phase harnesses** (`run-phase*.sh`) — autonomous N-task runners,
-  one per supported AI CLI.
+  one per supported AI CLI. They share safety/session mechanics via
+  `scripts/run-phase-lib.sh` (safe staging that refuses secrets / keys /
+  local DBs, push-on-failure stop) while keeping each adapter's
+  tool-specific CLI invocation separate.
+- **Planning linter** (`scripts/lint-planning.py`) — checks that every
+  task in `TASKS.md` and every ADR in `DECISIONS.md` has the required
+  sections per `/ai/AI_RULES.md` Task Quality and Hygiene Rules, and
+  that `CURRENT_STATE.md` / `HANDOFF.md` stay under their line caps.
+  Run from repo root:
+
+  ```bash
+  python3 scripts/lint-planning.py
+  ```
+
+  Also runs in CI (`.github/workflows/lint.yml`) alongside shellcheck
+  on the phase scripts.
 
 ## What's NOT included
 

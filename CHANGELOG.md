@@ -1,11 +1,61 @@
 # Changelog
 
-Starter Version: 0.5.5
-Last Updated: 2026-05-10
+Starter Version: 0.6.0
+Last Updated: 2026-05-13
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 0.6.0 - 2026-05-13
+
+Tighten the harness, give the kit a real lint surface, and make web-app
+path choice an explicit step.
+
+- **Shared phase-script library** (`scripts/run-phase-lib.sh`). The four
+  AI-CLI adapters (`run-phase.sh`, `run-phase-codex.sh`,
+  `run-phase-cursor.sh`, `run-phase-copilot.sh`) stay separate — each
+  CLI has its own flag set and version churn — but now share
+  log-dir setup, prompt strings, commit-subject extraction, and safe
+  staging. The intent is documented in the library header so future
+  refactors don't collapse the adapters.
+
+- **Safe staging (no more `git add -A`).** The shared library
+  enumerates exactly the paths git considers changed this session and
+  refuses, fail-closed, to stage anything that looks like a secret,
+  credential, key, certificate, local DB, or backup. Optional
+  `RUN_PHASE_ALLOWLIST_REGEX` further restricts staging to a subtree.
+  `RUN_PHASE_FORCE_UNSAFE=1` is the (loudly-warning) override.
+  Unattended mode is preserved — push-after-commit and stop-on-push-
+  failure semantics from the AI_RULES.md Git Rules are unchanged.
+
+- **Planning linter** (`scripts/lint-planning.py`, Python stdlib only).
+  Machine-readable check of the Task Quality and Planning-File Hygiene
+  Hard Rules: every task in `TASKS.md` has the required H4 subsections
+  (Goal, Prerequisites, Scope Included/Excluded, Acceptance Criteria,
+  Verification, Test Requirements, Security / Cost Considerations,
+  Rollback / Recovery, Known Blockers, Dev Environment Constraints,
+  Handoff Notes) plus the metadata header (Status, Owner, Priority);
+  every ADR in `DECISIONS.md` has Date, Status, Decision, Reason,
+  Tradeoffs, Related Tasks; every planning file has a `Last Updated`
+  line; `CURRENT_STATE.md` ≤ 80 lines and `HANDOFF.md` ≤ 50 lines.
+
+- **CI workflow** (`.github/workflows/lint.yml`) — runs `shellcheck`
+  on all four phase scripts plus the shared library, and runs the
+  planning linter on every push and pull request.
+
+- **Web-app decision tree** (`docs/CHOOSING_WEBAPP_PATH.md`). Mermaid
+  diagram + checklist covering static marketing, docs, SPAs, CRUD,
+  SaaS, AI apps, e-commerce / marketplace, realtime / collaboration,
+  internal dashboards, public / private / internal / sensitive
+  surfaces, auth / payments / user data / external APIs / AI cost /
+  realtime / admin / deployment shape. Linked from README. The
+  kickoff interview already asks these questions; this is the map
+  behind them.
+
+- **Docs**: README now lists the lint command, the shared library, and
+  the new decision-tree doc as part of the kit. README's "manual
+  setup" file list calls out the new artifacts.
 
 ## 0.5.5 - 2026-05-10
 

@@ -1,18 +1,18 @@
 # AI Handoff
 
-Last Updated: 2026-05-10
+Last Updated: 2026-05-13
 
 ## Current State Summary
-Generic AI project starter (v0.5.5). Not yet initialized — no
+Generic AI project starter (v0.6.0). Not yet initialized — no
 application description, tech stack, or tooling chosen.
 
 ## Last Completed Task
-None. v0.5.5 closes the foundation-vs-product trap: KICKOFF and
-INIT/ADOPT now refuse foundation-shaped and architecture-only
-application descriptions and loop with the user until they describe a
-concrete user-facing feature loop ("users sign up, [verb] [object],
-and get [outcome]"). Phase-2 tasks now plan around real product
-features, not just infrastructure.
+None. v0.6.0 ships harness + lint + docs upgrades: shared
+phase-script library with safe staging (no more `git add -A`,
+sensitive paths refused fail-closed), a Python planning-file linter
+enforcing the Task Quality / Hygiene Hard Rules, GitHub Actions CI
+running shellcheck + the linter, and a web-app decision-tree doc
+(`docs/CHOOSING_WEBAPP_PATH.md`) the kickoff interview can reference.
 
 ## Active Task
 None

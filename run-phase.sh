@@ -2,6 +2,13 @@
 # run-phase.sh — run N consecutive tasks autonomously via Claude Code (`claude`).
 # Each task: work → handoff → commit → push.
 #
+# This is the Anthropic Claude Code adapter. It is one of FOUR
+# tool-specific harnesses — see also run-phase-codex.sh,
+# run-phase-cursor.sh, run-phase-copilot.sh. The four scripts share
+# safety/session mechanics via scripts/run-phase-lib.sh, but each keeps
+# its own CLI invocation because the four CLIs differ in sub-commands,
+# flag names, approval flow, and resume semantics.
+#
 # Usage:
 #   ./run-phase.sh <num_tasks>                    # commit + push (default)
 #   RUN_PHASE_NO_PUSH=1 ./run-phase.sh <num_tasks> # commit, skip push
@@ -21,6 +28,17 @@
 #                                          flag; others don't. Verify
 #                                          with `claude --help` before
 #                                          setting. Leave unset to omit.
+#   - RUN_PHASE_ALLOWLIST_REGEX="..."    — extra ERE restricting which
+#                                          changed paths may be staged
+#                                          (in addition to the built-in
+#                                          sensitive-path refusal).
+#   - RUN_PHASE_FORCE_UNSAFE=1           — override sensitive-path
+#                                          refusal. NOT recommended.
+#
+# Staging safety: the shared library stages only files this session
+# actually changed, refuses to stage files that look like secrets,
+# credentials, keys, local DBs, or backups, and prints a status summary
+# before each commit. See scripts/run-phase-lib.sh for the full rules.
 #
 # Push behavior follows the Git Rules in /ai/AI_RULES.md: push after every
 # successful commit unless explicitly disabled. If a push fails (auth,
@@ -33,21 +51,29 @@ set -euo pipefail
 
 # Prefer common user-local install paths.
 export PATH="${HOME}/.local/bin:${HOME}/.npm-global/bin:${PATH}"
-if ! command -v claude >/dev/null 2>&1; then
-  echo "error: 'claude' not found." >&2
-  echo "  Install: npm install -g @anthropic-ai/claude-code" >&2
-  echo "  Docs:    https://docs.anthropic.com/en/docs/claude-code" >&2
-  exit 127
-fi
+
+# Source the shared safety/session library. Resolve relative to this
+# script so it works regardless of the caller's CWD as long as the
+# script and scripts/ dir ship together.
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=scripts/run-phase-lib.sh
+. "$SCRIPT_DIR/scripts/run-phase-lib.sh"
+
+TOOL_NAME="Claude"
+TOOL_LOG_PREFIX="run_claude"
+TOOL_SCRIPT="run-phase.sh"
+
+rpl_require_tool claude \
+  "npm install -g @anthropic-ai/claude-code" \
+  "https://docs.anthropic.com/en/docs/claude-code"
 
 TASKS=${1:?Usage: $0 <num_tasks>   e.g.  ./run-phase.sh 8}
 
-LOG_DIR="ai/logs/run_claude_$(date +%Y%m%d_%H%M%S)"
-mkdir -p "$LOG_DIR"
+LOG_DIR=$(rpl_init_log_dir)
+START_PROMPT=$(rpl_start_prompt)
+END_PROMPT=$(rpl_end_prompt)
 
-START_PROMPT="Please read /ai/START_HERE.md and follow it. Then pick up the next task per HANDOFF.md."
-END_PROMPT="Please read /ai/templates/CHAT_END_PROMPT.md and follow it."
-
+# --- Tool-specific CLI flags. Keep distinct from other adapters. ---
 CLAUDE_FLAGS=(
   --dangerously-skip-permissions
 )
@@ -64,64 +90,36 @@ if [ -n "${RUN_PHASE_CLAUDE_MODEL:-}" ]; then
   CLAUDE_FLAGS+=(--model "$RUN_PHASE_CLAUDE_MODEL")
 fi
 
-echo "Starting Claude phase run: $TASKS tasks. Logs -> $LOG_DIR"
+echo "Starting $TOOL_NAME phase run: $TASKS tasks. Logs -> $LOG_DIR"
 
 for i in $(seq 1 "$TASKS"); do
   printf '\n========== Task %d of %d ==========\n' "$i" "$TASKS"
 
-  echo "[$(date +%H:%M:%S)] Step 1/3: working on next task (claude -p)..."
+  log "Step 1/3: working on next task (claude -p)..."
   claude -p "$START_PROMPT" "${CLAUDE_FLAGS[@]}" \
     2>&1 | tee "$LOG_DIR/task_${i}_work.log"
 
-  echo "[$(date +%H:%M:%S)] Step 2/3: writing handoff (claude --continue -p)..."
+  log "Step 2/3: writing handoff (claude --continue -p)..."
   claude --continue -p "$END_PROMPT" "${CLAUDE_FLAGS[@]}" \
     2>&1 | tee "$LOG_DIR/task_${i}_handoff.log"
 
-  echo "[$(date +%H:%M:%S)] Step 3/3: staging + committing + pushing..."
-  if [ -n "$(git status --porcelain)" ]; then
-    # Pull a subject line from the handoff log; fall back to generic.
-    SUBJECT=$(awk '
-      /^[*]*Work completed:[*]*/ {
-        sub(/^[*]*Work completed:[*]*[[:space:]]*/, "")
-        if (length($0) > 0) { print; exit }
-        inheader = 1; next
-      }
-      inheader && /^[[:space:]]*$/ { next }
-      inheader { sub(/^[*-][[:space:]]*/, ""); print; exit }
-    ' "$LOG_DIR/task_${i}_handoff.log" 2>/dev/null \
-    | sed 's/`//g; s/\*\*//g' \
-    | cut -c1-72 || true)
-    [ -z "$SUBJECT" ] && SUBJECT="Phase task $i (auto, Claude)"
+  log "Step 3/3: staging + committing + pushing..."
+  SUBJECT=$(rpl_extract_subject "$LOG_DIR/task_${i}_handoff.log" \
+            "Phase task $i (auto, $TOOL_NAME)")
 
-    git add -A
-    git commit -m "$SUBJECT" \
-               -m "Automated commit by run-phase.sh. Log: $LOG_DIR/task_${i}_handoff.log"
-    echo "[$(date +%H:%M:%S)] 📝 Committed: $SUBJECT"
+  set +e
+  rpl_commit_and_push "$SUBJECT" "$LOG_DIR/task_${i}_handoff.log"
+  rc=$?
+  set -e
+  case "$rc" in
+    0) ;;
+    2) log "ℹ️  No changes after task $i; nothing to commit or push." ;;
+    *) exit 1 ;;
+  esac
 
-    # Push after every successful commit unless explicitly disabled.
-    # Mirrors the Git Rules in /ai/AI_RULES.md: push is the default; the
-    # only escape hatch is the user (or harness) explicitly opting out.
-    if [ "${RUN_PHASE_NO_PUSH:-0}" = "1" ]; then
-      echo "[$(date +%H:%M:%S)] ⏭  RUN_PHASE_NO_PUSH=1 set — skipping push."
-    else
-      echo "[$(date +%H:%M:%S)] ⬆  Pushing to origin..."
-      if ! git push; then
-        echo
-        echo "[$(date +%H:%M:%S)] ❌ Push failed for task $i (commit: $SUBJECT)." >&2
-        echo "Stopping phase run so the local branch does not drift from origin." >&2
-        echo "Resolve the push (auth / network / non-fast-forward) and re-run." >&2
-        echo "Log: $LOG_DIR/task_${i}_handoff.log" >&2
-        exit 1
-      fi
-      echo "[$(date +%H:%M:%S)] ✅ Pushed to origin."
-    fi
-  else
-    echo "[$(date +%H:%M:%S)] ℹ️  No changes after task $i; nothing to commit or push."
-  fi
-
-  echo "[$(date +%H:%M:%S)] ✅ Task $i complete."
+  log "✅ Task $i complete."
 done
 
 echo
-echo "🎉 Claude phase complete: $TASKS tasks done."
+echo "🎉 $TOOL_NAME phase complete: $TASKS tasks done."
 echo "Logs: $LOG_DIR"
