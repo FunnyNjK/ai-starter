@@ -50,6 +50,13 @@ up" or "start fresh," and then generate a customized prompt they
 - Read `/ai/START_HERE.md`, `/ai/AI_RULES.md`,
   `/ai/templates/INIT_PROMPT.md`, `/ai/templates/ADOPT_PROMPT.md`,
   and (skim) `/docs/PROJECT_SHAPE_GALLERY.md` first.
+- **Local-First Development Rule applies asymmetrically here.**
+  For already-deployed brownfield, cloud / IaC / managed-service /
+  budget decisions are already facts in the repo — capture them
+  as retroactive ADRs at ADOPT time, not deferred to P3-T0. For
+  non-deployed brownfield (codebase exists but never deployed),
+  apply the INIT deferral — capture as preferences, finalize at
+  P3-T0. Detect by inspection in Step 1.
 - **Inspect before you ask.** Don't ask the user things you can
   read from their files.
 - **Ask one question at a time.** Never dump a wall of questions.
@@ -248,24 +255,52 @@ Capture: `feature_loop`, `audience`, `goals`, `non_goals`.
 Walk each explicitly: GDPR / CCPA / HIPAA / PCI DSS / SOC 2 /
 data residency / sector-specific. Capture: `compliance`.
 
-### Q4.3: Cloud preference
+### Q4.3: Cloud target
 
-Catch-up: usually matches current hosting. If current hosting is
-NOT AWS / Azure / GCP (e.g., Vercel, Fly, Hetzner), ask whether
-to (a) migrate to a starter-default cloud, or (b) document the
-override as an ADR. Both are valid.
+Two paths, depending on whether the project is **already deployed**:
 
-Start-fresh: ask normally.
+**Already deployed** (detected: presence of `terraform/`, `infra/`,
+`cdk.json`, `vercel.json`, `app.yaml`, `fly.toml`,
+`.github/workflows/*.yml` with deploy step, etc.). The cloud
+target is already a fact, not a decision. Document it.
 
-Capture: `cloud` + `cloud_override_adr_needed: yes/no`.
+  - If current hosting is AWS / Azure / GCP, record as a
+    **retroactive ADR**.
+  - If current hosting is NOT AWS / Azure / GCP (e.g., Vercel,
+    Fly, Hetzner), document the override as a retroactive ADR
+    with rationale. The Infrastructure & Hosting Hard rule cloud-
+    target default is overridden, and that's fine — it's already
+    running.
 
-### Q4.4: Monthly budget cap (USD)
+Capture: `cloud` (the actual current cloud) +
+`cloud_override_adr_needed: yes/no`.
 
-Same as new-project. Skip if the project genuinely has no
-managed services or hosting (rare for an existing app, but
-possible for a CLI library).
+**Not yet deployed** (no deploy artifacts in the repo — the
+code exists but has never been deployed; uncommon for an
+"existing project" but it happens). Same deferral as INIT_PROMPT:
+record a **rough preference** that gets finalized at P3-T0.
+
+Capture: `cloud_preference` + flag the project as
+`brownfield_deploy_state: not_deployed`.
+
+### Q4.4: Monthly budget cap
+
+**Already deployed**: ask for the actual monthly cap the project
+operates under today (or zero if they've been ignoring it). This
+IS the Cost-Rules-compliant cap — write it to BUDGET.md with
+alert thresholds and wire to the cloud's budget alerting at
+ADOPT time.
 
 Capture: `budget_cap_usd`, `alert_thresholds`.
+
+**Not yet deployed**: same deferral as INIT. Rough preference;
+finalize at P3-T0.
+
+Capture: `budget_preference_usd`, `alert_threshold_hint`.
+
+Skip entirely if the project genuinely has no managed services
+or hosting (rare for an existing app, but possible for a CLI
+library).
 
 ### Q4.5: License
 
@@ -363,8 +398,14 @@ Re-render the diagram with gaps marked as `MISSING` / dashed.
 ## Step 7 — Budget reality check (mandatory if any managed services)
 
 Same pass as new-project: live floor-cost lookup, sum across
-components, compare against cap, surface tension with
-raise-vs-scale-to-zero options. Capture: `budget_decision`.
+components, compare against cap (or preference, for non-deployed
+brownfield), surface tension with raise-vs-scale-to-zero options.
+
+- **Already deployed**: capture as `budget_decision` (this is a
+  real cap-vs-actual decision; the project already pays cloud
+  bills).
+- **Not yet deployed**: capture as `budget_preference_decision`
+  (rough; finalized at P3-T0).
 
 For catch-up where the project is already deployed and meeting
 its budget, this usually passes trivially — note that

@@ -1,6 +1,6 @@
 # AI Rules
 
-Last Updated: 2026-05-13
+Last Updated: 2026-05-20
 
 These rules are non-negotiable for every AI assistant working in this
 repository. They override any contradicting suggestion from the user, an
@@ -33,6 +33,7 @@ silent.
   handles secrets responsibly.
 - Destructive Operations Rules (Hard)
 - Reasoning Checkpoint Rules (Hard)
+- Local-First Development Rule (Hard)
 - Blocked Escalation Rule (Hard)
 - Task Quality Rules (Hard)
 - Coding Rules / Review Rules / Handoff Rules / License Rule
@@ -128,6 +129,20 @@ inherits the same picture and a refresh pass can detect drift.
 
 ## Infrastructure & Hosting Rules (Hard)
 
+**When these decisions are made.** This block describes how the project
+will eventually deploy. The specific cloud, IaC, managed-service, OIDC,
+and runtime-secret-store decisions are made when **deploy planning**
+begins — Phase 3's deploy-planning task (P3-T0), or earlier for an
+already-deployed brownfield app being adopted via `ADOPT_PROMPT.md`.
+They are NOT required at init (Phase 0) or during local development
+(Phase 1 – early Phase 3). Forcing them early distracts from getting
+a working app, which is the Phase-1 / Phase-2 goal. See the
+Local-First Development Rule below.
+
+The **Local development** bullet is the exception — it applies from
+Phase 1 onward, because containerized stateful deps are part of local
+scaffolding regardless of cloud target.
+
 - **Cloud target**: AWS, Azure, or Google Cloud. The chosen provider is recorded as an ADR. Other providers (Cloudflare, Vercel, Fly, DigitalOcean, Hetzner, on-prem, etc.) require an ADR explicitly overriding this default and explaining why.
 - **Infrastructure as Code**: Terraform (or OpenTofu) for every cloud resource the project owns. No click-ops in QA or production. Manual one-time bootstrap steps must be documented as runbooks in `/ai/DEPLOYMENT.md` and migrated to IaC at the next opportunity.
 - **Terraform state**: remote backend with encryption + locking — S3 + DynamoDB on AWS, Azure Storage with blob lease on Azure, GCS with native locking on Google Cloud. Never commit `.tfstate` or `.tfstate.backup`.
@@ -139,7 +154,16 @@ inherits the same picture and a refresh pass can detect drift.
 
 ## Cost Rules (Hard)
 
-- **Every project sets a monthly budget cap at init**, recorded in `/ai/BUDGET.md` with alert thresholds (e.g., 50% / 80% / 100%) wired to the cloud's native budget alerting (AWS Budgets, Azure Cost Management, Google Cloud Billing budgets).
+**When these decisions are made.** The monthly cap, alert thresholds,
+and cost-impacting-changes log are established during **deploy
+planning** (Phase 3's P3-T0 task), not at init. Local-only projects
+in Phase 0 – early Phase 3 have no cloud spend, so an init-time cap
+is decision theater. The exception is third-party free-tier ceilings
+that bind from Phase 1 (an email sandbox, an OAuth provider's free
+tier, a CDN free tier) — those are captured at init in
+`/ai/BUDGET.md` under "Free-tier and tier choices."
+
+- **Every project sets a monthly budget cap at deploy planning** (Phase 3 P3-T0, or earlier for already-deployed brownfield), recorded in `/ai/BUDGET.md` with alert thresholds (e.g., 50% / 80% / 100%) wired to the cloud's native budget alerting (AWS Budgets, Azure Cost Management, Google Cloud Billing budgets).
 - **Cost-impacting infra changes** — adding a managed service, scaling up a tier, duplicating a region, enabling a paid third-party — require an ADR with the estimated monthly cost delta and an entry in `/ai/BUDGET.md` "Cost-impacting changes log".
 - **Monthly cost review** is the floor; the project's actual cadence is recorded in `/ai/BUDGET.md` "Review cadence". Update the file with actual-vs-budget numbers each review.
 - **Free-tier dependencies are flagged**: if the project relies on a free or low-tier limit that could plausibly be exceeded (an email API's monthly send cap, a CDN's bandwidth cap, a database's row / connection limit, an analytics tool's event quota, etc.), the limit and the escalation path are recorded in `/ai/BUDGET.md` "Free-tier and tier choices".
@@ -172,6 +196,54 @@ If the user pre-authorizes a class in the current chat ("yes, you can keep delet
 - **Surface assumptions explicitly.** If the task requires an assumption you haven't verified, name it in your plan ("I'm assuming the database is empty / has no consumers / is the dev one") and ask if it's right.
 
 This rule prevents the most common AI failure mode: confidently barreling through a multi-step task on a wrong premise.
+
+## Local-First Development Rule (Hard)
+
+The single most expensive AI failure mode observed in real
+`ai-starter` sessions has been the **CI-as-debug-loop** pattern: the
+AI makes a fix, pushes, waits ~20 minutes for CI/CD to fail, makes
+another fix, pushes again, repeat. This rule exists to prevent that.
+
+- **Local feedback before CI/CD, always.** Every change must run
+  successfully on the developer's local machine before being
+  committed. CI/CD is a *verification* layer — it confirms what's
+  already proven locally. It is NOT a debug loop, an iteration
+  channel, or "let's see if it works."
+- **Never use CI as a fix-and-retry loop.** If a change fails
+  locally, fix it locally. If a change passes locally but fails in
+  CI, reproduce the CI failure locally (containerize the CI env if
+  needed) before pushing another fix. Pushing-and-hoping is not
+  debugging.
+- **Concrete signal.** If a local fix-cycle is < 1 minute and a CI
+  fix-cycle is > 5 minutes, you are using the wrong loop. Stop
+  pushing. Get a fast local repro. Return to CI only after the bug
+  is fixed locally.
+- **First passing local run gates first CI configuration.** A
+  project's Phase-1 deliverable order is:
+  1. App runs locally (the project's `dev` / `start` / `run`
+     command works).
+  2. Lint, type-check (if applicable), test, and build all pass
+     locally.
+  3. CI is configured to enforce 1 and 2 on every push and PR.
+
+  Do NOT configure CI before the local run is green. The first CI
+  run on the project should be expected to pass on the first try —
+  because what it checks already passed locally.
+- **Hosting and deploy work are not Phase-1 tasks.** First
+  production deploy, OIDC trust setup, IaC apply, managed-service
+  provisioning, and cloud budget wiring are Phase-3 deploy-planning
+  (P3-T0) and Phase-4 (deployment) tasks, NOT Phase-1 scaffolding.
+  See `/ai/ROADMAP.md` Phase 3 "Deploy Planning" sub-section.
+- **The deploy ADRs (cloud target, IaC tool, Terraform state
+  backend, managed services, runtime secret store, OIDC) are
+  written at Phase-3 P3-T0, not at init.** Init records the local
+  container runtime + free-tier ceilings only. The Infrastructure &
+  Hosting Rules and Cost Rules above defer to this rule on timing.
+
+The principle: **a working local app is the foundation everything
+else builds on**. Premature CI/CD or cloud work is the most common
+way for an AI session to spend a half-day on plumbing and ship
+nothing the user can run.
 
 ## Blocked Escalation Rule (Hard)
 

@@ -38,7 +38,7 @@ Read these files first, in order:
 6. /ai/HANDOFF.md
 7. /ai/TASKS.md
 
-Then perform the eleven checks below. For each check, report what you
+Then perform the twelve checks below. For each check, report what you
 found, what you changed, and link to the file(s) you touched. Do NOT
 proceed to the next check until the current one is reported.
 
@@ -142,6 +142,8 @@ are missing, add them (do not duplicate if already present):
 - Cost Rules (Hard)
 - Destructive Operations Rules (Hard)
 - Reasoning Checkpoint Rules (Hard)
+- **Local-First Development Rule (Hard)** — added in v1.1.0. See
+  Check 11 for the v1.1.0 backfill.
 - Blocked Escalation Rule (Hard)
 - Task Quality Rules (Hard)
 - General Rules, Coding Rules, Review Rules, Handoff Rules
@@ -218,7 +220,53 @@ If the project's `/ai/PROJECT.md` already has Components / Tier /
 Rules-in-force sections, this check is a no-op — verify they're
 current and move on.
 
-### Check 11 — `origin/main` matches local `main`
+### Check 11 — v1.1.0 Local-First Development backfill
+
+If this project was initialized from a pre-1.1.0 starter, its
+`/ai/AI_RULES.md` won't have the Local-First Development Rule, its
+`/ai/ROADMAP.md` Phase 3 won't have the Deploy Planning sub-section,
+and its `/ai/TASKS.md` may have Phase-1 hosting tasks that belong in
+P3-T0 / Phase 4. Backfill:
+
+1. **AI_RULES.md**. If the Local-First Development Rule block is
+   missing, copy it from the current starter's `/ai/AI_RULES.md`.
+   Also confirm the "When these decisions are made" preambles are
+   present on Infrastructure & Hosting Rules and Cost Rules — copy
+   from the current starter if missing.
+
+2. **ROADMAP.md**. If Phase 3 is just "Hardening and Testing"
+   without the Deploy Planning sub-section, replace it with the
+   current starter's Phase-3 block. Phase 1 deliverables should be
+   listed in the Local-First order (scaffold → local green → CI
+   mirrors); fix the order if reversed.
+
+3. **TASKS.md**. Audit Phase-1 tasks:
+   - If hosting / OIDC / IaC / first-deploy / cloud-budget tasks
+     exist as P1-T*, they belong in P3-T0 (deploy planning) or
+     Phase 4. Move them: write a P3-T0 block in Backlog with the
+     deploy planning scope, and move the implementation tasks to
+     Phase 4 (P4-T1..P4-T5+).
+   - If the project is **already deployed**, mark P3-T0 Done
+     retroactively (the deploy ADRs are already in DECISIONS.md)
+     and keep Phase-4 tasks as Done.
+   - If the project has **never been deployed**, queue P3-T0
+     Backlog with `Prerequisites: Phase-2 done` and ensure
+     Phase-4 tasks are Backlog with `Prerequisites: P3-T0`.
+
+4. **PROJECT.md "Rules in force"**. Confirm the Local-First
+   Development Rule is listed as always-applicable. Add if missing.
+
+5. **BUDGET.md**. If the project has never been deployed and BUDGET
+   has a Cost-Rules-compliant cap (with alert thresholds wired),
+   that's premature — demote to "Rough budget preference (revisit
+   at P3-T0)" and note the demotion in DONE_LOG. If the project
+   IS deployed, the cap stays.
+
+Skip this check if the project's `AI_RULES.md` already has the
+Local-First Development Rule (i.e., it was initialized on v1.1.0+
+or already refreshed).
+
+### Check 12 — `origin/main` matches local `main`
 
 Run `git status` and `git log --oneline origin/main..HEAD` (or
 equivalent for the project's default branch).
@@ -235,7 +283,7 @@ equivalent for the project's default branch).
 
 ## Final report shape
 
-After all eleven checks complete, the AI returns a single summary:
+After all twelve checks complete, the AI returns a single summary:
 
 ```text
 Refresh complete.

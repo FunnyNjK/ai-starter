@@ -43,6 +43,11 @@ they (or you) can run it.
   `/ai/templates/INIT_PROMPT.md`, and (skim)
   `/docs/PROJECT_SHAPE_GALLERY.md` first so you know what the eventual
   init step will need and what rungs you can show.
+- **Local-First Development Rule applies.** Cloud / IaC / budget-cap
+  decisions are deferred to Phase 3's deploy-planning task (P3-T0),
+  not made at kickoff or init. S6 (cloud) and S7 (budget) below
+  capture *preferences* that the user will re-confirm at P3-T0 —
+  they are not locked-in decisions.
 - **Ask one question at a time.** Never dump a wall of questions.
   Wait for each answer before moving on.
 - **Every question follows the structured format below.** Offer 2-3
@@ -402,36 +407,51 @@ Capture: `compliance`.
 
 Update diagram: annotate sensitive flows ("PII", "payment", etc.).
 
-### S6: Cloud preference
+### S6: Cloud preference (rough — finalized at P3-T0)
 
 Skip entirely if **no component requires hosting** (e.g., a
 local-only CLI / standalone library / standalone desktop app).
 
-Ask: "Cloud preference for the components that need hosting? AWS,
-Azure, or Google Cloud."
+Per the Local-First Development Rule, the cloud target is NOT
+finalized at kickoff or init. This question captures a *rough
+preference* that gets re-confirmed (and recorded as an ADR) at
+P3-T0 deploy planning. Tell the user this explicitly.
+
+Ask: "Rough cloud preference for the components that need hosting?
+This is just a preference — you'll re-confirm at deploy planning,
+which happens after the app is built and running locally. AWS,
+Azure, or Google Cloud?"
 
 Offer guidance:
 - **AWS** — broadest service catalog.
 - **Azure** — fits Microsoft-shop teams; good Entra ID identity.
 - **Google Cloud** — strong scale-to-zero serverless.
 
-Offer default: recommend based on Q1, components, tier, S5.
+Offer default: "I'll suggest one at P3-T0 based on what we
+actually built — you can defer this for now."
 
 Other clouds (Cloudflare, Vercel, Fly, etc.) need an ADR override
-at INIT time per the Infrastructure & Hosting Rules.
+at P3-T0 per the Infrastructure & Hosting Rules.
 
-Capture: `cloud`.
+Capture: `cloud_preference` (note: NOT `cloud` — this is rough).
 
-Update diagram: add the cloud subgraph boundary around hosted
-components.
+Update diagram: cloud subgraph is shown as a dashed boundary
+labeled "TBD — set at P3-T0".
 
-### S7: Monthly budget cap (USD)
+### S7: Rough monthly budget preference (finalized at P3-T0)
 
 Skip entirely if **no component requires hosting** AND no managed
 third-party (email, payments, monitoring) is in play.
 
-Ask: "Monthly budget cap in USD? Most you'd want to pay before
-alerts fire."
+Per the Local-First Development Rule and Cost Rules, the
+Cost-Rules-compliant monthly cap is set at P3-T0, not at kickoff.
+This question captures a rough preference for the budget reality
+check below and for `/ai/BUDGET.md` "Rough budget preference"
+section.
+
+Ask: "Rough monthly budget you'd want to land near? This is a
+preference, not a cap — we'll set the real cap and alert
+thresholds at deploy planning."
 
 Offer defaults:
 - Solo prototype: $50/month
@@ -439,9 +459,10 @@ Offer defaults:
 - Internal team tool: $100-200/month
 - Production: project-specific
 
-Offer default: $50/month with alerts at 50/80/100% if no number.
+Offer default: "$50/month rough target — you'll finalize at P3-T0."
 
-Capture: `budget_cap_usd`, `alert_thresholds`.
+Capture: `budget_preference_usd` (rough), `alert_threshold_hint`
+(rough, e.g. 50/80/100%).
 
 ### S8: License
 
@@ -579,9 +600,11 @@ Produce this summary verbatim, filling slots:
   - Goals: {goals}
   - Non-goals: {non_goals}
   - Compliance: {compliance}
-  - Cloud: {cloud — or "none, no hosted components"}
-  - Budget: ${budget_cap_usd}/month with alerts at
-    {alert_thresholds} (or "n/a — no managed services")
+  - Cloud preference (rough, finalized at P3-T0):
+    {cloud_preference — or "none, no hosted components"}
+  - Budget preference (rough, finalized at P3-T0):
+    ~${budget_preference_usd}/month, alert hint
+    {alert_threshold_hint} (or "n/a — no managed services")
   - License: {license}
   - Components ({N}):
     - {Component 1 name} ({primary/supporting}) — rung
@@ -595,10 +618,15 @@ Produce this summary verbatim, filling slots:
   - Other constraints: {other_constraints}
   - Deferred to INIT: {list of dimensions captured as
     "decide at init"}
+  - Deferred to P3-T0 (deploy planning): cloud target ADR,
+    IaC tool, Terraform state, managed-service instances,
+    OIDC trust, runtime secret store, network defaults,
+    monthly budget cap + alerts.
 
   System diagram (composite):
   ```mermaid
-  {final composite flowchart}
+  {final composite flowchart — cloud subgraph dashed,
+   labeled "TBD — set at P3-T0"}
   ```
 
 Then ask:
@@ -609,25 +637,31 @@ Then ask:
 **Wait for explicit confirmation.** Silent acceptance is not OK
 — if no reply, ask again.
 
-## Budget reality check (mandatory if S7 was run)
+## Budget reality check (rough, runs if S7 was answered)
 
-After confirmation, run a feasibility check:
+After confirmation, run a rough feasibility check using the
+budget preference from S7. This is informational — the
+Cost-Rules-compliant cap is set at P3-T0, not here. The point of
+this check is to surface gross mismatches early (e.g., "you
+picked $50/month but managed Postgres + managed Redis + a Cloud
+Run minimum-instance setup alone would be $80/month").
 
-1. For each managed service implied by the chosen rungs and
+1. For each managed service IMPLIED by the chosen rungs and
    dimensions (cloud compute, managed DB, object storage, secret
    manager, CDN, observability, email, payments, AI inference),
    look up the approximate monthly floor cost live from public
    pricing pages. Do NOT pin prices from training data.
 2. Sum the unavoidable floor across ALL components.
-3. Compare against `budget_cap_usd`.
-4. If the floor exceeds ~60% of the cap, surface the tension and
-   offer:
-   (a) Raise the cap, with a recommended new number.
+3. Compare against `budget_preference_usd`.
+4. If the floor exceeds ~60% of the preference, surface the
+   tension and offer:
+   (a) Raise the preference, with a recommended new number.
    (b) Switch to a scale-to-zero / local-only path for hosted
        components (containerize stateful deps during prototype,
-       cut to managed at production cutover — requires an ADR
-       override of the Managed-Services Hard rule until cutover).
-5. Capture as `budget_decision`.
+       cut to managed at production cutover — recorded as an
+       ADR at P3-T0 if pursued).
+5. Capture as `budget_preference_decision` (still a preference;
+   the real decision is at P3-T0).
 
 If S7 was skipped (no hosted components, no managed services),
 record "n/a — local-only project" and skip this step.
@@ -681,12 +715,15 @@ top capturing:
 - `feature_loop`
 - `tier`
 - `components` (with rung + dimension map per component)
-- `audience`, `goals`, `non_goals`, `compliance`, `cloud`,
-  `budget_cap_usd`, `alert_thresholds`, `license`
+- `audience`, `goals`, `non_goals`, `compliance`,
+  `cloud_preference` (rough — finalized at P3-T0),
+  `budget_preference_usd` (rough — finalized at P3-T0),
+  `alert_threshold_hint`, `license`
 - `repo_strategy`, `version_strategy`, `shared.*`
-- `budget_decision`
+- `budget_preference_decision`
 - `product_name`, `other_constraints`
 - The final composite Mermaid diagram, fenced as ```mermaid```
+  (cloud subgraph dashed, labeled "TBD — set at P3-T0").
 
 ## After generating the prompt
 

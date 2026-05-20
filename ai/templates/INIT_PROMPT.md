@@ -59,9 +59,10 @@ The kickoff NOTES block, if present, carries:
 - `components` — a list of 1–N components, each with a name (per
   `/docs/PROJECT_SHAPE_GALLERY.md`), a rung (e.g., "Web R5"), and
   a `dimension_defaults` map pre-filled from the rung.
-- `compliance`, `cloud`, `budget_cap_usd`, `alert_thresholds`,
-  `license`, `repo_strategy`, `version_strategy`, `shared.*`,
-  `budget_decision`.
+- `compliance`, `cloud_preference` (rough — finalized at P3-T0),
+  `budget_preference_usd` (rough — finalized at P3-T0),
+  `alert_threshold_hint`, `license`, `repo_strategy`,
+  `version_strategy`, `shared.*`, `budget_preference_decision`.
 - A Mermaid composite system diagram.
 
 If no NOTES block was provided, the user is running INIT_PROMPT.md
@@ -102,8 +103,13 @@ instead of only the Fast Context set.
 Honor /ai/AI_RULES.md as non-negotiable. Pay particular attention to the
 (Hard) blocks — Git, Planning-File Hygiene, Versioning, Security,
 Infrastructure & Hosting, Cost, Destructive Operations, Reasoning
-Checkpoint, Blocked Escalation, and Task Quality — because every step
-below references them.
+Checkpoint, **Local-First Development**, Blocked Escalation, and Task
+Quality — because every step below references them.
+
+**Read the Local-First Development Rule carefully before Step 4.** It
+defers cloud / IaC / managed-service / OIDC / budget-cap decisions out
+of init and into a Phase-3 deploy-planning task. Init records the
+local container runtime and free-tier ceilings only.
 
 Glance at /ai/templates/ — HANDOFF.template.md, CURRENT_STATE.template.md,
 and TASK_TEMPLATE.md are the target shapes for the files you'll write.
@@ -204,64 +210,77 @@ ADR-001, ADR-002, ...) with: decision, the version, the date verified,
 the canonical source URL, rationale, and trade-offs. Ask the user before
 locking in choices that materially change the project's shape.
 
-## Step 4 — Choose infrastructure and deployment
+## Step 4 — Choose local infrastructure (Phase 1 only)
 
-**Rule applicability by tier.** Per `/ai/AI_RULES.md` Rule
-Applicability:
+Per the Local-First Development Rule in `/ai/AI_RULES.md`, this step
+is intentionally scoped to **local development only**. Cloud target,
+IaC, managed-service instances, OIDC, runtime secret stores, and
+network defaults are **deferred to Phase 3's deploy-planning task
+(P3-T0)** — they are not init decisions.
 
-- **Solo prototype**: Infrastructure & Hosting Hard rules are
-  recommendations until tier changes. The user may legitimately
-  run everything locally with containers. Still record decisions
-  as ADRs.
-- **Small team / early production** (default): all Infrastructure
-  & Hosting Hard rules apply as written.
-- **Production / enterprise**: all rules apply, plus multi-region
-  / DR planning + on-call rotation documentation.
+Skip this step entirely if NO component in the project will need any
+stateful deps for local development (e.g., a pure CLI library that
+publishes to a package registry and has no DB / cache / queue).
 
-Skip this step entirely if NO component in the project requires
-hosting (e.g., a CLI library that publishes to a package registry
-and has no backend, a standalone desktop app). In that case,
-record an ADR noting that Infrastructure & Hosting rules don't
-apply for v1 because the project has no hosted surfaces.
+### What this step does decide (Phase 1)
 
-Per the Infrastructure & Hosting Rules in AI_RULES.md (when they
-apply):
+- **Local container runtime**: Docker Compose / Podman / OrbStack /
+  Lima — pick one and record an ADR + a `/ai/DEV_ENVIRONMENT.md`
+  entry. This is the runtime that will host the project's stateful
+  deps during local development.
+- **Stateful dep engine families + local versions**: for each DB /
+  cache / queue / search / object store the project needs locally,
+  pick the engine (Postgres / Redis / RabbitMQ / Elasticsearch /
+  MinIO / etc.) and pin the local container image version from
+  Docker Hub. Record each as an ADR with the verified version and
+  source URL. These versions will eventually mirror the managed-
+  service versions chosen at P3-T0, but THAT decision is deferred.
+- **Local `.env.example`**: list every env var the local app will
+  need with placeholder values. Real secret-store binding is
+  Phase-3 territory.
 
-- **Cloud target**: AWS, Azure, or Google Cloud — record the choice as an
-  ADR with the rationale.
-- **IaC**: Terraform (or OpenTofu) for all cloud resources — record an
-  ADR with the version verified from the Terraform registry.
-- **Terraform state backend**: encrypted remote backend with locking —
-  record an ADR with the chosen storage + lock mechanism for the cloud
-  (S3+DynamoDB / Azure Storage + blob lease / GCS native locking).
-- **Stateful services in QA and Production**: use the cloud's managed
-  offering for every database, cache, queue, search engine, and object
-  store the project depends on. Record each as an ADR with the chosen
-  service, the engine version, and the source URL.
-- **Local development**: containerize stateful deps (Docker Compose /
-  Podman / OrbStack / Lima — pick one) so contributors get a one-command
-  setup. Match the major version of each container to the managed
-  service version pinned for production. Record this in
-  /ai/DEV_ENVIRONMENT.md.
-- **CI/CD auth to the cloud**: OIDC federation. No long-lived static
-  cloud keys.
-- **Runtime secrets**: a cloud-managed secret store (Secrets Manager /
-  Key Vault / Secret Manager). Document where each secret will live in
-  /ai/DEPLOYMENT.md.
+### What this step does NOT decide (deferred to P3-T0)
 
-If any of the above defaults need to be overridden for this project,
-write an ADR explaining why. Do not silently deviate.
+Do NOT write ADRs for any of the following at init. The kickoff may
+have captured a *preference* (e.g., "user prefers GCP"); record that
+preference verbatim in `/ai/DEPLOYMENT.md` under "Deploy preferences
+(revisit at P3-T0)" but do not commit to it via an ADR.
 
-## Step 5 — Choose the security baseline
+- Cloud target (AWS / Azure / Google Cloud / other).
+- IaC tool (Terraform / OpenTofu) and the state backend.
+- Managed-service instance choices (RDS / Cloud SQL / Memorystore /
+  ElastiCache / S3 / GCS / etc.). Local container versions are picked
+  now; the matching managed-service versions are picked at P3-T0.
+- OIDC federation between CI and cloud.
+- Runtime secret store (Secrets Manager / Key Vault / Secret Manager).
+- Network defaults (subnets, security groups, ingress allowlists).
+- Environment parity policy (dev / QA / prod major-version matching).
 
-Per the Security Rules in AI_RULES.md, decide and record as ADRs:
+### Brownfield exception
+
+If you arrived here from `ADOPT_PROMPT.md` and the project is already
+deployed, the cloud / IaC / managed-service / OIDC decisions have
+already been made *implicitly* by what's in the repo. Document them
+as **retroactive ADRs** in this step rather than deferring — they
+describe existing state. The Phase-3 P3-T0 task in that case is a
+review pass, not a from-scratch planning pass.
+
+## Step 5 — Choose the application-layer security baseline
+
+Per the Security Rules in AI_RULES.md, decide the **application-layer**
+baseline now. **Cloud-network-layer** security (production CORS
+allowlists, rate-limit thresholds tuned to prod traffic, OIDC
+federation, container digest pinning in prod manifests) is deferred
+to P3-T0 deploy planning per the Local-First Development Rule.
+
+Decide and record as ADRs now (Phase 1):
 
 - Auth library or auth provider for end users (if the project has them).
 - Password hashing algorithm (default: argon2id) and the library that
   provides it.
 - Schema-validation library for request payloads.
-- CORS / CSP defaults.
-- Rate-limiting strategy and library / service.
+- CORS / CSP **development defaults** (production allowlists at P3-T0).
+- Rate-limiting library/strategy (production thresholds at P3-T0).
 - Dependency-update automation (Dependabot / Renovate).
 - SAST tool(s) appropriate to the language(s).
 - SCA tool / source for CVE feeds.
@@ -270,21 +289,44 @@ Per the Security Rules in AI_RULES.md, decide and record as ADRs:
   will run in CI.
 
 Record each as an ADR. The project's `/ai/PROJECT.md` should point at
-these ADRs in its "Security Baseline" section.
+these ADRs in its "Security Baseline" section. The cloud-network-layer
+ADRs added at P3-T0 will be appended later.
 
-## Step 6 — Set the budget and cost guardrails
+## Step 6 — Free-tier ceilings (Phase 1 cost tracking)
 
-Per the Cost Rules in AI_RULES.md:
+Per the Cost Rules in AI_RULES.md and the Local-First Development
+Rule, monthly cloud budget cap + alert thresholds + cost-impacting
+log are **deferred to P3-T0 deploy planning**. Init only captures
+third-party free-tier ceilings that bind from Phase 1.
 
-- Ask the user for a monthly budget cap in USD (overall, or per
-  environment) and record it in /ai/BUDGET.md.
-- Choose alert thresholds (50% / 80% / 100%, or as the user specifies)
-  and the notification channel — record both in /ai/BUDGET.md.
-- For each managed service chosen in Step 4, record the tier (free /
-  shared / dedicated / scale-to-zero), any free-tier limits being
-  relied on, and the escalation path when limits are exceeded.
-- Pre-populate /ai/BUDGET.md "Major cost contributors" with estimated
-  monthly cost for the major resources from Step 4.
+Do now (Phase 1):
+
+- For each third-party service chosen at Step 3 (auth provider's
+  free tier, email service's monthly send cap, OAuth provider's
+  request quota, etc.), record the free-tier ceiling and the
+  escalation path in `/ai/BUDGET.md` under "Free-tier and tier
+  choices".
+- If the kickoff captured a rough budget preference, record it
+  verbatim in `/ai/BUDGET.md` under "Rough budget preference
+  (revisit at P3-T0)". This is informational, not a Cost-Rules-
+  compliant cap.
+
+Do NOT do now (deferred to P3-T0):
+
+- Monthly cloud budget cap.
+- Alert thresholds (50/80/100%) wired to cloud-native budget
+  alerting.
+- "Major cost contributors" cost projections — meaningless without
+  chosen managed services.
+- Cost-impacting changes log scaffolding — the log starts logging
+  when the first managed service is provisioned at Phase 4.
+
+### Brownfield exception
+
+If the project is already deployed (ADOPT_PROMPT.md path), the
+Cost Rules cap + thresholds + cost-impacting log all apply *now*,
+backfilled retroactively. The deferral above is for new projects
+that haven't yet built anything to deploy.
 
 ## Step 7 — Choose a license
 
@@ -352,32 +394,35 @@ component set and (b) the tier. Use the rubric below — only
 include tasks that actually apply to a component this project
 contains and the tier this project runs at.
 
-**Always (regardless of components/tier):**
-1. Scaffold the project layout (language, framework, lint/format,
+### Phase-1 task ordering (Local-First Development Rule)
+
+The Phase-1 deliverable order is fixed by the Local-First Development
+Rule in `/ai/AI_RULES.md`. CI is configured AFTER local is green —
+never before. Hosting / OIDC / IaC / first-deploy tasks are NOT
+Phase-1 tasks; they belong to Phase-3 P3-T0 and Phase 4.
+
+**Always, in this order (regardless of components/tier):**
+
+1. **Scaffold the project layout** (language, framework, lint/format,
    test runner, `.gitignore`, `.env.example` if applicable,
    project README from `/ai/templates/README.template.md`).
    For multi-component projects: scaffold the workspace structure
    (monorepo or multi-repo) per `repo_strategy`.
-2. Add CI workflows for each component: lint, type-check if
-   applicable, tests, build, and real language-specific security
-   scanning. Use `/ai/templates/ci-security.template.yml` only as
-   a guardrail scaffold; replace/extend with chosen SAST/SCA
-   tools.
-3. Dependency-update automation (Dependabot / Renovate).
-4. Write SECURITY.md and CONTRIBUTING.md at the project root.
-
-**If any component requires hosting** (web, API, mobile-backend,
-plugin-backend, data pipeline that runs in cloud):
-5. Set up IaC state backend bootstrap (Terraform encrypted state
-   bucket / container / lock table). Documented as a runbook.
-6. Cloud OIDC trust for CI (federated identity → repo, scoped to
-   `main` and PR refs).
-7. First IaC apply: minimal account / project / subscription
-   scaffold (resource group / project, networking, secret store,
-   log destination, IAM baseline).
-8. First production deployment of a placeholder app to prove the
-   pipeline works end-to-end.
-9. Wire cloud budget + alerts per `/ai/BUDGET.md`.
+2. **Verify local development loop is green.** This task gates
+   everything after it. The project's standard "run locally" command
+   works (`pnpm dev` / `cargo run` / `python -m app` / etc.); lint,
+   type-check (if applicable), tests, and build all pass locally.
+   No CI configured yet — this task is verified by the developer
+   running the commands by hand and reporting success.
+3. **Configure CI that mirrors the local loop.** Add lint,
+   type-check, test, build steps to CI, exactly matching what step
+   2 already verified locally. The first CI run should pass on the
+   first try because it's running what already worked locally. Use
+   `/ai/templates/ci-security.template.yml` only as a guardrail
+   scaffold for the security scanning leg; the lint/test/build legs
+   come from step 2's commands.
+4. **Dependency-update automation** (Dependabot / Renovate).
+5. **Write SECURITY.md and CONTRIBUTING.md** at the project root.
 
 **Per-component additions:**
 - **Library / SDK component**: package-registry publishing
@@ -399,12 +444,92 @@ plugin-backend, data pipeline that runs in cloud):
   runs a noop transform end-to-end.
 
 **Tier-conditional additions:**
-- **Solo prototype**: skip tasks 5-9 if user explicitly declares
-  no cloud yet. Add ADR noting the deferral and the trigger that
-  flips the project to small-team tier.
+- **Solo prototype**: P3-T0 stays in Phase 3 normally; the project
+  may choose at P3-T0 to defer deploy entirely with an ADR noting
+  the trigger that flips it to small-team tier (first paid user,
+  first non-local environment, etc.).
 - **Production**: add on-call rotation setup, SLO/SLI definition
   task, disaster-recovery runbook, multi-region/replica plan,
   incident template integration with `/ai/templates/INCIDENT_TEMPLATE.md`.
+  These can be Phase-3 tasks alongside P3-T0.
+
+### Phase-3 deploy-planning task (queue at init, execute later)
+
+Queue this Phase-3 task at init so it doesn't get forgotten between
+Phase 2 (features built) and Phase 4 (first deploy). It executes
+when the user is ready to deploy — typically end of Phase 2 or
+during Phase 3 — but **it must complete before any Phase-4 task
+starts.**
+
+```markdown
+### P3-T0: Deploy Planning (cloud, IaC, budget ADRs)
+Status: Backlog
+Owner: AI Assistant
+Priority: High
+
+#### Goal
+Make and record the deploy decisions deferred from init: cloud
+target, IaC tool + state backend, managed-service instances per
+stateful dep picked at P1-Tn, runtime secret store, OIDC trust
+shape, network defaults, environment-parity policy, monthly
+budget cap + alert thresholds. Updates BUDGET.md from rough
+preference to a Cost-Rules-compliant cap, and queues Phase-4
+implementation tasks.
+
+#### Prerequisites
+Phase 2 complete (the app has a shippable feature loop that
+already runs locally). Per the Local-First Development Rule,
+deploy planning happens after a working app exists, not before.
+
+#### Scope Included
+- Cloud target ADR (AWS / Azure / Google Cloud; ADR override if
+  other).
+- IaC tool ADR (Terraform / OpenTofu) + state backend ADR.
+- One managed-service ADR per stateful dep picked at P1-Tn
+  (e.g., RDS Postgres for the Postgres container; Memorystore
+  Redis for the Redis container; S3 for the MinIO container).
+  Engine major versions match what's pinned locally.
+- Runtime secret store ADR (Secrets Manager / Key Vault /
+  Secret Manager).
+- OIDC federation ADR for CI → cloud auth.
+- Network defaults ADR (private subnets, deny-by-default
+  security groups).
+- Environment-parity policy ADR (dev/QA/prod major-version
+  match policy).
+- BUDGET.md: replace "Rough budget preference" with a Cost-
+  Rules-compliant monthly cap, alert thresholds (50/80/100% or
+  user-specified), notification channel, "Major cost
+  contributors" table with live pricing lookups, "Cost-impacting
+  changes log" scaffolding.
+- Update PROJECT.md "Infrastructure" and "Security Baseline"
+  sections to point at the new ADRs.
+- Update ARCHITECTURE.md "Infrastructure & Hosting" section
+  (filled in from the new ADRs).
+- Update Mermaid diagram with the cloud subgraph + managed-
+  service nodes.
+- Queue Phase-4 implementation tasks: P4-T1 (Terraform state
+  bootstrap), P4-T2 (OIDC trust), P4-T3 (first IaC apply for
+  minimal account / project scaffold), P4-T4 (first production
+  deploy of placeholder), P4-T5 (cloud budget+alerts wiring).
+
+#### Acceptance Criteria
+- All deferred ADRs from init Step 4 / Step 5 / Step 6 are
+  written, dated, with verified versions + canonical source URLs.
+- BUDGET.md has a Cost-Rules-compliant cap (not "rough
+  preference").
+- Phase-4 implementation tasks (P4-T1..P4-T5+) are queued in
+  TASKS.md with prerequisites set.
+- ARCHITECTURE.md Mermaid diagram shows the cloud subgraph.
+
+#### Verification
+- `grep -E "Phase 2 — set at Pass 2|Rough budget preference"
+  ai/` returns nothing — all deferred markers replaced.
+- TASKS.md contains P4-T1..P4-T5+ blocks with `Status: Backlog`
+  and `Prerequisites: P3-T0`.
+
+#### Rollback / Recovery
+Documentation-only. `git reset` if planning goes wrong.
+```
 
 Queue Phase 2 tasks for the actual feature work — one per major page,
 screen, module, or service from PROJECT.md and (if applicable) the
@@ -526,33 +651,48 @@ STOP and complete it before closing the task.
   - [ ] /ai/PROJECT.md records the component set and tier
         explicitly (e.g., "Components: Web app (R5), API service
         (R3), Static site (R2). Tier: small team.").
-  - [ ] Every major stack / infra / security / cost / license
-        choice has a corresponding ADR in /ai/DECISIONS.md with:
-        ADR number, Date, Status, Decision, Reason, Tradeoffs,
-        Related Tasks, AND for versioned choices the verified
-        version + canonical source URL + date verified.
+  - [ ] Every major stack / application-layer-security / local-
+        infra / license choice has a corresponding ADR in
+        /ai/DECISIONS.md with: ADR number, Date, Status, Decision,
+        Reason, Tradeoffs, Related Tasks, AND for versioned
+        choices the verified version + canonical source URL + date
+        verified.
+  - [ ] **Deploy ADRs are NOT pre-written** (cloud target, IaC
+        tool, Terraform state, managed-service instances, OIDC,
+        runtime secret store, network defaults, monthly budget
+        cap). Per the Local-First Development Rule, those belong
+        to the P3-T0 task. Init records *local* container runtime
+        + local container versions + free-tier ceilings only.
   - [ ] For every component, all applicable dimensions (per its
         section in /docs/PROJECT_SHAPE_GALLERY.md) are either
         chosen-with-ADR or explicitly captured as a deferred open
         question with a task queued. Nothing was silently invented.
   - [ ] Rule applicability decisions are recorded (which Hard
         rule blocks apply at this tier; any ADR overrides for
-        rules that don't).
+        rules that don't). Includes the Local-First Development
+        Rule (always Always-on).
   - [ ] The composite Mermaid system diagram is up to date and
-        committed to /ai/ARCHITECTURE.md "System Overview".
-  - [ ] /ai/BUDGET.md has a cap, alert thresholds, and rough
-        estimates for major cost contributors based on live
-        pricing lookups (or records "n/a — no managed services"
-        with reason).
+        committed to /ai/ARCHITECTURE.md "System Overview". Cloud
+        subgraph may be marked "TBD — set at P3-T0".
+  - [ ] /ai/BUDGET.md has "Free-tier and tier choices" filled in
+        for any Pass-1 third-party services with free-tier
+        ceilings, AND a "Rough budget preference (revisit at
+        P3-T0)" line if the kickoff captured one. Monthly cap +
+        alert thresholds + Major cost contributors are NOT yet
+        filled in — they get filled in at P3-T0.
   - [ ] LICENSE, README.md, SECURITY.md, CONTRIBUTING.md exist at
         the project root.
   - [ ] All 5 tool-native memory hooks exist at the project root
         (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md,
         .github/copilot-instructions.md).
   - [ ] Phase-1 tasks reflect the component set (per-component
-        scaffolding, distribution, etc.) AND the tier (cloud/IaC
-        tasks present for non-solo tiers when components require
-        hosting; deferred with ADR for solo prototype).
+        scaffolding, distribution, etc.) and are ordered per the
+        Local-First Development Rule (scaffold → verify local
+        green → CI mirrors → Dependabot → SECURITY/CONTRIBUTING).
+        NO hosting / OIDC / IaC / first-deploy tasks in Phase 1.
+  - [ ] **P3-T0 (Deploy Planning) task is queued** in /ai/TASKS.md
+        Backlog with Status=Backlog, Prerequisites=Phase-2 done,
+        and the scope block from Step 11.
   - [ ] The first Phase-1 task in /ai/TASKS.md has every section
         from /ai/templates/TASK_TEMPLATE.md populated.
   - [ ] /ai/CURRENT_STATE.md ≤ 80 lines, /ai/HANDOFF.md ≤ 50 lines.
@@ -570,7 +710,12 @@ mark P0-T1 Done with unchecked items.
 
 - Do NOT scaffold the project yet (P1-T1 task).
 - Do NOT install dependencies yet.
-- Do NOT create real cloud resources yet (Phase 1 task).
+- Do NOT create real cloud resources yet (P4-T3 task).
+- Do NOT write deploy ADRs (cloud target, IaC, Terraform state,
+  managed services, OIDC, runtime secret store, monthly budget cap)
+  — those belong to P3-T0 per the Local-First Development Rule.
+- Do NOT queue Phase-1 hosting / OIDC / IaC / first-deploy / cloud-
+  budget tasks. Those are P4-T1..P4-T5+ tasks queued by P3-T0.
 - Do NOT modify any read-only reference repo.
 - Use placeholders only, never real secrets.
 - Look up versions from canonical sources — never assume from

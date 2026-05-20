@@ -39,17 +39,50 @@ INSPECTION SUMMARY (filled in by the kickoff interview, or by you on a
 re-inspection):
 {paste from KICKOFF_EXISTING_PROJECT.md output, or re-inspect now}
 
-INHERITED FROM KICKOFF (v1.0.0 NOTES block):
+INHERITED FROM KICKOFF (v1.0.0+ NOTES block):
 - feature_loop, audience, goals, non_goals
 - tier: {solo prototype | small team | production}
 - components: list of {name, primary/supporting, rung_id,
   dimension_defaults} per `/docs/PROJECT_SHAPE_GALLERY.md`
-- compliance, cloud (or "keep current X with override ADR"),
-  budget_cap_usd, alert_thresholds, license
+- compliance, license
+- cloud_preference (rough, finalized at P3-T0 for non-deployed
+  brownfield; replace with retroactive ADR for deployed
+  brownfield documenting what's actually in the repo)
+- budget_preference_usd, alert_threshold_hint (rough,
+  finalized at P3-T0 for non-deployed brownfield; replace with
+  Cost-Rules-compliant cap for deployed brownfield)
 - repo_strategy, version_strategy, shared.* (if multiple
   components)
-- budget_decision
+- budget_preference_decision
 - Composite Mermaid system diagram
+
+## Brownfield deploy state (read carefully)
+
+Two ADOPT sub-paths, because the Local-First Development Rule
+applies asymmetrically here:
+
+**Deployed brownfield** — the project already runs in production
+on real infrastructure. Cloud / IaC / managed-service / OIDC /
+budget decisions have already been made *implicitly* by what's in
+the repo. Treat ADOPT as a "document the existing state"
+exercise: write retroactive ADRs for every existing deploy
+choice, fill in BUDGET.md from real cloud invoices, and skip the
+P3-T0 deferral entirely (there's nothing to plan — it's already
+running). The Phase-4 implementation tasks (P4-T1..P4-T5+) do
+NOT get queued; that work is already done.
+
+**Non-deployed brownfield** — the codebase exists but has never
+been deployed (rare; usually a half-built app that someone
+adopted onto). Follow the INIT pattern: defer cloud / IaC /
+managed-service / OIDC / budget-cap ADRs to a P3-T0 deploy-
+planning task. Queue P3-T0 in Backlog the same way INIT does.
+
+The kickoff interview asks which case applies. If the user
+arrived at ADOPT_PROMPT.md directly without kickoff, detect by
+inspection: presence of `terraform/`, `infra/`, `cdk.json`,
+`vercel.json`, `app.yaml`, `fly.toml`, `.github/workflows/*.yml`
+with a deploy step → deployed brownfield. Absence of any of
+those → non-deployed brownfield.
 
 If no NOTES block is present, the user is running ADOPT_PROMPT.md
 directly without kickoff. Surface this and recommend
@@ -92,8 +125,8 @@ Read `/ai/START_HERE.md`, `/ai/AI_RULES.md`, and the templates in
 `/ai/templates/`. Honor every (Hard) rule block:
 
 - Git, Planning-File Hygiene, Versioning, Security, Infrastructure &
-  Hosting, Cost, Destructive Operations, Reasoning Checkpoint, Blocked
-  Escalation, Task Quality.
+  Hosting, Cost, Destructive Operations, Reasoning Checkpoint,
+  **Local-First Development**, Blocked Escalation, Task Quality.
 
 If the starter files aren't present in this repo (e.g., the user only
 copied parts), STOP and tell them to copy the full starter first.
@@ -232,16 +265,29 @@ state. Use the templates in `/ai/templates/` for shape.
 - Test framework, current coverage shape, what runs in CI.
 
 ### `/ai/BUDGET.md`
-- Monthly cap from the user's answer.
-- "Major cost contributors" with each cloud / SaaS service the
-  project currently uses, with `TBD` for actual costs (the user may
-  fill these in after looking at their last billing cycle).
+- **Deployed brownfield**: Monthly cap from the user's answer
+  (this IS the Cost-Rules-compliant cap, since the project is
+  already running). "Major cost contributors" filled in from
+  actual cloud invoices where possible; `TBD` for any the user
+  needs to look up. Alert thresholds wired to the existing cloud's
+  budget alerting.
+- **Non-deployed brownfield**: Same deferral as INIT — capture
+  the kickoff's rough preference under "Rough budget preference
+  (revisit at P3-T0)" and free-tier ceilings under "Free-tier
+  and tier choices". Do NOT write a Cost-Rules-compliant cap;
+  that comes from P3-T0.
 
 ### `/ai/ROADMAP.md`
-- Reflect the project's actual phase. If it's already in production,
-  the roadmap probably starts at Phase 5 (Enhancements) for new work,
-  with a Phase 1 "catch-up" inserted at the top for the gap-filling
-  tasks identified in Step 4.
+- Reflect the project's actual phase.
+- **Deployed brownfield**: typically starts at Phase 5
+  (Enhancements) for new work, with a Phase-1 "catch-up" inserted
+  for the gap-filling tasks identified in Step 4. P3-T0 (deploy
+  planning) is marked Done retroactively — the deploy ADRs were
+  backfilled in Step 3 from existing state.
+- **Non-deployed brownfield**: typical INIT phase ordering — start
+  at Phase 1, queue P3-T0 in Backlog. Apply the Local-First
+  Development Rule's Phase-1 ordering (scaffold → local green →
+  CI mirrors) for any catch-up tasks that touch the build loop.
 
 ### `/ai/TASKS.md`
 - Mark P0-T1 (Adopt) Done, with today's date.
