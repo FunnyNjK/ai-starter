@@ -102,7 +102,7 @@ configured. Each integration should have an ADR.
 ---
 
 ## Repository Structure
-See `/ai/PROJECT.md` for the canonical project structure once defined.
+See `/ai/SOLUTION.md` for the canonical project structure once defined.
 
 ---
 

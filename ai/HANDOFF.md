@@ -20,7 +20,7 @@ None
 
 ## Next Recommended Task
 **P0-T1: pick the right entry point.**
-- New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
+- New project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
 - Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
 - Older starter version → `/ai/templates/REFRESH_PROMPT.md`
 
@@ -36,7 +36,7 @@ users.
 - Honor `/ai/AI_RULES.md` — every applicable (Hard) block applies.
 - The new Rule Applicability section makes some blocks conditional
   on tier and component set; resolve them explicitly in
-  `/ai/PROJECT.md`.
+  `/ai/SOLUTION.md`.
 - Both kickoffs now require an explicit pre-flight self-check
   before generating the init prompt. Do not skip it.
 - Reference `/docs/PROJECT_SHAPE_GALLERY.md` for component rungs.

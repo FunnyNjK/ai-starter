@@ -1,6 +1,6 @@
 # START HERE - AI Project Control File
 
-Last Updated: 2026-05-10
+Last Updated: 2026-05-21
 
 This is the only file an AI assistant needs to read first.
 
@@ -73,7 +73,7 @@ These files should stay compact enough to orient a new session quickly.
 
 Load these files when the current task touches their area:
 
-- `/ai/PROJECT.md` - project identity, target users, goals, non-goals,
+- `/ai/SOLUTION.md` - project identity, target users, goals, non-goals,
   first-time initialization, README/project-description work.
 - `/ai/ARCHITECTURE.md` - system design, data flow, API boundaries,
   component structure, security model, or architecture changes.
@@ -96,7 +96,7 @@ Load these files when the current task touches their area:
   setup, or environment troubleshooting.
 - `/ai/DONE_LOG.md` - historical implementation details when needed to
   understand why completed work happened. Do not load it by default.
-- `/ai/EXAMPLE_PROJECT.md` - reference example of a fully-initialized
+- `/ai/EXAMPLE_SOLUTION.md` - reference example of a fully-initialized
   project. Load only for orientation; never copy its content into a
   real project.
 - `/ai/reference/*` - inactive reference material. Load only when the user
@@ -114,54 +114,78 @@ and no template exists, ask before inventing a new permanent planning file.
 
 ---
 
-## 4. First-Time Project Initialization
+## 4. First-Time Initialization (solution + first project)
 
-If the project is still a starter project (PROJECT.md still has TBD
-sections or "Project Name: TBD"), the AI must STOP and recommend the
+If the repo is still a starter (SOLUTION.md has TBD sections or
+"Solution Name: TBD"), the AI must STOP and recommend the
 friendly entry point instead of starting work directly:
 
-> "This looks like a fresh `ai-starter` project that hasn't been
-> initialized yet. The friendliest path is to run one of the kickoff
-> interviews — they'll ask you the right questions one at a time and
-> generate a customized setup prompt for you:
+> "This looks like a fresh `ai-starter` repo that hasn't been
+> initialized yet. The kit creates a **solution** that holds 1-N
+> **projects**. You add one project at a time. The friendliest path
+> is a short wizard — 3 picks + 1 free-text — that generates a
+> customized setup prompt:
 >
-> - **New project (greenfield)** → `/ai/templates/KICKOFF_NEW_PROJECT.md`
-> - **Adopting into an existing app** → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+> - **New solution + first project** → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
+> - **Add another project to an existing solution** → `/ai/templates/KICKOFF_ADD_PROJECT.md`
+> - **Adopting into an existing app that has no `/ai/` folder** → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
 >
-> Want me to run one of those now? If you already know exactly what you
-> want and would rather skip the interview, I can run
-> `/ai/templates/INIT_PROMPT.md` (greenfield) or
+> Want me to run one of those now? If you already know exactly what
+> you want and would rather skip the wizard, I can run
+> `/ai/templates/INIT_PROMPT.md` (new solution),
+> `/ai/templates/ADD_PROJECT_PROMPT.md` (add project), or
 > `/ai/templates/ADOPT_PROMPT.md` (brownfield retrofit) directly."
 
-Only proceed with `INIT_PROMPT.md` / `ADOPT_PROMPT.md` directly if the
-user explicitly opts out of the interview. Defaulting to the interview
-is the foolproof path; the direct prompts are for confident users who
-know what they want.
+Only proceed with the direct actor prompts if the user explicitly
+opts out of the wizard. Defaulting to the wizard is the foolproof
+path; the direct prompts are for confident users who know what
+they want.
+
+### Files updated during init (new-solution mode)
 
 Whichever path is taken, the initialization process must update:
 
-- `/ai/PROJECT.md`
+- `/ai/SOLUTION.md` (solution identity + Projects table with the
+  first row)
 - `/ai/CURRENT_STATE.md`
-- `/ai/ARCHITECTURE.md`
-- `/ai/SPEC.md`
+- `/ai/ARCHITECTURE.md` (Mermaid with the first project)
+- `/ai/SPEC.md` (first-project section)
 - `/ai/ROADMAP.md`
-- `/ai/TASKS.md`
+- `/ai/TASKS.md` (Phase-1 tasks for the first project + P3-T0 in
+  Backlog)
 - `/ai/TESTING.md`
-- `/ai/DEPLOYMENT.md`
-- `/ai/BUDGET.md`
-- `/ai/DECISIONS.md` (add project-specific ADRs for each major choice)
-- `/ai/DEV_ENVIRONMENT.md` (document the chosen environment)
+- `/ai/DEPLOYMENT.md` (env vars only; cloud TBD at P3-T0)
+- `/ai/BUDGET.md` (free-tier ceilings + rough preference)
+- `/ai/DECISIONS.md` (ADRs for local stack + application-layer
+  security + license; deploy ADRs deferred to P3-T0)
+- `/ai/DEV_ENVIRONMENT.md`
 - `/ai/HANDOFF.md`
 
-It must also create at the project root:
+It must also create at the solution root:
 
 - `LICENSE` (chosen during init; recorded as an ADR).
 - `README.md`, `SECURITY.md`, `CONTRIBUTING.md` (from
   `/ai/templates/*.template.md`).
 
+And create the first project's folder:
+
+- `projects/<project-name>/README.md` with the recipe-driven
+  stack + verified versions + local-dev story.
+
+### Files updated during add-project mode
+
+- `/ai/SOLUTION.md` (new row in the Projects table; possibly new
+  free-tier ceilings)
+- `/ai/ARCHITECTURE.md` (new node in the Mermaid + edges to
+  projects in `talks_to`)
+- `/ai/DECISIONS.md` (new ADRs for the new project's stack)
+- `/ai/TASKS.md` (Phase-1 tasks for the new project)
+- `/ai/CURRENT_STATE.md`, `/ai/HANDOFF.md`, `/ai/DONE_LOG.md`
+- `projects/<new-project-name>/README.md`
+
 The AI must preserve `/ai/START_HERE.md`, `/ai/AI_RULES.md`, and
-`/ai/WORKFLOW.md` as stable cross-project files unless explicitly told
-to modify them.
+`/ai/WORKFLOW.md` as stable cross-solution files unless explicitly
+told to modify them.
 
 ---
 

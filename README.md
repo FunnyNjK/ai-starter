@@ -20,35 +20,34 @@ into a concrete project and initialized with an application description.
 
 | Your situation | Paste this prompt into your AI tool |
 | --- | --- |
-| 🌱 **Starting something brand new** | `/ai/templates/KICKOFF_NEW_PROJECT.md` |
-| 🔧 **Adding this kit to an existing app** | `/ai/templates/KICKOFF_EXISTING_PROJECT.md` |
+| 🌱 **Starting something brand new** | `/ai/templates/KICKOFF_NEW_SOLUTION.md` |
+| ➕ **Adding another project to an existing solution** | `/ai/templates/KICKOFF_ADD_PROJECT.md` |
+| 🔧 **Adding this kit to an existing app (no `/ai/` yet)** | `/ai/templates/KICKOFF_EXISTING_PROJECT.md` |
 | 🔄 **Already on an older version of this starter** | `/ai/templates/REFRESH_PROMPT.md` |
 
-The two `KICKOFF_*` prompts interview you one question at a time (with
-sensible defaults at every step) and then generate the customized prompt
-that does the actual setup. **They're the foolproof entry point — start
-there if you're not sure what to type.**
+The `KICKOFF_*` prompts are **wizards** — 3 picks + 1 free-text,
+modeled on every dev's muscle memory for "new project" dialogs in
+VS Code / Visual Studio / Rider / IntelliJ / Xcode. They generate
+the customized prompt that does the actual setup. **They're the
+foolproof entry point — start there if you're not sure what to
+type.**
 
-> **Not building a web app?** As of v1.0.0, this kit supports nine
-> component types — web app, static site, API service, CLI tool,
-> library/SDK, mobile app, desktop app, data/ML pipeline, and
-> plugin/extension — and real projects are usually composites of
-> 1–N of them. See [docs/PROJECT_SHAPE_GALLERY.md](docs/PROJECT_SHAPE_GALLERY.md)
-> for the full catalog with Mermaid diagrams at each complexity rung.
->
-> Building a web app and not sure which *kind* you're building?
-> See [docs/CHOOSING_WEBAPP_PATH.md](docs/CHOOSING_WEBAPP_PATH.md) —
-> a decision tree (with Mermaid diagram) covering static sites, SPAs,
-> CRUD apps, SaaS, e-commerce, AI apps, realtime / collaboration,
-> internal dashboards, public/private/sensitive surfaces, payments,
-> external API + AI cost, and deployment shape. It complements the
-> shape gallery for the web-specific decision tree.
+> **As of v1.2.0, this kit organizes work as a "solution" (the
+> repo) that holds 1-N "projects" (apps / services / libraries
+> inside it).** First-time init creates the solution + your first
+> project. Subsequent projects get added one at a time via
+> add-project mode. v1.2.0 ships 8 templates covering the common
+> language × platform combinations (Next.js, ASP.NET Core, Astro,
+> NestJS, FastAPI, Python Typer CLI, TypeScript library, React
+> Native); more are added in minor releases. See
+> `/ai/templates/recipes/` for the catalog.
 
-If you already know exactly what you want, you can skip the interview:
+If you already know exactly what you want, you can skip the wizard:
 
-| Path | Direct prompt (skips the interview) |
+| Path | Direct prompt (skips the wizard) |
 | --- | --- |
-| Greenfield init | `/ai/templates/INIT_PROMPT.md` |
+| New solution + first project | `/ai/templates/INIT_PROMPT.md` |
+| Add a project to existing solution | `/ai/templates/ADD_PROJECT_PROMPT.md` |
 | Brownfield retrofit (catch up) | `/ai/templates/ADOPT_PROMPT.md` |
 | Existing project housekeeping | `/ai/templates/REFRESH_PROMPT.md` |
 
@@ -71,14 +70,22 @@ If you already know exactly what you want, you can skip the interview:
 
 ## What's included
 
-- **Friendly entry points**: `KICKOFF_NEW_PROJECT.md` and
-  `KICKOFF_EXISTING_PROJECT.md` interview you and generate the right
-  customized setup prompt.
-- **Setup actors**: `INIT_PROMPT.md` (greenfield), `ADOPT_PROMPT.md`
-  (brownfield retrofit), `REFRESH_PROMPT.md` (older-project housekeeping).
+- **Wizards**: `KICKOFF_NEW_SOLUTION.md` (new repo + first project),
+  `KICKOFF_ADD_PROJECT.md` (add a project to an existing solution),
+  `KICKOFF_EXISTING_PROJECT.md` (retrofit onto an in-place app).
+- **Actors**: `INIT_PROMPT.md` (new solution + first project),
+  `ADD_PROJECT_PROMPT.md` (add a project), `ADOPT_PROMPT.md`
+  (brownfield retrofit), `REFRESH_PROMPT.md` (older-project
+  housekeeping).
+- **Recipe library** (`/ai/templates/recipes/`): 8 opinionated
+  templates as of v1.2.0 — Next.js / ASP.NET Core / Astro for
+  web; NestJS / FastAPI for server; Python Typer for CLI;
+  TypeScript tsup for library; React Native for mobile. Each
+  recipe encodes the design philosophy (auth handoff, migration
+  ownership, credential isolation) that a flat dep list can't.
 - **AI on-ramp**: `/ai/START_HERE.md` — the single entry point every AI
   session reads first.
-- **Planning files**: identity (`PROJECT.md`), behavior (`SPEC.md`),
+- **Planning files**: identity (`SOLUTION.md`), behavior (`SPEC.md`),
   shape (`ARCHITECTURE.md`), state (`CURRENT_STATE.md`), work (`TASKS.md`,
   `ROADMAP.md`), decisions (`DECISIONS.md`), env (`DEV_ENVIRONMENT.md`),
   testing (`TESTING.md`), deploy (`DEPLOYMENT.md`), cost (`BUDGET.md`),
@@ -88,7 +95,7 @@ If you already know exactly what you want, you can skip the interview:
   checkpoints, blocked escalation, task quality.
 - **Templates** for tasks, chat end / handoff, README, SECURITY,
   CONTRIBUTING, INCIDENT post-mortems, CI security, CURRENT_STATE, HANDOFF.
-- **Worked example** (`/ai/EXAMPLE_PROJECT.md`) — what a fully-initialized
+- **Worked example** (`/ai/EXAMPLE_SOLUTION.md`) — what a fully-initialized
   project looks like, for reference.
 - **Tool-native memory hooks** for Claude Code, Codex, Cursor, Copilot,
   and Gemini.

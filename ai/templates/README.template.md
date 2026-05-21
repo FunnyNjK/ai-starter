@@ -1,7 +1,7 @@
 # {Project Name}
 
 > One-paragraph description of what this project is and who it's for.
-> Lift this from `/ai/PROJECT.md` "Application Description" — keep it
+> Lift this from `/ai/SOLUTION.md` "Application Description" — keep it
 > short.
 
 ## Tech stack
@@ -17,7 +17,7 @@
 - {IaC: Terraform / OpenTofu}
 - {CI: GitHub Actions / GitLab CI / etc.}
 
-See `/ai/PROJECT.md` for the full stack and `/ai/DECISIONS.md` for the
+See `/ai/SOLUTION.md` for the full stack and `/ai/DECISIONS.md` for the
 rationale behind each choice.
 
 ## Quick start
@@ -58,7 +58,7 @@ decisions, deployment, handoff.
 If you're an AI assistant: **read `/ai/START_HERE.md` first**.
 
 If you're a human: see [CONTRIBUTING.md](CONTRIBUTING.md) for dev-env
-setup, and `/ai/PROJECT.md` for what the project is.
+setup, and `/ai/SOLUTION.md` for what the project is.
 
 ## Deployment
 
@@ -68,7 +68,7 @@ See `/ai/DEPLOYMENT.md`.
 
 See [SECURITY.md](SECURITY.md) for vulnerability reporting and
 supported versions. The project's security baseline is documented in
-`/ai/PROJECT.md` "Security Baseline" and `/ai/AI_RULES.md` Security
+`/ai/SOLUTION.md` "Security Baseline" and `/ai/AI_RULES.md` Security
 Rules.
 
 ## License

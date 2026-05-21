@@ -109,9 +109,9 @@ Before editing files, confirm:
 - The project has the starter `/ai/` files available. If `/ai/` is
   missing, stop and ask the user to copy the starter into this repo
   before continuing.
-- If `/ai/PROJECT.md` is already project-specific (not starter-generic
+- If `/ai/SOLUTION.md` is already project-specific (not starter-generic
   / TBD), stop and use REFRESH_PROMPT instead.
-- If `/ai/PROJECT.md` is still starter-generic (Project Name = TBD),
+- If `/ai/SOLUTION.md` is still starter-generic (Project Name = TBD),
   continue with ADOPT.
 - The user wants the catch-up path (preserve existing code; add
   workflow on top), not start-fresh (which goes through INIT_PROMPT).
@@ -166,7 +166,7 @@ Produce project-specific versions of every `/ai/*.md` file. Each one
 should reflect the CURRENT state of the project, not an aspirational
 state. Use the templates in `/ai/templates/` for shape.
 
-### `/ai/PROJECT.md`
+### `/ai/SOLUTION.md`
 - Name, application description, users, goals, non-goals — from the
   user's interview answers and the existing README.
 - **Components** section: list each inferred component with its rung

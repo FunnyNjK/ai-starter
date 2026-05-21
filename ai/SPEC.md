@@ -7,9 +7,9 @@ TBD until the project is initialized.
 
 This file captures **concrete behavior** the project must deliver — the
 "what does it do, and how do we know" layer that sits between
-`PROJECT.md` (identity, scope) and `ARCHITECTURE.md` (shape).
+`SOLUTION.md` (identity, scope) and `ARCHITECTURE.md` (shape).
 
-`PROJECT.md` answers *what is this and why?*
+`SOLUTION.md` answers *what is this and why?*
 `ARCHITECTURE.md` answers *how is it built?*
 **`SPEC.md` answers *exactly how should it behave, and what would prove
 it's wrong?***

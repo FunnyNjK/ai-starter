@@ -1,6 +1,6 @@
 # AI Rules
 
-Last Updated: 2026-05-20
+Last Updated: 2026-05-21
 
 These rules are non-negotiable for every AI assistant working in this
 repository. They override any contradicting suggestion from the user, an
@@ -69,7 +69,7 @@ silent.
   - Multi-region or replica plan recorded as an ADR.
   - Formal change management referenced in `/ai/WORKFLOW.md`.
 
-**The resolved rule set is recorded in `/ai/PROJECT.md`** during
+**The resolved rule set is recorded in `/ai/SOLUTION.md`** during
 P0-T1 under a "Rules in force" heading, so every later session
 inherits the same picture and a refresh pass can detect drift.
 
@@ -262,10 +262,12 @@ See `/ai/WORKFLOW.md` for the full blocked / escalation workflow.
 ## Task Quality Rules (Hard)
 
 - **Every task in `TASKS.md` lists `Prerequisites: <task IDs>`** (use `none` if there are none). The init prompt and any task-creation pass must populate this.
+- **Every task in a multi-project solution lists `Project: <name>`** identifying which project in the solution the task touches. Use `Project: solution` for tasks that touch the solution-level `/ai/` files only (no project code). Use `Project: <name1>, <name2>` for tasks that span multiple projects. Solo-project solutions may omit this line until a second project is added.
 - **When step ordering matters** (scaffold before CI, IAM before storage, network before compute, DB schema before app code that reads it, OIDC trust before first deploy, etc.), the task body lists steps in the required order, and each step's expected output / state.
 - **Every task includes a `Verification` section** the next task can rely on (e.g., "command X exits 0", "the URL responds 200", "`terraform plan` is empty", "the migration appears in `<list>`"). A task is not Done until its verification passes.
 - **Every task includes `Rollback / Recovery` notes** when partial failure would leave the project in a state that blocks subsequent tasks (cloud resources partially created, migration half-applied, secret rotated but not redeployed). Pure-code tasks where `git reset` suffices may say `not applicable`.
 - **Every task respects `Prerequisites`.** The AI must not start a task whose prerequisites are not yet `Done`. If a stop-the-line prerequisite is missing, mark the task Blocked per the Blocked Escalation Rule.
+- **Task IDs are solution-level**, not project-level. `P1-T1`, `P1-T2`, ... are unique across the whole solution. The `Project:` line above identifies which project the task touches. This keeps the prerequisite graph readable when a task in one project depends on a task in another.
 
 ## Coding Rules
 
@@ -273,7 +275,7 @@ See `/ai/WORKFLOW.md` for the full blocked / escalation workflow.
 - Follow existing project patterns.
 - Add or update tests when behavior changes.
 - Keep secrets out of code, logs, and committed files.
-- Match the conventions documented in `/ai/PROJECT.md` and
+- Match the conventions documented in `/ai/SOLUTION.md` and
   `/ai/DEV_ENVIRONMENT.md` (language, formatter, lint, package manager,
   etc.). If those files are still TBD, ask before introducing tooling
   choices.

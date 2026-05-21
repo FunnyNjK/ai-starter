@@ -52,7 +52,7 @@ This project follows the Security Rules (Hard) defined in
   non-root.
 
 The project-specific implementation of each is recorded as ADRs in
-`/ai/DECISIONS.md` and indexed in `/ai/PROJECT.md` "Security
+`/ai/DECISIONS.md` and indexed in `/ai/SOLUTION.md` "Security
 Baseline".
 
 ## Out of scope

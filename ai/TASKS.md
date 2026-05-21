@@ -24,7 +24,7 @@ and license as ADRs.
 - none
 
 #### Scope Included
-- Update `/ai/PROJECT.md` (name, description, goals, non-goals, target
+- Update `/ai/SOLUTION.md` (name, description, goals, non-goals, target
   users, tech stack)
 - Update `/ai/CURRENT_STATE.md`
 - Update `/ai/ARCHITECTURE.md` with the project's intended design
@@ -65,12 +65,12 @@ tool-native memory hook check, then migration inventory, then env vars.
 
 For the friendliest path, use the kickoff interview prompt that
 generates a customized version of `INIT_PROMPT.md`:
-- New project: `/ai/templates/KICKOFF_NEW_PROJECT.md`
+- New project: `/ai/templates/KICKOFF_NEW_SOLUTION.md`
 - Existing app: `/ai/templates/KICKOFF_EXISTING_PROJECT.md` (which
   may route to `ADOPT_PROMPT.md` instead for the catch-up path)
 
 #### Acceptance Criteria
-- All TBD sections in `PROJECT.md` are replaced with project-specific
+- All TBD sections in `SOLUTION.md` are replaced with project-specific
   content or intentionally marked as open questions.
 - A project-appropriate set of Phase-1 tasks is queued, each meeting
   the Task Quality Rules in `/ai/AI_RULES.md`.
@@ -85,7 +85,7 @@ generates a customized version of `INIT_PROMPT.md`:
 
 #### Verification
 - `git ls-files | grep -E '^(LICENSE|README\.md|SECURITY\.md|CONTRIBUTING\.md|CLAUDE\.md|AGENTS\.md|\.cursorrules|GEMINI\.md|\.github/copilot-instructions\.md)$' | wc -l` returns `9`.
-- Every section in `/ai/PROJECT.md` has been edited (no `TBD` remaining
+- Every section in `/ai/SOLUTION.md` has been edited (no `TBD` remaining
   except where flagged as an open question).
 - `/ai/DECISIONS.md` has at least one ADR per major stack / infra /
   security / license choice.

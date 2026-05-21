@@ -1,733 +1,453 @@
-# Project Init Prompt
+# Init Prompt — Create Solution + First Project
 
-Use this prompt against a FRESH project that was just cloned from the
-`ai-starter` template, to convert the generic starter files into
-project-specific planning files.
+Use this prompt against a FRESH repo cloned from `ai-starter` to
+convert the generic starter into a solution-specific planning
+folder + the first project's scaffold shape.
 
-This is one of three sibling actor prompts:
+This is one actor prompt in the v1.2.0+ family:
 
-- **INIT_PROMPT.md** (this file) — first-time setup of a new project
-  (P0-T1), greenfield or migrate-from-old-repo.
-- **ADOPT_PROMPT.md** — retrofit `/ai/` onto an in-place existing app;
-  reverse-engineer the planning files without changing app code.
-- **REFRESH_PROMPT.md** — housekeeping pass on a project that already
-  has `/ai/` from an older starter version.
+- **INIT_PROMPT.md** (this file) — first-run: creates solution +
+  first project.
+- **ADD_PROJECT_PROMPT.md** — subsequent runs: adds a project to
+  an existing solution.
+- **ADOPT_PROMPT.md** — retrofit `/ai/` onto an in-place existing
+  app that doesn't have planning files yet.
+- **REFRESH_PROMPT.md** — housekeeping on a project that has
+  `/ai/` from an older starter version.
 
-For the friendly entry point that interviews the user and generates a
-customized version of one of the above, see
-`/ai/templates/KICKOFF_NEW_PROJECT.md` (greenfield) or
-`/ai/templates/KICKOFF_EXISTING_PROJECT.md` (brownfield).
+The friendly entry point that interviews and generates a
+customized version of this prompt is
+`/ai/templates/KICKOFF_NEW_SOLUTION.md`.
 
 For a worked example of what the output looks like, see
-`/ai/EXAMPLE_PROJECT.md`.
+`/ai/EXAMPLE_SOLUTION.md`.
 
 ---
 
 ## Prompt to paste to the AI assistant
 
 ```text
-You are running a project initialization session.
+You are running the `ai-starter` init session — first run on a
+fresh repo. Your job: create the solution-level `/ai/` files,
+create `projects/{project_name}/` with the first project's
+scaffold shape, queue Phase-1 tasks for that project, and queue
+the solution-level P3-T0 deploy-planning task.
 
-OLD REPO (read-only reference): {fill in path, or "none — greenfield"}
+OLD REPO (read-only, optional): {fill in path, or "none — greenfield"}
 NEW REPO: current working directory.
+
+The NOTES block below carries answers from KICKOFF_NEW_SOLUTION.
+If no NOTES block is present, surface that and recommend the user
+run KICKOFF_NEW_SOLUTION.md first.
 
 ## Bootstrap checklist
 
 Before editing files, confirm:
 
-- This is a fresh project initialization, not a refresh of an existing app.
-- The working directory is the new repo, not any read-only reference repo.
-- The user supplied either an application description or enough old-repo
-  context to infer one.
-- If OLD REPO is "none — greenfield", skip migration inventory and
-  old-project cataloging steps.
-- If OLD REPO is provided, inspect it read-only and use it for context
-  (brand, content, information architecture, existing integrations).
-- If the user came from KICKOFF_NEW_PROJECT.md or
-  KICKOFF_EXISTING_PROJECT.md, a NOTES block at the top of this prompt
-  carries the captured answers and a starting Mermaid system diagram.
-  Inherit both — do not re-interview the user on settled choices.
+- This is a fresh init: `/ai/SOLUTION.md` is still starter-generic
+  (Solution Name = TBD). If it's already project-specific, STOP —
+  use REFRESH_PROMPT.md or ADD_PROJECT_PROMPT.md.
+- `/ai/PROJECT.md` does NOT exist (would indicate a pre-1.2.0
+  starter). If it does, STOP — run REFRESH_PROMPT.md first.
+- The NOTES block lists a `template_recipe` path that exists
+  under `/ai/templates/recipes/`. If it doesn't, STOP and ask
+  the user to re-run the wizard.
+- Working directory is the new repo (not any OLD REPO).
+- No real secrets are in your context. Placeholders only.
 
-## Inherited from kickoff (read the NOTES block carefully)
+## Inherited from kickoff (read the NOTES block)
 
-The kickoff NOTES block, if present, carries:
+The NOTES block carries:
 
-- `feature_loop`, `audience`, `goals`, `non_goals`.
-- `tier` — solo prototype / small team / production. Tier governs
-  which `/ai/AI_RULES.md` Hard rule blocks apply (see the Rule
-  Applicability section of AI_RULES).
-- `components` — a list of 1–N components, each with a name (per
-  `/docs/PROJECT_SHAPE_GALLERY.md`), a rung (e.g., "Web R5"), and
-  a `dimension_defaults` map pre-filled from the rung.
-- `compliance`, `cloud_preference` (rough — finalized at P3-T0),
-  `budget_preference_usd` (rough — finalized at P3-T0),
-  `alert_threshold_hint`, `license`, `repo_strategy`,
-  `version_strategy`, `shared.*`, `budget_preference_decision`.
-- A Mermaid composite system diagram.
+- `mode: new-solution-with-first-project`
+- `platform`, `language`, `template`, `template_recipe`
+- `project_name` (sensible default per platform)
+- `feature_loop` (1-3 sentences, scoped to THIS first project)
+- `tier` (default: small team / early production)
+- `license` (default: MIT)
+- `cloud_preference: deferred to P3-T0`
+- `budget_preference: deferred to P3-T0`
+- `compliance: none` (user adds later via SOLUTION.md edits)
 
-If no NOTES block was provided, the user is running INIT_PROMPT.md
-directly without kickoff. Surface this and recommend they run
-`/ai/templates/KICKOFF_NEW_PROJECT.md` first unless they're sure
-they want to skip the interview. If they insist on proceeding,
-gather the equivalent info inline: feature loop, tier, component
-list with rungs, then the rest of the kickoff answers.
+If running without a NOTES block, gather equivalent info inline,
+then proceed.
 
-## Live diagram during init (mandatory)
+## Step 1 — Read AI files + recipe
 
-If the NOTES block from kickoff includes a Mermaid system diagram,
-inherit it as the starting picture. Re-render the diagram (fenced as
-```mermaid```) at the following checkpoints and show it to the user so
-they can sanity-check the direction at each one:
+Read `/ai/START_HERE.md`, `/ai/AI_RULES.md`, `/ai/SOLUTION.md`
+(currently generic), `/ai/ARCHITECTURE.md`, `/ai/DECISIONS.md`,
+and the template recipe at `{template_recipe}`.
 
-- After Step 4 (infrastructure) — once the cloud subgraph, managed
-  services, and IaC layout are concrete.
-- After Step 5 (security baseline) — annotate the diagram with
-  trust-boundary callouts (PII flows, payment flows, secret store
-  reads).
-- After Step 10 (SPEC) — confirm the diagram still matches the user
-  flows in SPEC.
-- Before declaring P0-T1 done — the final diagram is the picture the
-  next phase inherits.
+Honor all (Hard) rule blocks. Particular attention to:
 
-Rules: `flowchart LR`, subgraphs by trust boundary, annotate nodes
-with the specific choice + version once verified, mark deferred or
-open dimensions with a `TBD` suffix and dashed links, keep under ~25
-nodes. The final diagram is committed to `/ai/ARCHITECTURE.md`
-"System Overview" section.
+- Local-First Development Rule — no cloud / IaC / OIDC / monthly-
+  budget-cap decisions in this session. Those are P3-T0.
+- Versioning Rules — verify every dep version live from its
+  canonical source. No training-data versions.
+- Task Quality Rules — every queued task tags `Project: {project_name}`
+  (or `Project: solution` for solution-level tasks).
 
-## Step 1 — Read AI files
+The recipe at `{template_recipe}` is the canonical source for:
+opinionated dep list, folder layout, design philosophy, auth
+pattern, DB / cache / queue runtime versions, dev story.
 
-Read /ai/START_HERE.md first, then follow its Context Loading Strategy.
-Because this is first-time initialization, load the full planning context
-instead of only the Fast Context set.
-Honor /ai/AI_RULES.md as non-negotiable. Pay particular attention to the
-(Hard) blocks — Git, Planning-File Hygiene, Versioning, Security,
-Infrastructure & Hosting, Cost, Destructive Operations, Reasoning
-Checkpoint, **Local-First Development**, Blocked Escalation, and Task
-Quality — because every step below references them.
+## Step 2 — Validate the feature loop
 
-**Read the Local-First Development Rule carefully before Step 4.** It
-defers cloud / IaC / managed-service / OIDC / budget-cap decisions out
-of init and into a Phase-3 deploy-planning task. Init records the
-local container runtime and free-tier ceilings only.
-
-Glance at /ai/templates/ — HANDOFF.template.md, CURRENT_STATE.template.md,
-and TASK_TEMPLATE.md are the target shapes for the files you'll write.
-/ai/EXAMPLE_PROJECT.md shows what a fully-initialized project looks
-like. /ai/WORKFLOW.md defines branching, PRs, hotfixes, and how
-blockers are escalated. REFRESH_PROMPT.md is for existing repos; ignore
-here.
-
-## Step 2 — Validate the application description (gate before everything else)
-
-Before choosing any tech stack or infrastructure, validate that the
-user's application description (from the kickoff NOTES block, or from
-the user's chat message) describes a *real product* — what end users
-*do* — and not just infrastructure, architecture, or a reusable
+Before scaffolding, validate that `feature_loop` describes a real
+product — what end users *do* — not infrastructure or a
 foundation.
 
-**Refuse to proceed past this step if the description**:
+**Refuse to proceed past this step if `feature_loop`**:
 
-- Uses **foundation / template / starter / scaffold / base / skeleton
-  / boilerplate** language without naming a concrete user-facing
-  feature loop. Examples that should refuse: "a foundation for B2C
-  SaaS apps", "a secure starter template", "a scaffold for future
-  products".
-- Is **architecture-only**: a list of surfaces, services, or
-  technologies without saying what users *do*. Examples that should
-  refuse: "a SaaS with marketing, web app, API, worker", "an Azure app
-  with Clerk + Plaid + Postmark + Stripe", "a multi-tenant Next.js +
-  Postgres stack".
+- Uses foundation / template / starter / scaffold / base /
+  skeleton / boilerplate language without naming a concrete
+  user-facing feature loop.
+- Is architecture-only (a list of surfaces / services /
+  technologies, no user behavior).
 
-When refused, ask the user (and loop until satisfied):
+Loop with the user until product-shaped. If they insist they
+only want a reusable foundation, point at `ai-starter` itself
+and ask once more. If still no product, mark task `Blocked` per
+the Blocked Escalation Rule.
 
-> "The description so far is more about infrastructure than product.
-> This starter plans infrastructure as *supporting work for a real
-> product*, not as the product itself. What does an end user actually
-> *do* with this app — concrete feature loop, e.g. 'users sign up,
-> then [verb] [object], and get [outcome]'?"
+## Step 3 — Verify dependency versions live
 
-A valid answer looks like:
+Per the Versioning Rules in `/ai/AI_RULES.md`, look up the current
+stable version of EVERY dep in the recipe from its canonical
+source AS OF TODAY. Sources: npm registry, PyPI, NuGet, Maven
+Central, crates.io, pkg.go.dev, official runtime sites, Docker Hub
+for container images, Terraform registry.
 
-- "Users sign up, link bank accounts via Plaid, categorize
-  transactions, set monthly budgets, and get alerts when over."
-- "Team leads create projects, add tasks, assign teammates, set due
-  dates, and move tasks across a kanban board."
-- "Visitors read marketing pages, fill out a contact form, and I get
-  an email."
+Do NOT pin versions from training-data knowledge. Versions move.
 
-If the user insists they only want a reusable foundation, point out
-that `ai-starter` itself already plays that role (they can fork it for
-each new project) and ask one more time for the actual product. If
-they still cannot describe a product, **mark the task `Blocked` per
-the Blocked Escalation Rule** and stop — don't manufacture features.
+For each dep, capture: name, verified version, canonical source
+URL, date verified. These go into per-dep ADRs in Step 8.
 
-Once the description is product-shaped, proceed to Step 3. Every later
-step assumes you know what users *do* with this app.
+## Step 4 — Local infrastructure only (Phase 1)
 
-## Step 3 — Choose the tech stack and verify versions (per component)
+Per the Local-First Development Rule, this step is scoped to
+**local development only**. Cloud / IaC / managed-service / OIDC /
+runtime-secret-store decisions are deferred to P3-T0.
 
-For each component in the inherited `components` list, walk its
-dimensions per `/docs/PROJECT_SHAPE_GALLERY.md`. The kickoff
-pre-filled `dimension_defaults` from the picked rung; use those as
-the starting point and only re-decide where they're marked
-"decide at init" or where the user explicitly defers.
-
-Components in the gallery (with their dimension sets) are:
-
-- Web app — frontend, backend (if split), language, DB, ORM,
-  auth provider, authz model, caching, object storage, queues,
-  email, payments, observability, test, package manager.
-- Static site — generator, host, build pipeline, analytics, CMS
-  (if applicable), serverless platform (if forms).
-- API service — framework, language, DB, ORM, auth, queue,
-  schema validation, observability, test, package manager.
-- CLI tool — language, package manager, registry/distribution,
-  test, lint/format, release automation, auth flow (if backend),
-  credential storage (if auth).
-- Library / SDK — language, package manager, registry, test,
-  lint/format, release automation, docs generator, HTTP client
-  (if SDK), code-gen (if multi-language family).
-- Mobile app — framework, local persistence, test, crash
-  reporting, distribution, push (if backend), payments (if any).
-- Desktop app — framework, local persistence, test, code-signing,
-  auto-update, distribution.
-- Data / ML pipeline — orchestrator, warehouse, transform tool,
-  source connectors, secrets store, observability, ML framework
-  (if ML), experiment tracking (if ML).
-- Plugin / extension — host platform, manifest, bundler, test,
-  distribution, auth (if R2+), AI provider (if R4).
-
-For EACH chosen item across all components, look up the current
-stable version from its canonical source (npm registry / PyPI /
-Maven Central / NuGet / crates.io / pkg.go.dev / official runtime
-site / Docker Hub for DB images, etc.).
-Do NOT pin from training-data knowledge — versions move. No
-pre-release / RC / beta / alpha / nightly versions.
-
-Capture each major choice as an ADR in /ai/DECISIONS.md (numbered
-ADR-001, ADR-002, ...) with: decision, the version, the date verified,
-the canonical source URL, rationale, and trade-offs. Ask the user before
-locking in choices that materially change the project's shape.
-
-## Step 4 — Choose local infrastructure (Phase 1 only)
-
-Per the Local-First Development Rule in `/ai/AI_RULES.md`, this step
-is intentionally scoped to **local development only**. Cloud target,
-IaC, managed-service instances, OIDC, runtime secret stores, and
-network defaults are **deferred to Phase 3's deploy-planning task
-(P3-T0)** — they are not init decisions.
-
-Skip this step entirely if NO component in the project will need any
-stateful deps for local development (e.g., a pure CLI library that
-publishes to a package registry and has no DB / cache / queue).
-
-### What this step does decide (Phase 1)
+Decide and record as ADRs:
 
 - **Local container runtime**: Docker Compose / Podman / OrbStack /
-  Lima — pick one and record an ADR + a `/ai/DEV_ENVIRONMENT.md`
-  entry. This is the runtime that will host the project's stateful
-  deps during local development.
-- **Stateful dep engine families + local versions**: for each DB /
-  cache / queue / search / object store the project needs locally,
-  pick the engine (Postgres / Redis / RabbitMQ / Elasticsearch /
-  MinIO / etc.) and pin the local container image version from
-  Docker Hub. Record each as an ADR with the verified version and
-  source URL. These versions will eventually mirror the managed-
-  service versions chosen at P3-T0, but THAT decision is deferred.
-- **Local `.env.example`**: list every env var the local app will
-  need with placeholder values. Real secret-store binding is
-  Phase-3 territory.
+  Lima. Recipe may have a preference; honor it unless the user
+  overrides. Record in `/ai/DEV_ENVIRONMENT.md`.
+- **Stateful dep container versions** (Postgres / Redis / etc.,
+  per the recipe): pin to the verified Docker Hub version. Match
+  whatever P3-T0 will eventually pick for managed-service major
+  versions (but THAT decision is deferred).
+- **Local `.env.example`**: list every env var the project will
+  need with placeholder values. Real secret-store binding is P3-T0
+  territory.
 
-### What this step does NOT decide (deferred to P3-T0)
+Do NOT write ADRs for cloud target, IaC tool, Terraform state,
+managed-service instances, OIDC, runtime secret store, network
+defaults, or monthly budget cap. Those are deferred to P3-T0.
 
-Do NOT write ADRs for any of the following at init. The kickoff may
-have captured a *preference* (e.g., "user prefers GCP"); record that
-preference verbatim in `/ai/DEPLOYMENT.md` under "Deploy preferences
-(revisit at P3-T0)" but do not commit to it via an ADR.
+## Step 5 — Application-layer security baseline (solution-level)
 
-- Cloud target (AWS / Azure / Google Cloud / other).
-- IaC tool (Terraform / OpenTofu) and the state backend.
-- Managed-service instance choices (RDS / Cloud SQL / Memorystore /
-  ElastiCache / S3 / GCS / etc.). Local container versions are picked
-  now; the matching managed-service versions are picked at P3-T0.
-- OIDC federation between CI and cloud.
-- Runtime secret store (Secrets Manager / Key Vault / Secret Manager).
-- Network defaults (subnets, security groups, ingress allowlists).
-- Environment parity policy (dev / QA / prod major-version matching).
+Decide and record as ADRs (solution-level, applies to all
+projects unless a project overrides):
 
-### Brownfield exception
-
-If you arrived here from `ADOPT_PROMPT.md` and the project is already
-deployed, the cloud / IaC / managed-service / OIDC decisions have
-already been made *implicitly* by what's in the repo. Document them
-as **retroactive ADRs** in this step rather than deferring — they
-describe existing state. The Phase-3 P3-T0 task in that case is a
-review pass, not a from-scratch planning pass.
-
-## Step 5 — Choose the application-layer security baseline
-
-Per the Security Rules in AI_RULES.md, decide the **application-layer**
-baseline now. **Cloud-network-layer** security (production CORS
-allowlists, rate-limit thresholds tuned to prod traffic, OIDC
-federation, container digest pinning in prod manifests) is deferred
-to P3-T0 deploy planning per the Local-First Development Rule.
-
-Decide and record as ADRs now (Phase 1):
-
-- Auth library or auth provider for end users (if the project has them).
-- Password hashing algorithm (default: argon2id) and the library that
-  provides it.
-- Schema-validation library for request payloads.
-- CORS / CSP **development defaults** (production allowlists at P3-T0).
-- Rate-limiting library/strategy (production thresholds at P3-T0).
+- Auth library / service for end users (if applicable).
+- Password hashing algorithm (default: argon2id) + library.
+- Schema-validation library.
+- CORS / CSP development defaults (production allowlists at P3-T0).
+- Rate-limiting library / strategy (production thresholds at P3-T0).
 - Dependency-update automation (Dependabot / Renovate).
-- SAST tool(s) appropriate to the language(s).
-- SCA tool / source for CVE feeds.
-- Logging library and the redaction strategy for PII / secrets.
-- Container image base (if containers are used) and the CVE scanner that
-  will run in CI.
+- SAST tooling per language.
+- SCA tooling.
+- Logging library + PII redaction strategy.
+- Container base image policy (if applicable).
 
-Record each as an ADR. The project's `/ai/PROJECT.md` should point at
-these ADRs in its "Security Baseline" section. The cloud-network-layer
-ADRs added at P3-T0 will be appended later.
+Record each ADR with `Project: solution` since these apply
+solution-wide.
 
-## Step 6 — Free-tier ceilings (Phase 1 cost tracking)
+## Step 6 — Free-tier ceilings (solution-level)
 
-Per the Cost Rules in AI_RULES.md and the Local-First Development
-Rule, monthly cloud budget cap + alert thresholds + cost-impacting
-log are **deferred to P3-T0 deploy planning**. Init only captures
-third-party free-tier ceilings that bind from Phase 1.
+Per the Cost Rules + Local-First Development Rule, only free-tier
+ceilings are captured at init. The monthly cloud budget cap and
+alert thresholds are deferred to P3-T0.
 
-Do now (Phase 1):
+For each third-party service the recipe chose that has a free
+tier (email provider's monthly send cap, auth provider's request
+quota, etc.), record the limit and the escalation path in
+`/ai/BUDGET.md` "Free-tier and tier choices".
 
-- For each third-party service chosen at Step 3 (auth provider's
-  free tier, email service's monthly send cap, OAuth provider's
-  request quota, etc.), record the free-tier ceiling and the
-  escalation path in `/ai/BUDGET.md` under "Free-tier and tier
-  choices".
-- If the kickoff captured a rough budget preference, record it
-  verbatim in `/ai/BUDGET.md` under "Rough budget preference
-  (revisit at P3-T0)". This is informational, not a Cost-Rules-
-  compliant cap.
+If the kickoff captured a rough budget preference, record it in
+`/ai/BUDGET.md` "Rough budget preference (revisit at P3-T0)".
 
-Do NOT do now (deferred to P3-T0):
+## Step 7 — License
 
-- Monthly cloud budget cap.
-- Alert thresholds (50/80/100%) wired to cloud-native budget
-  alerting.
-- "Major cost contributors" cost projections — meaningless without
-  chosen managed services.
-- Cost-impacting changes log scaffolding — the log starts logging
-  when the first managed service is provisioned at Phase 4.
+Inherit `license` from the NOTES block (default: MIT). Write the
+license text to `LICENSE` at the solution root and record an ADR
+in `/ai/DECISIONS.md` (`Project: solution`).
 
-### Brownfield exception
+## Step 8 — Write ADRs
 
-If the project is already deployed (ADOPT_PROMPT.md path), the
-Cost Rules cap + thresholds + cost-impacting log all apply *now*,
-backfilled retroactively. The deferral above is for new projects
-that haven't yet built anything to deploy.
+Append ADRs to `/ai/DECISIONS.md` for every choice from Steps 3-7.
+Number sequentially. Shape:
 
-## Step 7 — Choose a license
+  ## ADR-NNN: {Decision title}
+  Date: {today}
+  Status: Accepted
+  Project: {project_name | solution}
 
-Ask the user what license the project ships under. Defaults to
-recommend, in rough order of permissiveness:
+  ### Decision
+  Use {dep} {verified version}. Verified on {today} from
+  {canonical source URL}.
 
-- **MIT** — the standard "use however you want, keep the copyright
-  notice" choice. Recognized by GitHub, npm, PyPI, etc.
-- **Apache 2.0** — like MIT plus an explicit patent grant. Use when
-  patents matter.
-- **The Unlicense / CC0** — public-domain dedication. No attribution
-  required.
-- **BSL / proprietary** — when the project is closed-source or
-  source-available with restrictions.
+  ### Reason
+  {From the recipe or the Local-First Development Rule.}
 
-Write the chosen license text to `LICENSE` at the project root and
-record the choice as an ADR. Reference the license from `README.md`
-and `CONTRIBUTING.md`.
+  ### Tradeoffs
+  {Honest tradeoffs.}
 
-## Step 8 — Inspect the old repo (read-only, skip if greenfield)
+  ### Related Tasks
+  {Phase-1 task IDs.}
 
-Treat it as read-only. Never modify it. Catalog: pages or modules,
-content, copy, assets, brand (colors/fonts), navigation, integrations,
-features to drop, opportunities to improve.
+Cover at minimum: language, framework, DB engine family (if any),
+ORM (if any), auth library, password hashing, schema validation,
+test runner, lint/format, package manager, local container
+runtime, local container versions for each stateful dep, license.
 
-## Step 9 — Decide a design / migration direction
+## Step 9 — (Conditional) Old-repo inspection + migration direction
 
-If migrating from an old repo, decide with the user whether to:
+Skip if OLD REPO is "none — greenfield".
 
-- **Preserve** — keep the old design and behavior as faithfully as
-  possible while only re-implementing on a new stack.
-- **Evolve** — preserve identity (brand, content, information
-  architecture) but modernize implementation, conventions, accessibility,
-  and performance.
-- **Rebuild** — treat the old repo as reference only, not a constraint
-  on the new design.
+If OLD REPO is provided:
+- Inspect read-only. Never modify it.
+- Catalog: pages / modules, content, copy, assets, brand, nav,
+  integrations, features to drop, opportunities to improve.
+- Decide with the user: Preserve / Evolve / Rebuild. Record as an
+  ADR.
 
-Document the chosen direction (and any notable evolution choices) as
-ADRs.
+## Step 10 — Fill in `/ai/SPEC.md` (solution-level, scoped to first project)
 
-## Step 10 — Fill in /ai/SPEC.md
+For non-trivial projects, populate `/ai/SPEC.md` with the first
+project's user flows, edge cases, performance budgets,
+accessibility targets, browser / device / runtime support, and
+compliance requirements (if any).
 
-For non-trivial projects (anything beyond a CRUD demo), populate
-/ai/SPEC.md with:
+When more projects are added later, SPEC.md gets per-project
+sections. For now, just the first project's section.
 
-- Core user flows (trigger, pre-conditions, happy path, failure modes,
-  authorization).
-- Edge cases and invariants.
-- Performance budgets.
-- Accessibility targets (WCAG conformance level).
-- Browser / device / runtime support.
-- Compliance / privacy / data-handling requirements (GDPR, CCPA,
-  HIPAA, etc., if any).
+## Step 11 — Create solution-level files + first project scaffold shape
 
-This is the file Phase-2 task acceptance criteria are built from. If
-it's vague, the AI will write vague feature tasks.
+### Solution-level updates
 
-## Step 11 — Update planning files and queue tasks
+Rewrite `/ai/SOLUTION.md`:
+- Replace TBD identity sections with the user's answers.
+- Projects table gets one row: `{project_name} | {platform} | {language} | {template} | Phase 1`.
+- Tier section = `{tier}` from NOTES (with the rationale).
+- Rules in force section = applicable Hard rule blocks per tier.
+- Tech stack / security / infrastructure sections point at the
+  ADRs written in Step 8.
 
-Make all /ai/*.md files project-specific. Mark P0-T1 done in TASKS.md
-and DONE_LOG.md.
+Rewrite `/ai/ARCHITECTURE.md`:
+- "System Overview" Mermaid `flowchart LR` with one node for
+  `{project_name}` (role-labeled, no vendor names).
+- Cloud subgraph marked dashed and labeled "TBD — set at P3-T0".
+- Trust boundaries annotated based on Step 5 security baseline.
 
-Queue Phase-1 tasks. Phase 1 task content depends on (a) the
-component set and (b) the tier. Use the rubric below — only
-include tasks that actually apply to a component this project
-contains and the tier this project runs at.
+Rewrite `/ai/CURRENT_STATE.md`, `/ai/HANDOFF.md`, `/ai/DONE_LOG.md`
+per the templates (keep within line caps).
 
-### Phase-1 task ordering (Local-First Development Rule)
+Update `/ai/ROADMAP.md` with solution-specific milestones under
+the existing Phase 0..5 structure.
 
-The Phase-1 deliverable order is fixed by the Local-First Development
-Rule in `/ai/AI_RULES.md`. CI is configured AFTER local is green —
-never before. Hosting / OIDC / IaC / first-deploy tasks are NOT
-Phase-1 tasks; they belong to Phase-3 P3-T0 and Phase 4.
+### Per-project files
 
-**Always, in this order (regardless of components/tier):**
+Create `projects/{project_name}/` with:
+- `README.md`: project-specific stack + verified versions +
+  canonical source URLs + date verified + local-dev story
+  (run, test, build). Pulled from the recipe.
+- `.gitkeep` or a minimal placeholder file if the recipe
+  doesn't ship one — actual scaffolding happens in P1-T1.
 
-1. **Scaffold the project layout** (language, framework, lint/format,
-   test runner, `.gitignore`, `.env.example` if applicable,
-   project README from `/ai/templates/README.template.md`).
-   For multi-component projects: scaffold the workspace structure
-   (monorepo or multi-repo) per `repo_strategy`.
-2. **Verify local development loop is green.** This task gates
-   everything after it. The project's standard "run locally" command
-   works (`pnpm dev` / `cargo run` / `python -m app` / etc.); lint,
-   type-check (if applicable), tests, and build all pass locally.
-   No CI configured yet — this task is verified by the developer
-   running the commands by hand and reporting success.
-3. **Configure CI that mirrors the local loop.** Add lint,
-   type-check, test, build steps to CI, exactly matching what step
-   2 already verified locally. The first CI run should pass on the
-   first try because it's running what already worked locally. Use
-   `/ai/templates/ci-security.template.yml` only as a guardrail
-   scaffold for the security scanning leg; the lint/test/build legs
-   come from step 2's commands.
-4. **Dependency-update automation** (Dependabot / Renovate).
-5. **Write SECURITY.md and CONTRIBUTING.md** at the project root.
+## Step 12 — Queue Phase-1 tasks for the first project + P3-T0
 
-**Per-component additions:**
-- **Library / SDK component**: package-registry publishing
-  setup, release automation (changesets / release-please /
-  semantic-release / cargo publish workflow).
-- **CLI component**: distribution channel setup (npm bin
-  publish, Homebrew formula scaffold, GitHub Releases binary
-  matrix), version-bump workflow.
-- **Mobile component**: code-signing setup (Apple / Google),
-  store-listing scaffolds, beta-distribution channel (TestFlight
-  / Play Internal Testing).
-- **Desktop component**: code-signing + notarization, auto-update
-  feed scaffold.
-- **Plugin / extension component**: manifest scaffold for the
-  target host, store-listing draft (Chrome Web Store / VS Code
-  Marketplace).
-- **Data pipeline component**: orchestrator scaffold (Airflow /
-  Dagster / Prefect), warehouse connection, first DAG/asset that
-  runs a noop transform end-to-end.
+Append to `/ai/TASKS.md`. Use sequential P1-T{n} IDs. Each task
+includes `Project: {project_name}` (or `Project: solution` for
+solution-level tasks).
 
-**Tier-conditional additions:**
-- **Solo prototype**: P3-T0 stays in Phase 3 normally; the project
-  may choose at P3-T0 to defer deploy entirely with an ADR noting
-  the trigger that flips it to small-team tier (first paid user,
-  first non-local environment, etc.).
-- **Production**: add on-call rotation setup, SLO/SLI definition
-  task, disaster-recovery runbook, multi-region/replica plan,
-  incident template integration with `/ai/templates/INCIDENT_TEMPLATE.md`.
-  These can be Phase-3 tasks alongside P3-T0.
+Phase-1 tasks for `{project_name}`, in order (Local-First
+Development Rule):
 
-### Phase-3 deploy-planning task (queue at init, execute later)
+1. P1-T1: Scaffold `{project_name}` per the recipe. Project:
+   `{project_name}`.
+2. P1-T2: Verify local development loop is green for
+   `{project_name}` (gates P1-T3). Project: `{project_name}`.
+3. P1-T3: Configure CI workflow that mirrors the local loop for
+   `{project_name}`. Project: `{project_name}`.
+4. P1-T4: Add Dependabot / Renovate config. Project: solution.
+5. P1-T5: Write SECURITY.md and CONTRIBUTING.md at solution root
+   from `/ai/templates/SECURITY.template.md` and
+   `/ai/templates/CONTRIBUTING.template.md`. Project: solution.
 
-Queue this Phase-3 task at init so it doesn't get forgotten between
-Phase 2 (features built) and Phase 4 (first deploy). It executes
-when the user is ready to deploy — typically end of Phase 2 or
-during Phase 3 — but **it must complete before any Phase-4 task
-starts.**
+Phase-3 deploy-planning task (Backlog):
 
-```markdown
-### P3-T0: Deploy Planning (cloud, IaC, budget ADRs)
-Status: Backlog
-Owner: AI Assistant
-Priority: High
+  ### P3-T0: Deploy Planning (cloud, IaC, budget ADRs)
+  Status: Backlog
+  Project: solution
+  Prerequisites: Phase 2 complete
 
-#### Goal
-Make and record the deploy decisions deferred from init: cloud
-target, IaC tool + state backend, managed-service instances per
-stateful dep picked at P1-Tn, runtime secret store, OIDC trust
-shape, network defaults, environment-parity policy, monthly
-budget cap + alert thresholds. Updates BUDGET.md from rough
-preference to a Cost-Rules-compliant cap, and queues Phase-4
-implementation tasks.
+  See `/ai/ROADMAP.md` Phase 3 "Deploy Planning" sub-section
+  for full scope. Produces the cloud / IaC / managed-service /
+  OIDC / network-defaults / monthly-budget-cap ADRs deferred at
+  init. Queues Phase-4 implementation tasks (P4-T1..P4-T5+).
 
-#### Prerequisites
-Phase 2 complete (the app has a shippable feature loop that
-already runs locally). Per the Local-First Development Rule,
-deploy planning happens after a working app exists, not before.
+Do NOT queue Phase-1 hosting / OIDC / IaC / first-deploy / cloud-
+budget tasks. Those belong to P3-T0 → Phase 4.
 
-#### Scope Included
-- Cloud target ADR (AWS / Azure / Google Cloud; ADR override if
-  other).
-- IaC tool ADR (Terraform / OpenTofu) + state backend ADR.
-- One managed-service ADR per stateful dep picked at P1-Tn
-  (e.g., RDS Postgres for the Postgres container; Memorystore
-  Redis for the Redis container; S3 for the MinIO container).
-  Engine major versions match what's pinned locally.
-- Runtime secret store ADR (Secrets Manager / Key Vault /
-  Secret Manager).
-- OIDC federation ADR for CI → cloud auth.
-- Network defaults ADR (private subnets, deny-by-default
-  security groups).
-- Environment-parity policy ADR (dev/QA/prod major-version
-  match policy).
-- BUDGET.md: replace "Rough budget preference" with a Cost-
-  Rules-compliant monthly cap, alert thresholds (50/80/100% or
-  user-specified), notification channel, "Major cost
-  contributors" table with live pricing lookups, "Cost-impacting
-  changes log" scaffolding.
-- Update PROJECT.md "Infrastructure" and "Security Baseline"
-  sections to point at the new ADRs.
-- Update ARCHITECTURE.md "Infrastructure & Hosting" section
-  (filled in from the new ADRs).
-- Update Mermaid diagram with the cloud subgraph + managed-
-  service nodes.
-- Queue Phase-4 implementation tasks: P4-T1 (Terraform state
-  bootstrap), P4-T2 (OIDC trust), P4-T3 (first IaC apply for
-  minimal account / project scaffold), P4-T4 (first production
-  deploy of placeholder), P4-T5 (cloud budget+alerts wiring).
+Each task follows `/ai/templates/TASK_TEMPLATE.md` and satisfies
+the Task Quality Rules (Prerequisites, ordered steps,
+Verification, Rollback/Recovery, Project line).
 
-#### Acceptance Criteria
-- All deferred ADRs from init Step 4 / Step 5 / Step 6 are
-  written, dated, with verified versions + canonical source URLs.
-- BUDGET.md has a Cost-Rules-compliant cap (not "rough
-  preference").
-- Phase-4 implementation tasks (P4-T1..P4-T5+) are queued in
-  TASKS.md with prerequisites set.
-- ARCHITECTURE.md Mermaid diagram shows the cloud subgraph.
+CURRENT_STATE ≤ 80 lines, HANDOFF ≤ 50 lines. Use the templates.
+Fresh `Last Updated: YYYY-MM-DD` on every touched file.
 
-#### Verification
-- `grep -E "Phase 2 — set at Pass 2|Rough budget preference"
-  ai/` returns nothing — all deferred markers replaced.
-- TASKS.md contains P4-T1..P4-T5+ blocks with `Status: Backlog`
-  and `Prerequisites: P3-T0`.
+## Step 13 — Tool-native memory hooks
 
-#### Rollback / Recovery
-Documentation-only. `git reset` if planning goes wrong.
-```
-
-Queue Phase 2 tasks for the actual feature work — one per major page,
-screen, module, or service from PROJECT.md and (if applicable) the
-migration inventory. Use /ai/SPEC.md as the source of truth for
-acceptance criteria. Add improvement-list tasks too.
-
-EVERY task must follow `/ai/templates/TASK_TEMPLATE.md` and satisfy the
-Task Quality Rules in AI_RULES.md:
-
-- `Prerequisites: <task IDs>` is present (use `none` if empty).
-- When ordering matters, the task body lists steps in the required
-  order, each with its expected output / state.
-- A `Verification` section is present with concrete checks.
-- A `Rollback / Recovery` section is present (or `not applicable`).
-
-CURRENT_STATE.md ≤ 80 lines. HANDOFF.md ≤ 50 lines. Use the templates
-in /ai/templates/. Add `Last Updated: YYYY-MM-DD` (today's UTC date) to
-the top of every planning file you touch.
-
-## Step 12 — Tool-native memory hooks
-
-The starter ships with these AI-tool-recognized files at the project
-root pointing at `/ai/START_HERE.md`:
+Verify the following exist at the solution root with one-line
+content "Always read /ai/START_HERE.md first":
 
 - `CLAUDE.md` (Claude Code)
-- `AGENTS.md` (Codex CLI and several other agentic tools)
+- `AGENTS.md` (Codex CLI, several agentic tools)
 - `.cursorrules` (Cursor)
 - `.github/copilot-instructions.md` (GitHub Copilot)
 - `GEMINI.md` (Gemini CLI)
 
-Verify these are present in the new project. If a tool the user uses
-has a different memory-file convention, add a one-line stub for it
-that says "Always read /ai/START_HERE.md first."
+Add a stub for any AI tool the user uses that's missing.
 
-## Step 13 — Replace starter-history files and remove starter-setup files
+## Step 14 — Replace starter-history files and remove starter-setup files
 
-The starter ships with files that exist to bootstrap *new* projects and
-files that track the *starter's own* history. After P0-T1, both
-categories must be replaced or removed so downstream projects don't
-inherit the wrong content.
+### Replace
 
-### Replace starter-history files
-
-- **`CHANGELOG.md`** — currently contains the `ai-starter` template's
-  own release history (header starts with `Starter Version:`). Overwrite
-  with a fresh project changelog scaffolding:
+- `CHANGELOG.md` at the solution root: currently the starter's
+  own release log. Overwrite with:
 
   ```markdown
   # Changelog
 
-  Last Updated: <YYYY-MM-DD>
+  Last Updated: <today>
 
   ## Unreleased
-  - Project planning initialized (P0-T1).
+  - Solution planning initialized (P0-T1).
   ```
 
-  Downstream projects add real entries as they cut their own releases.
+- `/ai/DONE_LOG.md`: clear any starter-release entries; seed only
+  the P0-T1 entry for this solution.
 
-- **`/ai/DONE_LOG.md`** — should already be empty in a recent starter,
-  but if it contains starter-release entries, clear them and seed only
-  the P0-T1 entry for this project.
+### Remove (starter-setup files have no use after init)
 
-### Remove starter-setup files
-
-These exist to run *this very init session* and have no use afterward.
-Delete them:
-
-- `ai/templates/KICKOFF_NEW_PROJECT.md`
+- `ai/templates/KICKOFF_NEW_PROJECT.md` (legacy redirect stub)
+- `ai/templates/KICKOFF_NEW_SOLUTION.md`
+- `ai/templates/KICKOFF_ADD_PROJECT.md` — KEEP (used for future
+  add-project runs)
 - `ai/templates/KICKOFF_EXISTING_PROJECT.md`
-- `ai/templates/INIT_PROMPT.md` (you're inside this one — delete on the
-  way out)
+- `ai/templates/INIT_PROMPT.md` (you're inside this one — delete
+  on the way out)
+- `ai/templates/ADD_PROJECT_PROMPT.md` — KEEP (used for future
+  add-project runs)
 - `ai/templates/ADOPT_PROMPT.md`
-- `ai/templates/README.template.md` (already used to generate `README.md`)
-- `ai/templates/SECURITY.template.md` (already used)
-- `ai/templates/CONTRIBUTING.template.md` (already used)
-- `ai/EXAMPLE_PROJECT.md` (illustrative reference for un-initialized
-  projects)
-- `ai/reference/PROMPT_LIBRARY.md` (general AI prompt patterns;
-  optional)
-- The whole `ai/reference/` directory if it ends up empty.
+- `ai/templates/README.template.md` (already used)
+- `ai/templates/SECURITY.template.md` (used in P1-T5 — KEEP until
+  P1-T5 closes, then delete)
+- `ai/templates/CONTRIBUTING.template.md` (same — KEEP until P1-T5)
+- `ai/EXAMPLE_SOLUTION.md`
+- `ai/reference/PROMPT_LIBRARY.md` (if present)
+- `/ai/templates/recipes/` — KEEP if you might add more projects;
+  delete if this is a permanent one-project solution.
 
 Keep:
-
 - `ai/templates/REFRESH_PROMPT.md` (future starter upgrades)
 - `ai/templates/TASK_TEMPLATE.md` (new tasks)
 - `ai/templates/INCIDENT_TEMPLATE.md` (post-mortems)
-- `ai/templates/CHAT_END_PROMPT.md` (used at end of every session)
+- `ai/templates/CHAT_END_PROMPT.md` (end of every session)
 - `ai/templates/CURRENT_STATE.template.md`,
-  `ai/templates/HANDOFF.template.md` (refresh-pass shape)
-
-If the user has a specific reason to keep any of the deleted files,
-honor that — but the default is to delete.
-
-## Step 14 — Create /ai/MIGRATION_INVENTORY.md (skip if greenfield)
-
-- Page / module mapping (old → new → status)
-- Asset mapping (old path → new path)
-- Content mapping (section → source in old repo → notes)
-- Drop list (with reasons)
-- Improvement list (each linked to a TASKS.md entry)
+  `ai/templates/HANDOFF.template.md`
 
 ## Step 15 — Environment variables
 
-Identify every env var the new project will need. Document them in
-/ai/DEPLOYMENT.md "Required Environment Variables", with which secret
-store will hold them in QA and Production. The actual local env file
-(or equivalent) with placeholders gets created during scaffold (P1-T1),
-not now.
+Identify env vars the first project needs (from the recipe + Step
+10 SPEC). Document in `/ai/DEPLOYMENT.md` "Required Environment
+Variables" with placeholder values + which secret store will hold
+each in QA / Production (note: real secret-store binding is P3-T0).
+
+The actual local `.env.example` file is created during scaffold
+(P1-T1), not now.
 
 ## Pre-flight self-check (mandatory before declaring P0-T1 done)
 
-Before marking P0-T1 complete and writing the End-of-Chat report,
-explicitly confirm each item below in chat. If ANY item is unchecked,
-STOP and complete it before closing the task.
+Confirm each item. If ANY unchecked, STOP and fix it.
 
-  Pre-flight before closing P0-T1:
-  - [ ] /ai/PROJECT.md has no remaining TBD sections (open
-        questions are explicitly flagged, not silently TBD).
-  - [ ] /ai/PROJECT.md records the component set and tier
-        explicitly (e.g., "Components: Web app (R5), API service
-        (R3), Static site (R2). Tier: small team.").
-  - [ ] Every major stack / application-layer-security / local-
-        infra / license choice has a corresponding ADR in
-        /ai/DECISIONS.md with: ADR number, Date, Status, Decision,
-        Reason, Tradeoffs, Related Tasks, AND for versioned
-        choices the verified version + canonical source URL + date
-        verified.
-  - [ ] **Deploy ADRs are NOT pre-written** (cloud target, IaC
-        tool, Terraform state, managed-service instances, OIDC,
-        runtime secret store, network defaults, monthly budget
-        cap). Per the Local-First Development Rule, those belong
-        to the P3-T0 task. Init records *local* container runtime
-        + local container versions + free-tier ceilings only.
-  - [ ] For every component, all applicable dimensions (per its
-        section in /docs/PROJECT_SHAPE_GALLERY.md) are either
-        chosen-with-ADR or explicitly captured as a deferred open
-        question with a task queued. Nothing was silently invented.
-  - [ ] Rule applicability decisions are recorded (which Hard
-        rule blocks apply at this tier; any ADR overrides for
-        rules that don't). Includes the Local-First Development
-        Rule (always Always-on).
-  - [ ] The composite Mermaid system diagram is up to date and
-        committed to /ai/ARCHITECTURE.md "System Overview". Cloud
-        subgraph may be marked "TBD — set at P3-T0".
-  - [ ] /ai/BUDGET.md has "Free-tier and tier choices" filled in
-        for any Pass-1 third-party services with free-tier
-        ceilings, AND a "Rough budget preference (revisit at
-        P3-T0)" line if the kickoff captured one. Monthly cap +
-        alert thresholds + Major cost contributors are NOT yet
-        filled in — they get filled in at P3-T0.
-  - [ ] LICENSE, README.md, SECURITY.md, CONTRIBUTING.md exist at
-        the project root.
-  - [ ] All 5 tool-native memory hooks exist at the project root
-        (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md,
-        .github/copilot-instructions.md).
-  - [ ] Phase-1 tasks reflect the component set (per-component
-        scaffolding, distribution, etc.) and are ordered per the
-        Local-First Development Rule (scaffold → verify local
-        green → CI mirrors → Dependabot → SECURITY/CONTRIBUTING).
-        NO hosting / OIDC / IaC / first-deploy tasks in Phase 1.
-  - [ ] **P3-T0 (Deploy Planning) task is queued** in /ai/TASKS.md
-        Backlog with Status=Backlog, Prerequisites=Phase-2 done,
-        and the scope block from Step 11.
-  - [ ] The first Phase-1 task in /ai/TASKS.md has every section
-        from /ai/templates/TASK_TEMPLATE.md populated.
-  - [ ] /ai/CURRENT_STATE.md ≤ 80 lines, /ai/HANDOFF.md ≤ 50 lines.
-  - [ ] Every planning file touched has a fresh
-        `Last Updated: YYYY-MM-DD` header.
-  - [ ] Starter-history files were replaced and starter-setup
-        files removed per Step 13.
+  Pre-flight before closing P0-T1 (new-solution-with-first-project):
+  - [ ] `/ai/SOLUTION.md` has no remaining TBD sections (open
+        questions explicitly flagged).
+  - [ ] `/ai/SOLUTION.md` "Projects" table has exactly one row
+        for `{project_name}`.
+  - [ ] Every major LOCAL stack / application-layer-security /
+        license choice has a corresponding ADR with verified
+        version + canonical source URL + date verified.
+  - [ ] **NO deploy ADRs were pre-written** (cloud target, IaC,
+        managed services, OIDC, runtime secret store, network
+        defaults, monthly budget cap). Per the Local-First
+        Development Rule, those belong to P3-T0.
+  - [ ] `/ai/ARCHITECTURE.md` Mermaid diagram has one node for
+        `{project_name}`. Cloud subgraph (if any) is dashed
+        "TBD — set at P3-T0".
+  - [ ] `/ai/BUDGET.md` has "Free-tier and tier choices" filled
+        in for any third-party services with free-tier ceilings,
+        AND a "Rough budget preference (revisit at P3-T0)" line
+        if the kickoff captured one. Monthly cap + alert
+        thresholds + Major cost contributors are NOT filled in.
+  - [ ] `LICENSE`, `README.md`, `SECURITY.md`, `CONTRIBUTING.md`
+        exist at the solution root.
+  - [ ] All 5 tool-native memory hooks exist at the solution root.
+  - [ ] Phase-1 tasks reflect the Local-First Development Rule
+        ordering: scaffold → verify local green → CI mirrors →
+        Dependabot → root docs. NO hosting / OIDC / IaC / first-
+        deploy / cloud-budget tasks in Phase 1.
+  - [ ] **P3-T0 (Deploy Planning) task is queued** in TASKS.md
+        Backlog with `Project: solution`,
+        `Prerequisites: Phase 2 complete`.
+  - [ ] `projects/{project_name}/README.md` exists with the
+        recipe's content + verified versions.
+  - [ ] The first Phase-1 task in `/ai/TASKS.md` has every section
+        from `/ai/templates/TASK_TEMPLATE.md` populated, including
+        the new `Project:` line.
+  - [ ] `/ai/CURRENT_STATE.md` ≤ 80 lines, `/ai/HANDOFF.md` ≤ 50
+        lines.
+  - [ ] Every touched planning file has fresh
+        `Last Updated: YYYY-MM-DD`.
+  - [ ] Starter-history files replaced and starter-setup files
+        removed per Step 14.
   - [ ] `python3 scripts/lint-planning.py` passes with 0 errors
         and 0 warnings.
 
-If any box is unchecked, fix it and re-run this self-check. Do NOT
-mark P0-T1 Done with unchecked items.
-
 ## Hard rules
 
-- Do NOT scaffold the project yet (P1-T1 task).
+- Do NOT scaffold the project's code yet (P1-T1 task).
 - Do NOT install dependencies yet.
-- Do NOT create real cloud resources yet (P4-T3 task).
+- Do NOT create real cloud resources (P4-T3 task).
 - Do NOT write deploy ADRs (cloud target, IaC, Terraform state,
-  managed services, OIDC, runtime secret store, monthly budget cap)
-  — those belong to P3-T0 per the Local-First Development Rule.
+  managed services, OIDC, runtime secret store, monthly budget
+  cap) — those belong to P3-T0.
 - Do NOT queue Phase-1 hosting / OIDC / IaC / first-deploy / cloud-
-  budget tasks. Those are P4-T1..P4-T5+ tasks queued by P3-T0.
+  budget tasks.
 - Do NOT modify any read-only reference repo.
 - Use placeholders only, never real secrets.
 - Look up versions from canonical sources — never assume from
   training-data knowledge.
 - Push after every commit (Git Rules in AI_RULES.md).
-- Confirm before any destructive operation (Destructive Operations
-  Rules in AI_RULES.md).
-- Mark Blocked, do not silently work around (Blocked Escalation Rule).
+- Confirm before any destructive operation.
+- Mark Blocked, do not silently work around.
 - Run the Pre-flight self-check above before declaring P0-T1 done.
 
 Begin with the Start-of-Chat summary (START_HERE.md section 5).
-End with the End-of-Chat report (START_HERE.md section 6) — including
-the self-critique section — and remember to update CURRENT_STATE,
-TASKS, HANDOFF, DONE_LOG to reflect the closed P0-T1.
+End with the End-of-Chat report (START_HERE.md section 6) —
+including the self-critique section.
 ```

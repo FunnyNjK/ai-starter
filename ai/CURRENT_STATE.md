@@ -18,7 +18,7 @@ None
 - Four phase-run harnesses (`run-phase.sh`, `run-phase-cursor.sh`,
   `run-phase-codex.sh`, `run-phase-copilot.sh`) one per major
   agentic AI CLI, sharing `scripts/run-phase-lib.sh`.
-- Friendly interview prompts (`KICKOFF_NEW_PROJECT.md`,
+- Friendly interview prompts (`KICKOFF_NEW_SOLUTION.md`,
   `KICKOFF_EXISTING_PROJECT.md`) and three setup actors
   (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`).
 - v1.0.0 conceptual model: behavioral diagnostic (D1-D5) classifies
@@ -34,7 +34,7 @@ None
   diagrams and default-dimensions blocks.
 - **Rule Applicability** in `AI_RULES.md` — Infrastructure & Hosting
   and Cost Hard rules are conditional on hosted-component presence
-  and tier; the resolved rule set is recorded in `/ai/PROJECT.md`.
+  and tier; the resolved rule set is recorded in `/ai/SOLUTION.md`.
 - `.gitattributes` enforces LF line endings.
 - Planning linter (`scripts/lint-planning.py`) enforces Task Quality
   / Hygiene Hard Rules. CI runs shellcheck, planning lint, and
@@ -65,15 +65,15 @@ None
 
 ## Important Files or Folders
 - `/ai/START_HERE.md`, `/ai/AI_RULES.md` (10 blocks + Applicability)
-- `/ai/templates/KICKOFF_NEW_PROJECT.md`,
+- `/ai/templates/KICKOFF_NEW_SOLUTION.md`,
   `/ai/templates/KICKOFF_EXISTING_PROJECT.md` — v1.0.0 interviews
 - `/ai/templates/INIT_PROMPT.md` — v1.0.0 with components + tier
 - `/docs/PROJECT_SHAPE_GALLERY.md` — component+rung reference
-- `/ai/EXAMPLE_PROJECT.md`, `/ai/WORKFLOW.md`, `/ai/PROJECT.md`,
+- `/ai/EXAMPLE_SOLUTION.md`, `/ai/WORKFLOW.md`, `/ai/SOLUTION.md`,
   `/ai/ARCHITECTURE.md`, `/ai/DECISIONS.md`, `/ai/TASKS.md`,
   `/ai/HANDOFF.md`
 
 ## Next Recommended Action
-- New project → `/ai/templates/KICKOFF_NEW_PROJECT.md`
+- New project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
 - Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
 - Older starter version → `/ai/templates/REFRESH_PROMPT.md`

@@ -89,7 +89,7 @@ CHANGELOG.md, tests folder, any existing `/ai/` folder, tool-
 native memory hooks (CLAUDE.md / AGENTS.md / .cursorrules /
 GEMINI.md / .github/copilot-instructions.md).
 
-If `/ai/` already exists and `/ai/PROJECT.md` is project-specific
+If `/ai/` already exists and `/ai/SOLUTION.md` is project-specific
 (not TBD), STOP and tell the user:
 
   This project already has /ai/ — it looks like an older

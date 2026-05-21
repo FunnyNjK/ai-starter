@@ -1,11 +1,147 @@
 # Changelog
 
-Starter Version: 1.1.0
-Last Updated: 2026-05-20
+Starter Version: 1.2.0
+Last Updated: 2026-05-21
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 1.2.0 - 2026-05-21
+
+Wizard-style kickoff + solution/project model. Fixes the second
+expensive failure mode observed in real init sessions: the
+behavioral-diagnostic-driven kickoff (15-25 mostly open-ended
+questions) felt confusing and gave users no clear win over a
+generic "describe your project" prompt. The kit also tried to
+scaffold whole composite solutions in one go, which doesn't
+match how real apps actually evolve.
+
+v1.2.0 replaces the 20+-question interview with an IDE-style
+wizard (3 picks + 1 free-text) and replaces the "predict every
+component up front" model with a solution-of-1-N-projects model
+where you add projects one at a time.
+
+### Concept changes
+
+- **Solution = repo. Projects = apps inside it.** `/ai/` lives
+  at the solution root. Each project gets its own
+  `projects/<name>/` folder with a project-specific README. The
+  composite Mermaid diagram in `/ai/ARCHITECTURE.md` is the
+  source of truth for how projects connect.
+- **One project per init run.** First run creates the solution +
+  the first project. Subsequent runs add a project via
+  `KICKOFF_ADD_PROJECT.md`. No more predicting all components
+  up front.
+- **Wizard pattern.** New kickoff is 3 picks + 1 free-text:
+  Platform → Language → Template → Feature loop → Generate.
+  Modeled on VS / Rider / IntelliJ / Xcode "new project"
+  dialogs. Filters at each step (language list narrows by
+  platform; template list narrows by language).
+- **Opinionated templates.** Each template ships with a bundled
+  DB / auth / styling / etc. opinion. No more "do you need a DB"
+  / "do you need auth" wizard turns — the template pick IS that
+  answer.
+- **D1-D5 behavioral diagnostic removed.** Direct picker replaces
+  it. Users `?` on any pick for clarifying examples if needed.
+- **Per-component dimension walks removed.** Templates carry the
+  dimensions; users edit `/ai/SOLUTION.md` after init if they
+  want to deviate.
+- **Compliance walk now conditional.** Defaults to none; user
+  opts in via `+ gdpr` / `+ hipaa` / etc. on the auto-defaults
+  step, or edits `/ai/SOLUTION.md` post-init.
+- **Tier collapsed to one line in `/ai/SOLUTION.md`.** No longer
+  asked in the wizard; defaults to "small team / early
+  production" with rationale.
+
+### Files renamed
+
+- `/ai/PROJECT.md` → `/ai/SOLUTION.md` (content rewritten to
+  describe a solution-with-N-projects rather than a single
+  project with N components).
+- `/ai/EXAMPLE_PROJECT.md` → `/ai/EXAMPLE_SOLUTION.md` (rewritten
+  to show TaskTrack as a solution adding projects across Day 1,
+  Day 30, Day 60).
+
+### New files
+
+- `/ai/templates/KICKOFF_NEW_SOLUTION.md` — Mode 1 wizard (first
+  run: solution + first project).
+- `/ai/templates/KICKOFF_ADD_PROJECT.md` — Mode 2 wizard
+  (subsequent run: add a project to existing solution).
+- `/ai/templates/ADD_PROJECT_PROMPT.md` — actor invoked after
+  Mode 2 wizard. Appends to `/ai/`, creates new
+  `projects/<name>/`, updates the Mermaid diagram.
+- `/ai/templates/recipes/` directory with 8 v1.2.0 templates:
+  - `web/nextjs-ts.md` — Next.js + Postgres + Drizzle + Auth.js + Tailwind
+  - `web/aspnet-core-mvc.md` — ASP.NET Core MVC + EF Core + Identity
+  - `web/astro-static.md` — Astro static + Tailwind + Formspree
+  - `server/nestjs.md` — NestJS + Postgres + Drizzle + JWT
+  - `server/fastapi.md` — FastAPI + SQLAlchemy + Postgres + JWT
+  - `cli/python-typer.md` — Python Typer CLI + Poetry
+  - `library/typescript-tsup.md` — TS library + tsup + changesets
+  - `mobile/react-native.md` — React Native with Expo
+- `/ai/templates/KICKOFF_NEW_PROJECT.md` — converted to a 5-line
+  redirect stub pointing at `KICKOFF_NEW_SOLUTION.md`. Will be
+  deleted in v1.3.0.
+
+### Rewrites
+
+- `/ai/templates/INIT_PROMPT.md` — restructured for "init one
+  project + solution shell" mode. Inherits NOTES block from
+  `KICKOFF_NEW_SOLUTION.md`. Uses the picked recipe as the
+  canonical source for the stack + folder layout + design
+  philosophy. Still verifies live versions per the Versioning
+  Rules.
+- `/ai/SOLUTION.md` (rebooted from `PROJECT.md` rename) —
+  Projects table + Tier + Rules in force + solution-level
+  security baseline + Infrastructure (deferred to P3-T0) +
+  Repository Layout showing `projects/<name>/` convention.
+- `/ai/EXAMPLE_SOLUTION.md` — TaskTrack worked example showing
+  three projects added across time (Day 1: web; Day 30:
+  marketing; Day 60: admin-api).
+- `/ai/START_HERE.md` Section 4 — routes to the new wizards.
+
+### Updated
+
+- `/ai/AI_RULES.md` Task Quality Rules: every task gets a
+  `Project: <name>` line (or `Project: solution` for solution-
+  level tasks). Task IDs stay solution-level (P1-T1, P1-T2, ...)
+  not per-project, so prerequisite graphs work across projects.
+- `scripts/lint-planning.py` — `ai/PROJECT.md` reference replaced
+  with `ai/SOLUTION.md`.
+- `README.md` — "First time?" fork updated for the new wizard
+  routing; new What's Included section listing recipes.
+- 17 other files updated mechanically by find/replace of
+  `PROJECT.md` → `SOLUTION.md` and `EXAMPLE_PROJECT.md` →
+  `EXAMPLE_SOLUTION.md`.
+
+### Migration note for projects on v1.1.0 or earlier
+
+Run `/ai/templates/REFRESH_PROMPT.md` against your project. The
+REFRESH v1.2.0 backfill check (in `v1.2.1` — not landed yet)
+will:
+
+- Rename `/ai/PROJECT.md` → `/ai/SOLUTION.md` and add the
+  Projects table with one row for your current code (treated as
+  the "first project").
+- Reorganize your code under `projects/<name>/` if it isn't
+  already.
+- Update task `Project:` tags.
+
+If you're not ready to migrate, your v1.1.0 project keeps
+working — the v1.2.0 changes are forward-only and don't affect
+already-initialized projects. The recipes / new wizards are
+opt-in for new projects only.
+
+### Deferred to v1.2.1
+
+- `ADOPT_PROMPT.md` refactor for the solution/project model
+  (still references the v1.0.0 component model internally).
+- `KICKOFF_EXISTING_PROJECT.md` refactor (same reason).
+- `REFRESH_PROMPT.md` v1.2.0 backfill check (Check 13).
+- More recipes (Blazor, Django, Flask, Go Echo, Rust Axum,
+  Electron, Tauri, etc.) as patterns prove out.
 
 ## 1.1.0 - 2026-05-20
 

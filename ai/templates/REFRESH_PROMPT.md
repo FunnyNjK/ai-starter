@@ -32,7 +32,7 @@ You are running the `ai-starter` project refresh pass against this repo.
 Read these files first, in order:
 1. /ai/START_HERE.md
 2. /ai/AI_RULES.md
-3. /ai/PROJECT.md
+3. /ai/SOLUTION.md
 4. /ai/DECISIONS.md
 5. /ai/CURRENT_STATE.md
 6. /ai/HANDOFF.md
@@ -50,7 +50,7 @@ editing it.
 ### Check 1 — Dependency / runtime version sweep (bidirectional)
 
 Cross-check every dependency, language version, and toolchain pin
-mentioned in `PROJECT.md`, `ARCHITECTURE.md`, `DEPLOYMENT.md`,
+mentioned in `SOLUTION.md`, `ARCHITECTURE.md`, `DEPLOYMENT.md`,
 `DEV_ENVIRONMENT.md`, and any ADR in `DECISIONS.md`, against the
 actual values declared in the project's manifest, lockfile, runtime
 version files, and CI workflows.
@@ -154,7 +154,7 @@ and Tier** section is present at the top of `AI_RULES.md`. If
 missing, copy it from the current starter and adapt the
 conditionally-applicable blocks (Infrastructure & Hosting, Cost) per
 this project's tier and component set. The resolved rule set
-belongs in `/ai/PROJECT.md` "Rules in force" — see Check 10.
+belongs in `/ai/SOLUTION.md` "Rules in force" — see Check 10.
 
 Also confirm `Handoff Rules` references the **self-critique** section
 in `CHAT_END_PROMPT.md`. Add the requirement if missing.
@@ -186,12 +186,12 @@ planning files won't have the v1.0.0 concepts (components per
 `/docs/PROJECT_SHAPE_GALLERY.md`, complexity tier, Rule
 Applicability). Backfill them:
 
-1. **Components**. Read `/ai/PROJECT.md`, `/ai/ARCHITECTURE.md`,
+1. **Components**. Read `/ai/SOLUTION.md`, `/ai/ARCHITECTURE.md`,
    and the repo tree. Infer the component set per the gallery
    (web app, API service, static site, CLI, library/SDK, mobile,
    desktop, data/ML pipeline, plugin/extension — 1-N per
    project). Pick a rung per component from observed dimensions.
-   Add a "Components" section to `/ai/PROJECT.md` listing each
+   Add a "Components" section to `/ai/SOLUTION.md` listing each
    with its rung. Surface uncertainty rather than guessing — if
    you can't tell whether a `cli/` directory is a real shipped
    CLI or an internal admin script, ask.
@@ -200,13 +200,13 @@ Applicability). Backfill them:
    single contributor, no cloud config); small team (CI present,
    managed hosting, multiple contributors); production (multi-
    region, on-call docs, SLOs/SLAs in README/runbooks). Add a
-   "Tier" section to `/ai/PROJECT.md`. Confirm with the user
+   "Tier" section to `/ai/SOLUTION.md`. Confirm with the user
    before committing.
 
 3. **Rules in force**. Per the Rule Applicability section of
    `/ai/AI_RULES.md`, resolve which (Hard) rule blocks apply at
    the inferred tier with the inferred component set. Record in a
-   "Rules in force" section of `/ai/PROJECT.md`. Note any existing
+   "Rules in force" section of `/ai/SOLUTION.md`. Note any existing
    ADR overrides (e.g., self-hosted Postgres, non-default cloud)
    so they're visible alongside the resolved set.
 
@@ -216,7 +216,7 @@ Applicability). Backfill them:
    there. Role-labeled nodes (no vendor names in the diagram —
    versioned products live in ADRs).
 
-If the project's `/ai/PROJECT.md` already has Components / Tier /
+If the project's `/ai/SOLUTION.md` already has Components / Tier /
 Rules-in-force sections, this check is a no-op — verify they're
 current and move on.
 

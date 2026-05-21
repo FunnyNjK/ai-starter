@@ -2,7 +2,7 @@
 
 Last Updated: 2026-05-13
 
-The kickoff interview (`/ai/templates/KICKOFF_NEW_PROJECT.md`) asks one
+The kickoff interview (`/ai/templates/KICKOFF_NEW_SOLUTION.md`) asks one
 question at a time so you don't have to know everything up front. This
 doc is the map behind those questions. Use it to:
 

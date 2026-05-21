@@ -46,7 +46,7 @@ PLANNING_FILES = [
     "ai/CURRENT_STATE.md",
     "ai/HANDOFF.md",
     "ai/ARCHITECTURE.md",
-    "ai/PROJECT.md",
+    "ai/SOLUTION.md",
     "ai/ROADMAP.md",
     "ai/SPEC.md",
     "ai/TESTING.md",

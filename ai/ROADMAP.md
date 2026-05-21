@@ -24,7 +24,7 @@ Goals:
   planning task (Backlog).
 
 Deliverables:
-- `PROJECT.md` filled in (name, description, goals, non-goals,
+- `SOLUTION.md` filled in (name, description, goals, non-goals,
   components, tier, rules-in-force, local-stack).
 - `CURRENT_STATE.md` reflects "scaffold not yet built."
 - Project-specific ADRs for each major LOCAL choice. NO cloud /
@@ -66,7 +66,7 @@ All of the above are P3-T0 → Phase-4 work, not Phase 1.
 Status: Backlog
 
 Goals:
-- Build the primary features described in `PROJECT.md` / `SPEC.md`.
+- Build the primary features described in `SOLUTION.md` / `SPEC.md`.
 - Every feature ships with passing local tests (per the Local-First
   Development Rule, local-green-before-CI applies throughout
   development, not just at scaffold time).
