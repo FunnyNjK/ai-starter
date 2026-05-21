@@ -11,7 +11,18 @@ rather than jumping back to H2.
 ### [PHASE]-T[NUMBER]: [Task Title]
 Status: Backlog
 Owner: TBD
+Project: [name | solution]
 Priority: Medium
+
+<!--
+`Project:` identifies which project in the solution this task
+touches. Use the project name from `/ai/SOLUTION.md` "Projects"
+table. Use `Project: solution` for tasks that only touch the
+solution-level `/ai/` files (no project code). Use
+`Project: name1, name2` for tasks that span multiple projects.
+Solo-project solutions may omit this line until a second project
+is added. See Task Quality Rules in `/ai/AI_RULES.md`.
+-->
 
 #### Goal
 TBD - one or two sentences. What this task achieves and why.

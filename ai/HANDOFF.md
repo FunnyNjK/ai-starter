@@ -1,50 +1,48 @@
 # AI Handoff
 
-Last Updated: 2026-05-13
+Last Updated: 2026-05-21
 
 ## Current State Summary
-Generic AI project starter (v1.0.0). Not yet initialized — no
-application description, tech stack, or tooling chosen.
+Generic AI solution starter (v1.2.0). Not yet initialized — no
+solution name, project, or tech stack chosen.
 
 ## Last Completed Task
-Starter v1.0.0 release. Composite component model (1-N components
-per gallery), behavioral-diagnostic kickoff (D1-D5), complexity
-tier dial, per-component rung pick + dimension walk, cross-
-component decisions, composite Mermaid diagram, and rule
-applicability in AI_RULES.md. ADOPT and REFRESH updated for v1.0.0
-inheritance; PROJECT.md template ships with Components / Tier /
-Rules-in-force slots; EXAMPLE_PROJECT.md shows the v1.0.0 shape.
+**v1.2.0 release.** Solution/project model + IDE-style wizard
+kickoff (3 picks + 1 free-text) + recipe library with 8
+templates. Replaces the v1.0.0 component/dimension interview.
+`PROJECT.md` → `SOLUTION.md` rename across the kit; new
+`KICKOFF_NEW_SOLUTION.md` / `KICKOFF_ADD_PROJECT.md` /
+`ADD_PROJECT_PROMPT.md` actors. See `CHANGELOG.md` v1.2.0 entry.
 
 ## Active Task
 None
 
 ## Next Recommended Task
-**P0-T1: pick the right entry point.**
-- New project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
-- Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+**P0-T1 (init)** — pick a wizard:
+- New repo + first project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
+- Add project to existing solution → `/ai/templates/KICKOFF_ADD_PROJECT.md`
+- Existing app, no `/ai/` yet → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
 - Older starter version → `/ai/templates/REFRESH_PROMPT.md`
 
-The KICKOFF interviews are the foolproof default. Direct paths
-(`INIT_PROMPT.md`, `ADOPT_PROMPT.md`) are for skip-the-interview
-users.
+Direct actors (`INIT_PROMPT.md`, `ADD_PROJECT_PROMPT.md`,
+`ADOPT_PROMPT.md`) skip the wizard for confident users.
 
 ## What Is Blocked
-- Planning can't begin until an app description is provided.
+- Planning can't begin until wizard Turn 4 (feature loop) is
+  answered.
 
 ## Important Instructions for Next AI
 - Read `/ai/START_HERE.md` first (memory hooks point here).
-- Honor `/ai/AI_RULES.md` — every applicable (Hard) block applies.
-- The new Rule Applicability section makes some blocks conditional
-  on tier and component set; resolve them explicitly in
-  `/ai/SOLUTION.md`.
-- Both kickoffs now require an explicit pre-flight self-check
-  before generating the init prompt. Do not skip it.
-- Reference `/docs/PROJECT_SHAPE_GALLERY.md` for component rungs.
+- Honor `/ai/AI_RULES.md`. Local-First Development Rule defers
+  deploy ADRs to P3-T0.
+- Tasks tag `Project: <name>` per the Task Quality Rule.
+- v1.2.1 deferred work: ADOPT / KICKOFF_EXISTING_PROJECT / REFRESH
+  still reference the v1.0.0 component model — refactor in v1.2.1.
 
 ## Known Risks
-- Skipping planning-file updates causes drift between sessions.
-- Skipping Cost / Destructive Ops / Reasoning Checkpoint rules can
-  silently trigger expensive or risky actions.
+- Planning-file drift between sessions if updates skipped.
+- "Custom" template fallback routes to PROJECT_SHAPE_GALLERY.md
+  (still component/rung terms) — thinner UX than the 8 recipes.
 
 ## Tests / Checks Last Run
-- `python3 scripts/lint-planning.py` — pass after v1.0.0 edits.
+- `python3 scripts/lint-planning.py` — pass after v1.2.0 edits.

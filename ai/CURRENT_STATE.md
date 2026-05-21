@@ -1,79 +1,80 @@
 # Current State
 
-Last Updated: 2026-05-13
+Last Updated: 2026-05-21
 
 ## Current Phase
-Starter / Not initialized
+Starter / Not initialized (v1.2.0)
 
 ## Current Task
 None
 
 ## What Exists Now
-- AI project starter files in `/ai/` (workflow, planning, rules,
-  templates, reference).
+- AI workflow files in `/ai/` (planning, rules, templates, recipes).
 - Tool-native memory hooks at the repo root (`CLAUDE.md`,
   `AGENTS.md`, `.cursorrules`, `GEMINI.md`,
   `.github/copilot-instructions.md`) all point at
   `/ai/START_HERE.md`.
 - Four phase-run harnesses (`run-phase.sh`, `run-phase-cursor.sh`,
-  `run-phase-codex.sh`, `run-phase-copilot.sh`) one per major
-  agentic AI CLI, sharing `scripts/run-phase-lib.sh`.
-- Friendly interview prompts (`KICKOFF_NEW_SOLUTION.md`,
-  `KICKOFF_EXISTING_PROJECT.md`) and three setup actors
-  (`INIT_PROMPT.md`, `ADOPT_PROMPT.md`, `REFRESH_PROMPT.md`).
-- v1.0.0 conceptual model: behavioral diagnostic (D1-D5) classifies
-  projects into 1-N components per `/docs/PROJECT_SHAPE_GALLERY.md`,
-  picks rungs per component, sets a complexity tier (solo prototype
-  / small team / production), runs per-component dimension walks
-  pre-filled from rung defaults, asks cross-component questions
-  (monorepo, versioning, shared identity/CI/design), builds a
-  composite Mermaid diagram, runs a budget reality check, and ends
-  with a Pre-flight self-check before generating the INIT prompt.
-- **`/docs/PROJECT_SHAPE_GALLERY.md`** — reference catalog of 9
-  component types × 4-6 rungs each, with role-labeled Mermaid
-  diagrams and default-dimensions blocks.
-- **Rule Applicability** in `AI_RULES.md` — Infrastructure & Hosting
-  and Cost Hard rules are conditional on hosted-component presence
-  and tier; the resolved rule set is recorded in `/ai/SOLUTION.md`.
+  `run-phase-codex.sh`, `run-phase-copilot.sh`) sharing
+  `scripts/run-phase-lib.sh`.
+- **v1.2.0 conceptual model**: a "solution" (the repo) holds 1-N
+  "projects" (apps/services/libraries inside it). First init
+  creates the solution + first project. Subsequent projects are
+  added one at a time via add-project mode.
+- **Wizard kickoff (3 picks + 1 free-text)**: Platform →
+  Language → Template → Feature loop → Generate. Modeled on
+  IDE new-project dialogs.
+- **Recipe library** (`ai/templates/recipes/`): 8 opinionated
+  templates — Next.js / ASP.NET Core / Astro for web; NestJS /
+  FastAPI for server; Python Typer for CLI; TS tsup for
+  library; React Native for mobile. Each encodes design
+  philosophy (auth handoff, migration ownership, credential
+  isolation).
+- **Local-First Development Rule** (v1.1.0, Always-on): bans
+  CI-as-debug-loop; orders Phase-1 deliverables (local run →
+  local tests → CI mirrors); defers deploy ADRs to Phase-3
+  P3-T0.
+- **Planning linter** (`scripts/lint-planning.py`) enforces Task
+  Quality / Hygiene Hard Rules. CI runs shellcheck, planning
+  lint, and Python syntax validation on every branch push and PR.
+- `/docs/PROJECT_SHAPE_GALLERY.md` and `docs/CHOOSING_WEBAPP_PATH.md`
+  remain as reference docs (no longer wizard inputs; useful for
+  the "Custom" template fallback path).
 - `.gitattributes` enforces LF line endings.
-- Planning linter (`scripts/lint-planning.py`) enforces Task Quality
-  / Hygiene Hard Rules. CI runs shellcheck, planning lint, and
-  Python helper syntax validation on every branch push and PR.
-  Security CI template is a failing guardrail until real
-  SAST/dependency-update config is present.
-- `docs/CHOOSING_WEBAPP_PATH.md` is the web-app decision tree
-  (complement to the gallery).
 - MIT-licensed (`LICENSE`).
-- Application-specific project details have not been filled in.
-- No tech stack, hosting target, or tooling has been chosen yet.
+- Application-specific solution details have not been filled in.
 
 ## What Works
-- The AI workflow is ready to drive a project initialization session
-  for any of the 9 component shapes (or composites).
-- All 10 (Hard) rule blocks in `/ai/AI_RULES.md` apply with tier-
-  and component-aware conditionality.
-- Kickoff templates have Pre-flight self-checks that force example/
-  default offering, dimension coverage, diagram renders, budget
-  reality check, and verbatim user confirmation.
+- The wizard is ready to drive a new-solution init or an
+  add-project run against an existing solution.
+- The 8 recipes cover the common language × platform combos;
+  uncommon combos fall back to a "Custom" path that uses the
+  shape gallery for guidance.
+- All Hard rule blocks in `/ai/AI_RULES.md` apply with tier-
+  and project-aware conditionality.
 
 ## What Is Not Built Yet
-- Project name, description, scope, target users — not filled in.
-- Application code does not exist (this is just the workflow).
+- Solution name, description, scope, target users — not filled in.
+- No projects scaffolded (this is just the workflow).
+- v1.2.1 work: ADOPT_PROMPT.md, KICKOFF_EXISTING_PROJECT.md, and
+  REFRESH_PROMPT.md still reference the v1.0.0 component model
+  internally; refactors deferred to v1.2.1.
 
 ## Known Problems
 - None.
 
 ## Important Files or Folders
-- `/ai/START_HERE.md`, `/ai/AI_RULES.md` (10 blocks + Applicability)
-- `/ai/templates/KICKOFF_NEW_SOLUTION.md`,
-  `/ai/templates/KICKOFF_EXISTING_PROJECT.md` — v1.0.0 interviews
-- `/ai/templates/INIT_PROMPT.md` — v1.0.0 with components + tier
-- `/docs/PROJECT_SHAPE_GALLERY.md` — component+rung reference
-- `/ai/EXAMPLE_SOLUTION.md`, `/ai/WORKFLOW.md`, `/ai/SOLUTION.md`,
-  `/ai/ARCHITECTURE.md`, `/ai/DECISIONS.md`, `/ai/TASKS.md`,
-  `/ai/HANDOFF.md`
+- `/ai/START_HERE.md`, `/ai/AI_RULES.md`
+- `/ai/templates/KICKOFF_NEW_SOLUTION.md` — Mode 1 wizard
+- `/ai/templates/KICKOFF_ADD_PROJECT.md` — Mode 2 wizard
+- `/ai/templates/INIT_PROMPT.md` — new-solution actor
+- `/ai/templates/ADD_PROJECT_PROMPT.md` — add-project actor
+- `/ai/templates/recipes/` — 8 template recipes
+- `/ai/SOLUTION.md`, `/ai/EXAMPLE_SOLUTION.md`
+- `/docs/PROJECT_SHAPE_GALLERY.md` (reference)
 
 ## Next Recommended Action
-- New project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
-- Existing app → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- New repo + first project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
+- Add another project to existing solution → `/ai/templates/KICKOFF_ADD_PROJECT.md`
+- Existing app, no `/ai/` yet → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
 - Older starter version → `/ai/templates/REFRESH_PROMPT.md`
