@@ -3,7 +3,7 @@
 Last Updated: 2026-05-21
 
 ## Current Phase
-Starter / Not initialized (v1.2.0)
+Starter / Not initialized (v1.2.1)
 
 ## Current Task
 None
@@ -56,9 +56,9 @@ None
 ## What Is Not Built Yet
 - Solution name, description, scope, target users — not filled in.
 - No projects scaffolded (this is just the workflow).
-- v1.2.1 work: ADOPT_PROMPT.md, KICKOFF_EXISTING_SOLUTION.md, and
-  REFRESH_PROMPT.md still reference the v1.0.0 component model
-  internally; refactors deferred to v1.2.1.
+- Deferred audit items (future minors): monorepo workspace setup
+  when projects share types; "Custom" template path UX when no
+  v1.2.0 recipe matches.
 
 ## Known Problems
 - None.

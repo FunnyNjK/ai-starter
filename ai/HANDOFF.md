@@ -3,16 +3,15 @@
 Last Updated: 2026-05-21
 
 ## Current State Summary
-Generic AI solution starter (v1.2.0). Not yet initialized — no
+Generic AI solution starter (v1.2.1). Not yet initialized — no
 solution name, project, or tech stack chosen.
 
 ## Last Completed Task
-**v1.2.0 release.** Solution/project model + IDE-style wizard
-kickoff (3 picks + 1 free-text) + recipe library with 8
-templates. Replaces the v1.0.0 component/dimension interview.
-`PROJECT.md` → `SOLUTION.md` rename across the kit; new
-`KICKOFF_NEW_SOLUTION.md` / `KICKOFF_ADD_PROJECT.md` /
-`ADD_PROJECT_PROMPT.md` actors. See `CHANGELOG.md` v1.2.0 entry.
+**v1.2.1 release.** Catches up the brownfield paths to the
+v1.2.0 solution/project model. KICKOFF_EXISTING_PROJECT →
+KICKOFF_EXISTING_SOLUTION rename + wizard rewrite,
+ADOPT_PROMPT.md refactored, REFRESH_PROMPT.md gains Check 12
+(v1.2.0 backfill). Template docs updated. See CHANGELOG v1.2.1.
 
 ## Active Task
 None
@@ -36,8 +35,8 @@ Direct actors (`INIT_PROMPT.md`, `ADD_PROJECT_PROMPT.md`,
 - Honor `/ai/AI_RULES.md`. Local-First Development Rule defers
   deploy ADRs to P3-T0.
 - Tasks tag `Project: <name>` per the Task Quality Rule.
-- v1.2.1 deferred work: ADOPT / KICKOFF_EXISTING_PROJECT / REFRESH
-  still reference the v1.0.0 component model — refactor in v1.2.1.
+- Deferred to a future minor (design work): monorepo workspace
+  setup; "Custom" template path UX.
 
 ## Known Risks
 - Planning-file drift between sessions if updates skipped.
