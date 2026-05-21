@@ -347,7 +347,7 @@ Add a stub for any AI tool the user uses that's missing.
 - `ai/templates/KICKOFF_NEW_SOLUTION.md`
 - `ai/templates/KICKOFF_ADD_PROJECT.md` — KEEP (used for future
   add-project runs)
-- `ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- `ai/templates/KICKOFF_EXISTING_SOLUTION.md`
 - `ai/templates/INIT_PROMPT.md` (you're inside this one — delete
   on the way out)
 - `ai/templates/ADD_PROJECT_PROMPT.md` — KEEP (used for future

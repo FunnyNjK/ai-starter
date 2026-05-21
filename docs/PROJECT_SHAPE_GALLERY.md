@@ -10,7 +10,7 @@ dimension walk will pre-fill if you pick that rung.
 
 ## How to use this gallery
 
-The `KICKOFF_NEW_SOLUTION.md` and `KICKOFF_EXISTING_PROJECT.md`
+The `KICKOFF_NEW_SOLUTION.md` and `KICKOFF_EXISTING_SOLUTION.md`
 interviews use this gallery in two ways:
 
 1. After the diagnostic (D1–D5) narrows your project to a set of

@@ -56,7 +56,7 @@ None
 ## What Is Not Built Yet
 - Solution name, description, scope, target users — not filled in.
 - No projects scaffolded (this is just the workflow).
-- v1.2.1 work: ADOPT_PROMPT.md, KICKOFF_EXISTING_PROJECT.md, and
+- v1.2.1 work: ADOPT_PROMPT.md, KICKOFF_EXISTING_SOLUTION.md, and
   REFRESH_PROMPT.md still reference the v1.0.0 component model
   internally; refactors deferred to v1.2.1.
 
@@ -76,5 +76,5 @@ None
 ## Next Recommended Action
 - New repo + first project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
 - Add another project to existing solution → `/ai/templates/KICKOFF_ADD_PROJECT.md`
-- Existing app, no `/ai/` yet → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- Existing app, no `/ai/` yet → `/ai/templates/KICKOFF_EXISTING_SOLUTION.md`
 - Older starter version → `/ai/templates/REFRESH_PROMPT.md`

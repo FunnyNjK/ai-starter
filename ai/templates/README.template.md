@@ -20,6 +20,30 @@
 See `/ai/SOLUTION.md` for the full stack and `/ai/DECISIONS.md` for the
 rationale behind each choice.
 
+## Repository layout
+
+This repo is a **solution** (per the `ai-starter` model) that holds
+one or more **projects** under `projects/<name>/`. Solution-level
+planning lives under `/ai/`; project-specific stack details live in
+each project's `projects/<name>/README.md`.
+
+```
+.
+├── ai/                       solution-level planning
+├── projects/
+│   ├── {project-1}/          one folder per project
+│   │   └── README.md         project-specific stack + dev story
+│   └── {project-2}/
+├── LICENSE
+├── README.md                 (this file)
+└── ...
+```
+
+To add another project to the solution, paste
+`/ai/templates/KICKOFF_ADD_PROJECT.md` into your AI tool — the wizard
+walks you through the picks and produces the customized prompt that
+adds the project.
+
 ## Quick start
 
 ```bash

@@ -21,7 +21,7 @@ None
 **P0-T1 (init)** — pick a wizard:
 - New repo + first project → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
 - Add project to existing solution → `/ai/templates/KICKOFF_ADD_PROJECT.md`
-- Existing app, no `/ai/` yet → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+- Existing app, no `/ai/` yet → `/ai/templates/KICKOFF_EXISTING_SOLUTION.md`
 - Older starter version → `/ai/templates/REFRESH_PROMPT.md`
 
 Direct actors (`INIT_PROMPT.md`, `ADD_PROJECT_PROMPT.md`,

@@ -22,12 +22,25 @@ See `/ai/DEV_ENVIRONMENT.md` for the canonical setup. The README has
 the day-one quick start; `DEV_ENVIRONMENT.md` covers the toolchain in
 detail (versions, common pitfalls, troubleshooting).
 
+## Adding a new project to the solution
+
+This repo follows the `ai-starter` solution/project model: the repo
+is the **solution**, and each app/service/library lives under
+`projects/<name>/`. To add another project, paste
+`/ai/templates/KICKOFF_ADD_PROJECT.md` into your AI tool — the wizard
+collects the platform / language / template / name and generates an
+`ADD_PROJECT_PROMPT.md` invocation that creates
+`projects/<new-name>/` and updates the solution-level planning files.
+
 ## Project conventions
 
 - **Branch naming**: `feat/<slug>`, `fix/<slug>`, `chore/<slug>`,
   `hotfix/<slug>`. AI-driven branches use `claude/<slug>`,
   `cursor/<slug>`, `codex/<slug>`, or `copilot/<slug>` (matching the
   phase harness in use). See `/ai/WORKFLOW.md`.
+- **Task naming**: tasks in `/ai/TASKS.md` include a
+  `Project: <name>` line identifying which project they touch
+  (`Project: solution` for solution-level tasks).
 - **Commit messages**: short imperative, ~70 chars max. Match the
   existing style in `git log`.
 - **Code style**: enforced via the project's linter and formatter.

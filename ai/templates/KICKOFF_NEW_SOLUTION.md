@@ -21,7 +21,7 @@ Local-First Development Rule defers cloud / budget to Phase 3.
 Compliance walks fire later only if the user explicitly opts in.
 
 If you have an existing app you want to add this kit to, use
-`/ai/templates/KICKOFF_EXISTING_PROJECT.md` instead. If your repo
+`/ai/templates/KICKOFF_EXISTING_SOLUTION.md` instead. If your repo
 already has `/ai/SOLUTION.md` filled in, use
 `/ai/templates/KICKOFF_ADD_PROJECT.md` to add another project.
 

@@ -38,9 +38,9 @@ Read these files first, in order:
 6. /ai/HANDOFF.md
 7. /ai/TASKS.md
 
-Then perform the twelve checks below. For each check, report what you
-found, what you changed, and link to the file(s) you touched. Do NOT
-proceed to the next check until the current one is reported.
+Then perform the thirteen checks below. For each check, report what
+you found, what you changed, and link to the file(s) you touched. Do
+NOT proceed to the next check until the current one is reported.
 
 Throughout: never modify files the user has flagged as personal /
 private. If you are unsure whether a file is in scope, ask before
@@ -266,7 +266,77 @@ Skip this check if the project's `AI_RULES.md` already has the
 Local-First Development Rule (i.e., it was initialized on v1.1.0+
 or already refreshed).
 
-### Check 12 — `origin/main` matches local `main`
+### Check 12 — v1.2.0 solution/project model backfill
+
+If this project was initialized from a pre-1.2.0 starter, its
+`/ai/` folder uses the v1.0.0 component-and-dimension model
+rather than the v1.2.0 solution/project model. The smoking gun:
+`/ai/PROJECT.md` exists (renamed to `/ai/SOLUTION.md` in v1.2.0).
+Backfill:
+
+1. **Rename `/ai/PROJECT.md` → `/ai/SOLUTION.md`** via
+   `git mv`. Same for `/ai/EXAMPLE_PROJECT.md` →
+   `/ai/EXAMPLE_SOLUTION.md` if present. Update
+   `scripts/lint-planning.py` to reference the new name (it
+   lists planning files in a hardcoded list).
+
+2. **Rewrite `/ai/SOLUTION.md` content for the new model.**
+   The v1.0.0 "Components" section becomes a "Projects" table
+   with one row for the existing code (use the project's
+   current shape as the single project). Tier stays the same.
+   Rules in force stays the same. Add a "Repository Layout"
+   section describing the actual folder structure (do NOT
+   restructure code; document it as-is).
+
+3. **Restructure tasks.** Existing tasks in `/ai/TASKS.md`
+   should add `Project: <name>` lines per the new Task Quality
+   Rule. For solo-project solutions, this can be deferred until
+   a second project is added — but new tasks ship with the
+   line.
+
+4. **Reference the new actor/kickoff names** in
+   `/ai/HANDOFF.md` "Next Recommended Task" and
+   `/ai/CURRENT_STATE.md` "Next Recommended Action":
+   - `KICKOFF_NEW_PROJECT.md` → `KICKOFF_NEW_SOLUTION.md`
+   - `KICKOFF_EXISTING_PROJECT.md` → `KICKOFF_EXISTING_SOLUTION.md`
+   - Add references to `KICKOFF_ADD_PROJECT.md` and
+     `ADD_PROJECT_PROMPT.md` for future projects.
+
+5. **Audit Phase-1 task layout** per the Local-First Development
+   Rule (per Check 11). The v1.2.0 model uses the same Phase-1
+   ordering, so if Check 11's audit passed, this part is
+   already aligned.
+
+6. **Add an ADR documenting the v1.2.0 migration.** Use the
+   next ADR number (after the project's existing ADRs):
+
+     ## ADR-NNN: Migrated to v1.2.0 solution/project model
+     Date: {today}
+     Status: Accepted
+     Project: solution
+
+     ### Decision
+     This project was initialized on ai-starter v{X.Y.Z} (the
+     v1.0.0 component-and-dimension model). Migrated to v1.2.0
+     solution/project layout per REFRESH check 12.
+
+     ### Reason
+     v1.2.0 supersedes the component model with a simpler
+     solution-of-1-N-projects shape. Migration enables future
+     add-project runs.
+
+     ### Tradeoffs
+     - One-time churn on planning files.
+     - Existing tasks may need Project: lines added when
+       reopened.
+
+     ### Related Tasks
+     none (housekeeping)
+
+Skip this check if `/ai/PROJECT.md` does not exist (the project
+was initialized on v1.2.0+ already or migrated previously).
+
+### Check 13 — `origin/main` matches local `main`
 
 Run `git status` and `git log --oneline origin/main..HEAD` (or
 equivalent for the project's default branch).
@@ -283,7 +353,7 @@ equivalent for the project's default branch).
 
 ## Final report shape
 
-After all twelve checks complete, the AI returns a single summary:
+After all thirteen checks complete, the AI returns a single summary:
 
 ```text
 Refresh complete.

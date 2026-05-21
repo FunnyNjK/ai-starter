@@ -128,7 +128,7 @@ friendly entry point instead of starting work directly:
 >
 > - **New solution + first project** → `/ai/templates/KICKOFF_NEW_SOLUTION.md`
 > - **Add another project to an existing solution** → `/ai/templates/KICKOFF_ADD_PROJECT.md`
-> - **Adopting into an existing app that has no `/ai/` folder** → `/ai/templates/KICKOFF_EXISTING_PROJECT.md`
+> - **Adopting into an existing app that has no `/ai/` folder** → `/ai/templates/KICKOFF_EXISTING_SOLUTION.md`
 >
 > Want me to run one of those now? If you already know exactly what
 > you want and would rather skip the wizard, I can run

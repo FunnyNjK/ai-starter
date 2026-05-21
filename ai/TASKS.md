@@ -66,7 +66,7 @@ tool-native memory hook check, then migration inventory, then env vars.
 For the friendliest path, use the kickoff interview prompt that
 generates a customized version of `INIT_PROMPT.md`:
 - New project: `/ai/templates/KICKOFF_NEW_SOLUTION.md`
-- Existing app: `/ai/templates/KICKOFF_EXISTING_PROJECT.md` (which
+- Existing app: `/ai/templates/KICKOFF_EXISTING_SOLUTION.md` (which
   may route to `ADOPT_PROMPT.md` instead for the catch-up path)
 
 #### Acceptance Criteria

@@ -22,7 +22,7 @@ into a concrete project and initialized with an application description.
 | --- | --- |
 | 🌱 **Starting something brand new** | `/ai/templates/KICKOFF_NEW_SOLUTION.md` |
 | ➕ **Adding another project to an existing solution** | `/ai/templates/KICKOFF_ADD_PROJECT.md` |
-| 🔧 **Adding this kit to an existing app (no `/ai/` yet)** | `/ai/templates/KICKOFF_EXISTING_PROJECT.md` |
+| 🔧 **Adding this kit to an existing app (no `/ai/` yet)** | `/ai/templates/KICKOFF_EXISTING_SOLUTION.md` |
 | 🔄 **Already on an older version of this starter** | `/ai/templates/REFRESH_PROMPT.md` |
 
 The `KICKOFF_*` prompts are **wizards** — 3 picks + 1 free-text,
@@ -72,7 +72,7 @@ If you already know exactly what you want, you can skip the wizard:
 
 - **Wizards**: `KICKOFF_NEW_SOLUTION.md` (new repo + first project),
   `KICKOFF_ADD_PROJECT.md` (add a project to an existing solution),
-  `KICKOFF_EXISTING_PROJECT.md` (retrofit onto an in-place app).
+  `KICKOFF_EXISTING_SOLUTION.md` (retrofit onto an in-place app).
 - **Actors**: `INIT_PROMPT.md` (new solution + first project),
   `ADD_PROJECT_PROMPT.md` (add a project), `ADOPT_PROMPT.md`
   (brownfield retrofit), `REFRESH_PROMPT.md` (older-project

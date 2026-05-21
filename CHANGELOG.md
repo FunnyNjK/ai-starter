@@ -1,11 +1,58 @@
 # Changelog
 
-Starter Version: 1.2.0
+Starter Version: 1.2.1
 Last Updated: 2026-05-21
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 1.2.1 - 2026-05-21
+
+Catches up the brownfield + refresh paths to the v1.2.0
+solution/project model and fills in the documentation gaps from
+the v1.2.0 fixup audit.
+
+- **`KICKOFF_EXISTING_PROJECT.md` → `KICKOFF_EXISTING_SOLUTION.md`
+  rename + wizard rewrite.** Inspection-driven now: the AI reads
+  your repo, proposes which v1.2.0 projects/recipes match the
+  existing code, and asks 2-3 confirmations. Replaces the v1.0.0
+  component-walk interview. Old filename kept as a redirect stub
+  for one release.
+- **`ADOPT_PROMPT.md` refactored for solution/project model.**
+  Treats existing code as one-or-more projects inside a new
+  solution shell. Creates `projects/<name>/README.md` planning
+  sidecars without restructuring app code. Branches deployed
+  brownfield (retroactive deploy ADRs, P3-T0 marked Done) vs
+  not-deployed brownfield (defer deploy ADRs to P3-T0).
+- **`REFRESH_PROMPT.md` Check 13** added: detects pre-1.2.0
+  projects (have `/ai/PROJECT.md`), renames to `SOLUTION.md`,
+  rewrites the file with the Projects table for the existing
+  code, updates lint script reference, updates HANDOFF /
+  CURRENT_STATE next-action references to the new wizard names,
+  and queues an ADR documenting the migration. Existing Check 12
+  (origin/main parity) renumbered to Check 13.
+- **`README.template.md` and `CONTRIBUTING.template.md`** updated
+  to mention the `projects/<name>/` folder structure and the
+  add-project flow. Downstream-generated docs now reflect the
+  v1.2.0 layout instead of a single-project layout.
+- **9 other files** had stale `KICKOFF_EXISTING_PROJECT.md`
+  references updated to `KICKOFF_EXISTING_SOLUTION.md`.
+
+### Deferred beyond v1.2.1
+
+The two audit items not addressed:
+
+- **Monorepo workspace setup**: when multiple projects in the same
+  solution share types (e.g., Next.js web + NestJS API both in
+  TypeScript), there's no machinery to wire up
+  `pnpm-workspace.yaml` / `Cargo workspace` / `.NET solution`.
+  Design work; deferred to a future minor.
+- **"Custom" template path UX**: when no v1.2.0 recipe matches the
+  user's (platform, language) combo, the wizard routes to
+  `docs/PROJECT_SHAPE_GALLERY.md` which still uses
+  component/rung terminology. UX is thinner than the 8 supported
+  templates. Deferred to a future minor.
 
 ## 1.2.0 - 2026-05-21
 
