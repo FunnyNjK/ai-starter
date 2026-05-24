@@ -56,12 +56,20 @@ Rule (no cloud / IaC / OIDC ADRs in this step), Versioning Rules
 (verify every dep version live from canonical source), and Task
 Quality Rules (every new task lists `Project: {project_name}`).
 
-## Step 2 — Validate the feature loop
+## Step 2 — Validate the feature loop (under-scope + over-scope)
 
-Apply the same foundation/architecture refusal logic as INIT
-Step 2, scoped to THIS new project. If the feature loop is
-foundation- or architecture-shaped, loop with the user. The
-project is supporting work for an end-user feature, not a chassis.
+Apply the same dual validation as INIT_PROMPT.md Step 2:
+
+- **Under-scope refusal**: foundation/architecture-shaped
+  answers get pushed back (same rules as INIT).
+- **Over-scope check**: if the NOTES block carries
+  `feature_loop_scope_check: required` (every v1.3.1+ wizard
+  sets this), check whether the feature_loop describes
+  capabilities the chosen template can deliver. If not,
+  clarify with the user — they may be describing the broader
+  product rather than just THIS project. See INIT Step 2's
+  over-scope section for the prompt shape and the three
+  resolution options (narrow / rewrite / pause-and-add-project).
 
 ## Step 3 — Read the template recipe
 

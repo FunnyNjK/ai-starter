@@ -162,22 +162,20 @@ Capture as `feature_loop`. Apply the light refusal loop ONCE if
 the answer is foundation-shaped (same shape as
 KICKOFF_NEW_SOLUTION Turn 4).
 
-## Turn 8 — Generate the ADD_PROJECT prompt
+## Turn 8 — Generate the NOTES block
 
-Output exactly:
+Output exactly (replace placeholders with captured slots):
 
   ✓ Got it. Adding `{project_name}` ({template name}) to your
   solution. It will talk to: {talks_to or "nothing — standalone"}.
 
-  Copy this prompt into a fresh AI session — cleanest context.
+  Next step — paste THIS NOTES block at the top of a fresh AI
+  session, then say: "Run `/ai/templates/ADD_PROJECT_PROMPT.md`
+  with these NOTES." The actor prompt is in the repo; no need
+  to re-emit it here.
 
   ```text
-  {ADD_PROJECT_PROMPT.md content, with a NOTES block at the top}
-  ```
-
-NOTES block shape:
-
-  NOTES (from KICKOFF_ADD_PROJECT wizard, v1.2.0):
+  NOTES (from KICKOFF_ADD_PROJECT wizard, v1.3.1+):
     mode: add-project-to-existing-solution
     solution_name: {from SOLUTION.md}
     platform: {platform}
@@ -188,11 +186,22 @@ NOTES block shape:
     talks_to: {comma-separated project names, or "none"}
     feature_loop: |
       {verbatim from user}
+    feature_loop_scope_check: required
+      (ADD_PROJECT Step 2 must verify the feature_loop describes
+      THIS new project, not a broader product. If it describes
+      capabilities the template doesn't deliver, ADD_PROJECT
+      prompts to narrow or queue another add-project run.)
     inherited_from_solution:
       tier: {tier from SOLUTION.md}
       license: {license from SOLUTION.md}
       compliance: {compliance from SOLUTION.md}
       cloud_preference: {deferred to P3-T0 or actual cloud from SOLUTION.md}
+  ```
+
+Why a NOTES block instead of the full ADD_PROJECT prompt:
+`ADD_PROJECT_PROMPT.md` already lives at
+`/ai/templates/ADD_PROJECT_PROMPT.md` in the repo. Re-emitting
+its body floods the chat without adding information.
 
 ## After generating
 

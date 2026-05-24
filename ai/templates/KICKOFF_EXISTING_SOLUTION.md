@@ -171,22 +171,20 @@ Wait for reply. Capture as `compliance`.
 If no compliance signals are present, skip this turn entirely
 and default `compliance: none`.
 
-## Step 6 — Generate the ADOPT_PROMPT
+## Step 6 — Generate the NOTES block
 
-Output exactly:
+Output exactly (replace placeholders with captured slots):
 
-  ✓ Got it. Generating an ADOPT prompt that will retrofit
-  `/ai/` onto this repo as a {N}-project solution.
+  ✓ Got it. Generating a NOTES block for ADOPT that will
+  retrofit `/ai/` onto this repo as a {N}-project solution.
 
-  Copy this into a fresh AI session — cleanest context.
+  Next step — paste THIS NOTES block at the top of a fresh AI
+  session, then say: "Run `/ai/templates/ADOPT_PROMPT.md` with
+  these NOTES." The actor prompt is in the repo; no need to
+  re-emit it here.
 
   ```text
-  {ADOPT_PROMPT.md content, with a NOTES block at the top}
-  ```
-
-The NOTES block shape:
-
-  NOTES (from KICKOFF_EXISTING_SOLUTION wizard, v1.2.0+):
+  NOTES (from KICKOFF_EXISTING_SOLUTION wizard, v1.3.1+):
     mode: adopt-existing-into-solution
     solution_name: {inferred from README/repo or asked}
     projects:
@@ -202,6 +200,12 @@ The NOTES block shape:
     compliance: {compliance}
     hooks_status: {present | missing}
     docs_status: {present | missing}
+  ```
+
+Why a NOTES block instead of the full ADOPT prompt:
+`ADOPT_PROMPT.md` already lives at `/ai/templates/ADOPT_PROMPT.md`
+in the repo. Re-emitting its body floods the chat without
+adding information.
 
 ## After generating
 

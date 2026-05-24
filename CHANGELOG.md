@@ -1,11 +1,42 @@
 # Changelog
 
-Starter Version: 1.3.0
+Starter Version: 1.3.1
 Last Updated: 2026-05-22
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 1.3.1 - 2026-05-22
+
+Two fixes from the live E2E test of the Mode 1 wizard:
+
+- **Wall-of-text fix**: the three kickoff wizards
+  (`KICKOFF_NEW_SOLUTION.md`, `KICKOFF_ADD_PROJECT.md`,
+  `KICKOFF_EXISTING_SOLUTION.md`) previously instructed the AI to
+  emit the FULL content of the corresponding actor prompt (INIT /
+  ADD_PROJECT / ADOPT) — ~290 lines per generation — at the end
+  of the wizard. In a real session that floods the chat without
+  adding value (the actor file is already in the repo). Wizards
+  now emit ONLY the NOTES block + a path reference, telling the
+  user to run `/ai/templates/{actor}.md` with the NOTES.
+- **Over-scope detection in feature_loop validation**: wizards
+  now set `feature_loop_scope_check: required` in the generated
+  NOTES block. `INIT_PROMPT.md` Step 2 and
+  `ADD_PROJECT_PROMPT.md` Step 2 gained over-scope checks that
+  read the picked template's recipe and detect when the
+  feature_loop describes capabilities the template can't deliver
+  (e.g., Astro Static + feature_loop mentioning uploads, AI
+  generation, payments, auth). When detected, the AI clarifies
+  with the user rather than silently proceeding — three
+  resolution options: narrow scope to this project, rewrite the
+  feature_loop, or pause INIT and run add-project for the other
+  projects mentioned.
+
+The under-scope refusal (foundation/architecture-shaped answers)
+was already in place since v0.5.5 — that catches a different
+failure mode. The new over-scope check is its mirror image: the
+feature_loop describes MORE than the template covers, not less.
 
 ## 1.3.0 - 2026-05-22
 

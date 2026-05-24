@@ -91,13 +91,15 @@ The recipe at `{template_recipe}` is the canonical source for:
 opinionated dep list, folder layout, design philosophy, auth
 pattern, DB / cache / queue runtime versions, dev story.
 
-## Step 2 — Validate the feature loop
+## Step 2 — Validate the feature loop (under-scope + over-scope)
 
 Before scaffolding, validate that `feature_loop` describes a real
-product — what end users *do* — not infrastructure or a
-foundation.
+product — what end users *do* — AND that the description scopes
+to what this project's template can actually deliver.
 
-**Refuse to proceed past this step if `feature_loop`**:
+### Under-scope refusal (foundation- or architecture-shaped)
+
+Refuse to proceed past this step if `feature_loop`:
 
 - Uses foundation / template / starter / scaffold / base /
   skeleton / boilerplate language without naming a concrete
@@ -109,6 +111,69 @@ Loop with the user until product-shaped. If they insist they
 only want a reusable foundation, point at `ai-starter` itself
 and ask once more. If still no product, mark task `Blocked` per
 the Blocked Escalation Rule.
+
+### Over-scope check (required when NOTES has feature_loop_scope_check)
+
+If the NOTES block carries `feature_loop_scope_check: required`
+(every v1.3.1+ wizard sets this), also check whether the
+feature_loop describes capabilities the chosen template can
+actually deliver.
+
+Read the picked recipe at `{template_recipe}` and identify what
+the template DOES NOT include. Common red flags by template:
+
+- **Astro Static**: feature_loop mentions "sign up", "upload",
+  "AI generation", "order", "purchase", "API", "auth", or any
+  per-user state. Astro Static is a marketing/docs/content
+  site — no DB, no auth, no user state. Form handling via
+  Formspree is the upper bound.
+- **TS Library / Go Module / Python Library**: feature_loop
+  mentions a user-facing UI or hosted endpoints. Libraries are
+  imported, not used directly.
+- **CLI templates**: feature_loop mentions a browser or mobile
+  UI.
+- **Web app templates** (Next.js / ASP.NET MVC / Django):
+  feature_loop mentions mobile-specific capabilities like push
+  notifications or native device APIs.
+
+If the feature_loop mentions capabilities the template can't
+deliver, **don't refuse — clarify**. The user often describes
+the *broader product* the project is part of, especially when
+the project is a marketing site for a larger offering. Render:
+
+  Your feature loop mentions {list capabilities the template
+  doesn't cover}. The {template} template you picked doesn't
+  ship those — they'd belong to separate projects in this
+  solution (which you can add later via add-project mode).
+
+  How do you want to handle this?
+
+    1. The feature_loop describes the WHOLE product; THIS
+       project is just the {template's role — marketing site /
+       CLI / library / etc.} part. I'll narrow the project-
+       specific scope and put the broader description in
+       SOLUTION.md "Application Description" for the eventual
+       multi-project setup.
+    2. The feature_loop is supposed to cover THIS project
+       only — let me rewrite it. (User provides new
+       feature_loop.)
+    3. I want to add the other projects right now — pause
+       INIT and re-run starting from KICKOFF_ADD_PROJECT after
+       INIT completes for the first project.
+
+Capture the user's choice. For (1), narrow the feature_loop
+recorded in `projects/{project_name}/README.md` to just the
+project's part; record the full broader description in
+`/ai/SOLUTION.md` "Application Description". For (2), use the
+new feature_loop and re-validate. For (3), proceed with INIT
+for THIS project's narrow scope and add a note to HANDOFF.md
+saying the next session should run KICKOFF_ADD_PROJECT for the
+other projects mentioned.
+
+If the NOTES block does NOT have `feature_loop_scope_check`
+(pre-v1.3.1 wizards, or a user who skipped the wizard), this
+sub-check is optional — but recommended if the AI notices
+obvious scope mismatches.
 
 ## Step 3 — Verify dependency versions live
 

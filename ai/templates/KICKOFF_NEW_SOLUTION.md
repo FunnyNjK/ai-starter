@@ -156,22 +156,20 @@ loop ONCE if the answer is foundation/architecture-shaped:
 
 Deeper validation is INIT's job (Step 2 of INIT_PROMPT.md).
 
-## Turn 5 — Generate the INIT prompt
+## Turn 5 — Generate the NOTES block
 
-Output exactly:
+Output exactly (replace the placeholders with the captured slots):
 
   ✓ Got it. Creating a solution with {template name} as the first
   project ({project_name_default}).
 
-  Copy this prompt into a fresh AI session — cleanest context.
+  Next step — paste THIS NOTES block at the top of a fresh AI
+  session, then say: "Run `/ai/templates/INIT_PROMPT.md` with
+  these NOTES." The actor prompt is in the repo; no need to
+  re-emit it here.
 
   ```text
-  {INIT_PROMPT.md content, with a NOTES block at the top}
-  ```
-
-The NOTES block shape (fill from captured slots):
-
-  NOTES (from KICKOFF_NEW_SOLUTION wizard, v1.2.0):
+  NOTES (from KICKOFF_NEW_SOLUTION wizard, v1.3.1+):
     mode: new-solution-with-first-project
     platform: {platform}
     language: {language}
@@ -180,12 +178,23 @@ The NOTES block shape (fill from captured slots):
     project_name: {sensible default — see below}
     feature_loop: |
       {verbatim from user}
+    feature_loop_scope_check: required
+      (INIT Step 2 must verify the feature_loop describes THIS
+      project, not a broader product. If it describes capabilities
+      the template doesn't deliver — uploads, AI generation,
+      payments, auth — INIT prompts to narrow or plan add-project.)
     tier: small team / early production
       (default; user can change in /ai/SOLUTION.md after init)
     license: MIT (default)
     cloud_preference: deferred to P3-T0
     budget_preference: deferred to P3-T0
     compliance: none (default; user adds via SOLUTION.md edit)
+  ```
+
+Why a NOTES block instead of the full INIT prompt: `INIT_PROMPT.md`
+already lives at `/ai/templates/INIT_PROMPT.md` in the repo. Re-
+emitting its ~290 lines floods the chat without adding
+information. The next AI session reads the file directly.
 
 Default `project_name` mapping:
 
