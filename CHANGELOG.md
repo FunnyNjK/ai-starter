@@ -1,23 +1,99 @@
 # Changelog
 
-Starter Version: 1.2.2 (1.3.0 pending)
+Starter Version: 1.3.0
 Last Updated: 2026-05-22
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
 
-## Unreleased (pending v1.3.0)
+## 1.3.0 - 2026-05-22
 
-- **Google Gemini phase harness**: added `run-phase-gemini.sh`,
-  closing the v1.2.1 audit gap §3.5 where Gemini was advertised
-  as a supported tool but had no autonomous-phase adapter. Mirrors
-  the `run-phase-codex.sh` shape with Gemini-specific flags
-  (`--model`, optional `RUN_PHASE_GEMINI_YOLO_FLAG` for the
-  auto-approve flag whose exact name varies by version). All five
-  harness scripts now have parallel structure and shellcheck CI
-  coverage. README and shared-lib comments updated to reference
-  five adapters instead of four.
+Closes the v1.2.1 deferred design items (#43 monorepo workspace
+setup, #44 "Custom" template path UX) and adds the Gemini phase
+harness from the v1.2.1 audit gap §3.5. The "Custom" template
+path is meaningfully thinner now — the 6 most common
+combinations the v1.2.0 8-recipe set didn't cover are recipes.
+
+### Recipe library: +6 platform recipes (total 14)
+
+The new recipes follow the same shape as the v1.2.0 8 — design
+philosophy, bundled stack table with placeholder versions +
+canonical-source URLs, folder layout, local-dev story, free-tier
+ceilings, production handoff:
+
+- `recipes/server/go-echo.md` — Echo + sqlc + Postgres + JWT
+- `recipes/server/aspnet-core-webapi.md` — ASP.NET Core Web API
+  + EF Core + JWT (API-only, distinct from MVC)
+- `recipes/web/django.md` — Django + Postgres + django-allauth
+  + optional django-htmx
+- `recipes/cli/go-cobra.md` — Cobra + Viper + goreleaser
+- `recipes/library/python-poetry.md` — Poetry-managed Python
+  library + Trusted Publishers
+- `recipes/library/go-module.md` — Go module distributed via
+  git tags + pkg.go.dev
+
+`KICKOFF_NEW_SOLUTION.md` Turn 3 template table updated to
+reflect the new combinations. The "Custom" fallback still exists
+but now only fires for combos that genuinely fall outside the
+14-recipe set (e.g., Desktop+TS Electron/Tauri, Mobile+C# MAUI).
+
+### Recipe library: +4 workspace recipes (#43)
+
+New `ai/templates/recipes/workspaces/` directory addresses the
+"multi-project solution sharing code" gap that v1.2.0 left
+unmachined. Solutions with multiple projects in the same
+ecosystem can now wire up a workspace via:
+
+- `workspaces/pnpm-workspace.md` — pnpm-workspace.yaml,
+  workspace deps via `workspace:*`, root-level scripts.
+- `workspaces/dotnet-solution.md` — `.sln` via `dotnet new sln`
+  + `dotnet sln add`, ProjectReference for shared class libs.
+- `workspaces/cargo-workspace.md` — `[workspace] members` in
+  root Cargo.toml, workspace.dependencies for shared versions.
+- `workspaces/go-work.md` — `go.work` for development-time
+  cross-module imports (releases stay per-module via git tags).
+
+Python deliberately has no workspace recipe — the ecosystem has
+no first-class workspace concept.
+
+### ADD_PROJECT_PROMPT.md: workspace-setup task detection
+
+`ADD_PROJECT_PROMPT.md` Step 9 now detects when the new project
+shares a language ecosystem with an existing project AND the
+workspace file doesn't yet exist at solution root. When the
+trigger fires, an additional Phase-1 task is queued (
+`P1-T{n+4}: Set up <ecosystem> workspace at solution root`,
+`Project: solution`) linking to the matching recipe.
+
+Tier-aware behavior:
+- **Solo prototype**: task queued with `Status: Deferred`
+  (workspace not strictly needed yet for one developer).
+- **Small team / production**: `Status: Ready`. Should land
+  before the new project's Phase-2 work.
+
+Multiple-ecosystem solutions get one workspace task per
+ecosystem. The pre-flight self-check verifies the workspace
+detection ran. Skip path: if the user has an ADR explicitly
+declining workspace setup for this ecosystem.
+
+### Google Gemini phase harness
+
+Added `run-phase-gemini.sh`, closing v1.2.1 audit gap §3.5
+where Gemini was advertised as a supported tool but had no
+autonomous-phase adapter. Mirrors `run-phase-codex.sh` with
+Gemini-specific flags (`--model`, optional
+`RUN_PHASE_GEMINI_YOLO_FLAG`). All five harness scripts now
+have parallel structure and shellcheck CI coverage. README and
+shared-lib comments updated to reference five adapters.
+
+### Migration note for projects on v1.2.x
+
+No migration needed. New recipes and workspace machinery are
+opt-in for new projects via `ADD_PROJECT_PROMPT.md`. Existing
+projects that want the workspace task retroactively can run
+REFRESH and add it manually based on the matching workspace
+recipe.
 
 ## 1.2.2 - 2026-05-22
 

@@ -190,6 +190,49 @@ Always (in order, per Local-First Development Rule):
 4. P1-T{n+3}: Add the new project to the solution's
    Dependabot / Renovate config.
 
+### Workspace detection (conditional)
+
+Check whether the new project shares a language ecosystem with
+any existing project in the solution's Projects table:
+
+| Ecosystem | Trigger | Workspace recipe | Workspace file |
+|-----------|---------|------------------|----------------|
+| TypeScript / JavaScript | New project's language is TS or JS AND another TS/JS project exists | `/ai/templates/recipes/workspaces/pnpm-workspace.md` | `pnpm-workspace.yaml` at solution root |
+| C# / .NET | New project's language is C# AND another C# project exists | `/ai/templates/recipes/workspaces/dotnet-solution.md` | `*.sln` at solution root |
+| Go | New project is Go AND another Go project exists AND they may import each other | `/ai/templates/recipes/workspaces/go-work.md` | `go.work` at solution root |
+| Rust | New project is Rust AND another Rust project exists | `/ai/templates/recipes/workspaces/cargo-workspace.md` | `[workspace]` block in root `Cargo.toml` |
+| Python | n/a — Python has no workspace concept | (none) | (none) |
+
+If an ecosystem trigger matches AND the corresponding workspace
+file does NOT already exist at solution root, queue an
+additional task:
+
+5. P1-T{n+4}: Set up `<ecosystem>` workspace at solution root.
+   Project: `solution`. Linked to the matching workspace
+   recipe. **Tier-aware behavior**:
+   - **Solo prototype**: queue with `Status: Deferred` and a
+     note ("workspace not strictly needed for one developer;
+     promote when a second project starts sharing code with
+     this one"). The user can manually promote to Ready.
+   - **Small team / early production / production**:
+     `Status: Ready`. The user should land this before the new
+     project's Phase-2 work.
+
+Multiple ecosystems can match — queue one workspace task per
+matching ecosystem (e.g., a solution adding both a TS project
+and a Go project simultaneously would get both pnpm-workspace
+and go-work tasks).
+
+Skip the workspace task entirely if:
+
+- This is the FIRST project of its ecosystem in the solution
+  (no overlap → no workspace needed yet).
+- The workspace file already exists at solution root.
+- The user has an explicit ADR override declining workspace
+  setup for this ecosystem.
+
+### Deploy work (still deferred to P3-T0)
+
 Per the Local-First Development Rule, do NOT queue Phase-1
 hosting / OIDC / IaC / first-deploy / cloud-budget tasks for the
 new project. Those belong to:
@@ -244,6 +287,14 @@ it.
   - [ ] `/ai/TASKS.md` has Phase-1 tasks for `{project_name}` in
         the Local-First order (scaffold → verify local green →
         CI mirrors → Dependabot).
+  - [ ] **Workspace check**: if the new project shares an
+        ecosystem with an existing project (TS/JS, .NET, Go,
+        Rust) AND the workspace file doesn't already exist at
+        solution root AND the user didn't ADR-decline it, a
+        workspace-setup task is queued linking to the matching
+        recipe under `/ai/templates/recipes/workspaces/`.
+        Status is `Deferred` for solo prototype tier, `Ready`
+        otherwise.
   - [ ] No Phase-1 hosting / OIDC / IaC / first-deploy / cloud-
         budget tasks were queued for `{project_name}`.
   - [ ] If P3-T0 was already Done (solution already deployed),

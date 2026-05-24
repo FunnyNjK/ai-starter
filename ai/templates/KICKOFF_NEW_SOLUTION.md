@@ -44,7 +44,7 @@ no scaffolding, no file edits, no version lookups. INIT does those.
 - **Be terse.** No essays. Match the menu shape below verbatim.
 - If user types `?` instead of a number, show 2-3 clarifying
   examples for that specific menu, then re-ask.
-- If a (platform, language) combo has no v1.2.0 template, the
+- If a (platform, language) combo has no v1.3.0 template, the
   template menu offers a single "Custom — rung defaults" option
   routed to `/docs/PROJECT_SHAPE_GALLERY.md`.
 - Do NOT ask compliance / budget / cloud / auth questions. Those
@@ -93,16 +93,22 @@ Wait for one number. Capture as `language`.
 ## Turn 3 — Template
 
 Filter by (`platform`, `language`). Render the matching template
-menu. v1.2.0 ships these 8 templates:
+menu. v1.3.0 ships these 14 templates:
 
 | platform + language          | templates                                                            |
 |------------------------------|----------------------------------------------------------------------|
 | Web + TypeScript             | Next.js Web App / Astro Static                                       |
 | Web + C#                     | ASP.NET Core MVC                                                     |
+| Web + Python                 | Django                                                               |
 | Server + TypeScript          | NestJS API                                                           |
 | Server + Python              | FastAPI                                                              |
+| Server + C#                  | ASP.NET Core Web API                                                 |
+| Server + Go                  | Echo (with sqlc)                                                     |
 | CLI + Python                 | Python Typer                                                         |
+| CLI + Go                     | Cobra                                                                |
 | Library + TypeScript         | TS Library (tsup + changesets)                                       |
+| Library + Python             | Poetry package                                                       |
+| Library + Go                 | Go module                                                            |
 | Mobile + TypeScript          | React Native (Expo)                                                  |
 | (anything else)              | Custom — rung defaults from `/docs/PROJECT_SHAPE_GALLERY.md`         |
 
