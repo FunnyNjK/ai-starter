@@ -100,7 +100,10 @@ If you already know exactly what you want, you can skip the wizard:
 - **Tool-native memory hooks** for Claude Code, Codex, Cursor, Copilot,
   and Gemini.
 - **Phase harnesses** (`run-phase*.sh`) — autonomous N-task runners,
-  one per supported AI CLI. They share safety/session mechanics via
+  one per supported AI CLI: `run-phase.sh` (Claude Code),
+  `run-phase-codex.sh` (OpenAI Codex), `run-phase-cursor.sh` (Cursor),
+  `run-phase-copilot.sh` (GitHub Copilot), `run-phase-gemini.sh`
+  (Google Gemini). They share safety/session mechanics via
   `scripts/run-phase-lib.sh` (safe staging that refuses secrets / keys /
   local DBs, push-on-failure stop) while keeping each adapter's
   tool-specific CLI invocation separate.

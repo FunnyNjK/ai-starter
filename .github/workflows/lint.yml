@@ -22,7 +22,8 @@ jobs:
             run-phase.sh \
             run-phase-codex.sh \
             run-phase-cursor.sh \
-            run-phase-copilot.sh
+            run-phase-copilot.sh \
+            run-phase-gemini.sh
 
   planning-lint:
     runs-on: ubuntu-latest

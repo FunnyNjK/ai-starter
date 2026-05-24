@@ -1,11 +1,23 @@
 # Changelog
 
-Starter Version: 1.2.2
+Starter Version: 1.2.2 (1.3.0 pending)
 Last Updated: 2026-05-22
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## Unreleased (pending v1.3.0)
+
+- **Google Gemini phase harness**: added `run-phase-gemini.sh`,
+  closing the v1.2.1 audit gap §3.5 where Gemini was advertised
+  as a supported tool but had no autonomous-phase adapter. Mirrors
+  the `run-phase-codex.sh` shape with Gemini-specific flags
+  (`--model`, optional `RUN_PHASE_GEMINI_YOLO_FLAG` for the
+  auto-approve flag whose exact name varies by version). All five
+  harness scripts now have parallel structure and shellcheck CI
+  coverage. README and shared-lib comments updated to reference
+  five adapters instead of four.
 
 ## 1.2.2 - 2026-05-22
 

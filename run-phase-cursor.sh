@@ -2,8 +2,9 @@
 # run-phase-cursor.sh — run N consecutive tasks autonomously via Cursor CLI (`agent`).
 # Each task: work → handoff → commit → push.
 #
-# This is the Cursor adapter. It is one of FOUR tool-specific harnesses —
-# see also run-phase.sh (Claude), run-phase-codex.sh, run-phase-copilot.sh.
+# This is the Cursor adapter. It is one of FIVE tool-specific harnesses —
+# see also run-phase.sh (Claude), run-phase-codex.sh, run-phase-copilot.sh,
+# run-phase-gemini.sh.
 # Shared safety/session mechanics live in scripts/run-phase-lib.sh; this
 # script keeps the Cursor-specific CLI invocation because Cursor's
 # `agent` subcommand uses different flags (`--trust`, `--sandbox`,

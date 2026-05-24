@@ -2,9 +2,9 @@
 # run-phase-codex.sh — run N consecutive tasks autonomously via OpenAI Codex CLI (`codex`).
 # Each task: work → handoff → commit → push.
 #
-# This is the OpenAI Codex adapter. It is one of FOUR tool-specific
+# This is the OpenAI Codex adapter. It is one of FIVE tool-specific
 # harnesses — see also run-phase.sh (Claude), run-phase-cursor.sh,
-# run-phase-copilot.sh. Shared safety/session mechanics live in
+# run-phase-copilot.sh, run-phase-gemini.sh. Shared safety/session mechanics live in
 # scripts/run-phase-lib.sh; this script keeps the Codex-specific CLI
 # invocation because Codex's `exec` / `exec resume` flag sets differ
 # materially from the other CLIs.

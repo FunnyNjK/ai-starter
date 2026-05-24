@@ -3,15 +3,16 @@
 #
 # WHY THIS FILE EXISTS
 # --------------------
-# The repo intentionally ships FOUR separate phase harnesses, one per
+# The repo intentionally ships FIVE separate phase harnesses, one per
 # supported AI agent CLI:
 #
 #   - run-phase.sh         → Anthropic Claude Code (`claude`)
 #   - run-phase-codex.sh   → OpenAI Codex CLI (`codex`)
 #   - run-phase-cursor.sh  → Cursor CLI (`agent`)
 #   - run-phase-copilot.sh → GitHub Copilot CLI (`copilot`)
+#   - run-phase-gemini.sh  → Google Gemini CLI (`gemini`)
 #
-# Users pick whichever AI developer they actually have access to. The four
+# Users pick whichever AI developer they actually have access to. The five
 # scripts MUST stay as separate adapters because each CLI has its own:
 #
 #   - install command, auth flow, version-specific flags

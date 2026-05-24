@@ -2,12 +2,13 @@
 # run-phase.sh — run N consecutive tasks autonomously via Claude Code (`claude`).
 # Each task: work → handoff → commit → push.
 #
-# This is the Anthropic Claude Code adapter. It is one of FOUR
+# This is the Anthropic Claude Code adapter. It is one of FIVE
 # tool-specific harnesses — see also run-phase-codex.sh,
-# run-phase-cursor.sh, run-phase-copilot.sh. The four scripts share
-# safety/session mechanics via scripts/run-phase-lib.sh, but each keeps
-# its own CLI invocation because the four CLIs differ in sub-commands,
-# flag names, approval flow, and resume semantics.
+# run-phase-cursor.sh, run-phase-copilot.sh, run-phase-gemini.sh.
+# The five scripts share safety/session mechanics via
+# scripts/run-phase-lib.sh, but each keeps its own CLI invocation
+# because the five CLIs differ in sub-commands, flag names, approval
+# flow, and resume semantics.
 #
 # Usage:
 #   ./run-phase.sh <num_tasks>                    # commit + push (default)

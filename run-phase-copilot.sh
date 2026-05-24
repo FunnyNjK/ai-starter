@@ -2,9 +2,9 @@
 # run-phase-copilot.sh — run N consecutive tasks autonomously via GitHub Copilot CLI (`copilot`).
 # Each task: work → handoff → commit → push.
 #
-# This is the GitHub Copilot adapter. It is one of FOUR tool-specific
+# This is the GitHub Copilot adapter. It is one of FIVE tool-specific
 # harnesses — see also run-phase.sh (Claude), run-phase-codex.sh,
-# run-phase-cursor.sh. Shared safety/session mechanics live in
+# run-phase-cursor.sh, run-phase-gemini.sh. Shared safety/session mechanics live in
 # scripts/run-phase-lib.sh; this script keeps the Copilot-specific CLI
 # invocation because Copilot CLI uses `--resume` / `--allow-all-tools`
 # rather than the other CLIs' flag names.
