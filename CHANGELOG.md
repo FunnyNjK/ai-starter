@@ -1,11 +1,77 @@
 # Changelog
 
-Starter Version: 1.2.1
-Last Updated: 2026-05-21
+Starter Version: 1.2.2
+Last Updated: 2026-05-22
 
 This changelog tracks the `ai-starter` template itself. Copied application
 projects should maintain their own project changelog or release notes after
 initialization.
+
+## 1.2.2 - 2026-05-22
+
+Bugfix sweep addressing the issues found in the post-v1.2.1 code
+review. Pure fixes, no new features.
+
+- **`scripts/mark-task-done.py`** correctness pass (review §3.1,
+  §4.1, §4.2):
+  - Task-extraction termination now uses
+    `re.match(r"^### P\d+-T\d+:", line)` instead of
+    `line.startswith("### P")`. The old check prematurely
+    terminated extraction on any H3 starting with `P`
+    (`### Performance`, `### Prerequisites`, `### Postgres
+    schema decisions`, etc.).
+  - Task-title extraction switched from `str.replace()` to an
+    anchored `re.sub()`, preventing duplicate-substring removal
+    if a task title happened to mention its own ID.
+  - DONE_LOG date-heading insertion now finds the correct
+    chronological position by parsing existing date headings
+    (ISO YYYY-MM-DD sorts lexicographically), inserting today's
+    section ahead of all older ones. Previous logic found the
+    first matching `### 20` heading regardless of date.
+- **`ai/templates/ci-security.template.yml`** robustness (review
+  §3.4, §4.3):
+  - SAST guard switched from a self-referential negative check
+    (absence of the template's own placeholder string) to a
+    positive assertion that a workflow under `.github/workflows/`
+    actually invokes one of the recognized SAST tools (CodeQL,
+    Semgrep, Bandit, Trivy, SonarCloud, Snyk, Checkov, tfsec,
+    gitleaks, trufflehog). Workflow naming is no longer
+    constrained.
+  - Dependency-update guard now emits a clear `::error::`
+    message pointing at the responsible Phase-1 task (P1-T3)
+    when the config is missing. INIT_PROMPT.md Phase-1 task
+    order is updated so Dependabot/Renovate lands BEFORE the CI
+    workflow, preventing the guard from failing on first push.
+  - Template gains a top-comment ordering note for future
+    template users.
+- **`scripts/run-phase-lib.sh`** portability + clarity (review
+  §3.7, §3.8):
+  - Replaced gawk-only `awk -v RS='\0' -v ORS='\0'` NUL-handling
+    in `rpl_session_changed_paths` with portable bash 3.2+ using
+    `read -r -d ''` and explicit substring slicing. macOS users
+    no longer need `brew install gawk` to use the phase
+    harnesses; stock `/bin/awk` and `/bin/bash` are sufficient.
+  - Reworded the ambiguous `rpl_preflight` error message
+    ("Create/switch to a $expected/* branch, or unset
+    RUN_PHASE_AUTO_BRANCH=0" → "...unset RUN_PHASE_AUTO_BRANCH
+    (defaults to auto-create)").
+- **`.github/workflows/lint.yml`** (review §3.3): added
+  `timeout-minutes: 10` to both `shellcheck` and `planning-lint`
+  jobs. Prevents pathological hangs from running until GitHub's
+  6-hour default.
+- **`scripts/lint-planning.py`** (review §3.2): removed the
+  unused `argv` parameter from `main()`. Either implement CLI
+  args or don't accept them; we don't need them.
+
+### Not addressed in this release (deferred)
+
+- **3.5 No Gemini run-phase script.** Tracked as
+  v1.3.0+ decision: fill the gap with a `run-phase-gemini.sh`
+  adapter, or drop Gemini from the supported-tools list. Needs
+  product-direction call.
+- **3.6 docs/ deprecated component/rung terminology.** Same as
+  the v1.2.1 "Custom template path UX" deferral — needs design
+  work, not a bug fix.
 
 ## 1.2.1 - 2026-05-21
 

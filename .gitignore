@@ -3,3 +3,7 @@ ai/logs/
 
 # Claude Code local settings and worktrees
 .claude/
+
+# Python bytecode (created by py_compile in lint CI and local runs)
+__pycache__/
+*.pyc

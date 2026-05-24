@@ -1,5 +1,14 @@
 name: Security Guardrails
 
+# Ordering note for INIT_PROMPT.md:
+# This workflow's guards REQUIRE the project to have Dependabot/Renovate
+# configured (P1-T4 in the Phase-1 task list) before adding this workflow
+# (P1-T3 / P1-T4 in the Phase-1 task list — order matters). The Phase-1
+# task list in INIT_PROMPT.md places "Dependency-update automation" BEFORE
+# "Configure CI security workflow" so this guard does not fail on a fresh
+# init. If you swap that order, this workflow will fail on first push
+# until Dependabot lands.
+
 on:
   push:
     branches: [ "main" ]
@@ -16,7 +25,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Require Dependabot or Renovate
         run: |
-          test -f ".github/dependabot.yml" || test -f "renovate.json" || test -f ".github/renovate.json"
+          test -f ".github/dependabot.yml" \
+            || test -f "renovate.json" \
+            || test -f ".github/renovate.json" \
+            || { \
+              echo "::error::No dependency-update automation found."; \
+              echo "Add one of: .github/dependabot.yml, renovate.json, or"; \
+              echo ".github/renovate.json. See INIT_PROMPT.md Phase-1 task P1-T4."; \
+              exit 1; \
+            }
 
   sast-config:
     name: Real SAST workflow required
@@ -24,17 +41,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Require language-specific SAST
+        # Positive assertion: look for a workflow that actually invokes a
+        # SAST tool. We match BOTH the file name pattern (so users can
+        # name their workflow naturally) AND the file contents (so the
+        # workflow has to actually run a scanner, not just exist).
         run: |
-          while IFS= read -r workflow; do
-            if ! grep -q "Real SAST workflow required" "$workflow"; then
-              echo "Language-specific SAST workflow found: $workflow"
-              exit 0
+          SAST_TOOLING_RE='(codeql-action|semgrep|bandit|trivy|sonarcloud|snyk|checkov|tfsec|gitleaks|truffle ?hog)'
+          found=0
+          while IFS= read -r -d '' workflow; do
+            if grep -Eqi "$SAST_TOOLING_RE" "$workflow"; then
+              echo "Real SAST tooling detected in: $workflow"
+              found=1
+              break
             fi
           done < <(find .github/workflows -maxdepth 1 -type f \
-            \( -name "*codeql*.yml" -o -name "*codeql*.yaml" \
-               -o -name "*sast*.yml" -o -name "*sast*.yaml" \
-               -o -name "*security-scan*.yml" -o -name "*security-scan*.yaml" \))
+            \( -name "*.yml" -o -name "*.yaml" \) -print0)
 
-          echo "No real SAST workflow found."
-          echo "Replace this guard with CodeQL, Bandit, Semgrep, Trivy, or the scanner chosen in /ai/DECISIONS.md."
-          exit 1
+          if [ "$found" -ne 1 ]; then
+            echo "::error::No real SAST workflow found."
+            echo "Add a workflow under .github/workflows/ that invokes one of:"
+            echo "  github/codeql-action (CodeQL), semgrep, bandit, trivy,"
+            echo "  sonarcloud, snyk, checkov, tfsec, gitleaks, trufflehog,"
+            echo "  or another SAST/SCA/secret-scanning tool chosen in"
+            echo "  /ai/DECISIONS.md."
+            exit 1
+          fi

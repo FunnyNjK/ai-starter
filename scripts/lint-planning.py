@@ -35,7 +35,6 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -259,7 +258,7 @@ def lint_file(rel: str, result: LintResult) -> None:
         check_adrs(rel, lines, result)
 
 
-def main(argv: Iterable[str]) -> int:
+def main() -> int:
     result = LintResult()
     for rel in PLANNING_FILES:
         lint_file(rel, result)
@@ -274,4 +273,4 @@ def main(argv: Iterable[str]) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

@@ -280,9 +280,15 @@ Development Rule):
    `{project_name}`.
 2. P1-T2: Verify local development loop is green for
    `{project_name}` (gates P1-T3). Project: `{project_name}`.
-3. P1-T3: Configure CI workflow that mirrors the local loop for
-   `{project_name}`. Project: `{project_name}`.
-4. P1-T4: Add Dependabot / Renovate config. Project: solution.
+3. P1-T3: Add Dependabot / Renovate config. Project: solution.
+   (Must land before P1-T4 — the security guardrails leg of the
+   CI workflow requires dependency-update automation to be
+   configured, or the workflow fails on first push.)
+4. P1-T4: Configure CI workflow that mirrors the local loop for
+   `{project_name}` AND adds the security guardrails leg
+   (`/ai/templates/ci-security.template.yml` extended with the
+   real SAST / SCA tools chosen in DECISIONS.md). Project:
+   `{project_name}`.
 5. P1-T5: Write SECURITY.md and CONTRIBUTING.md at solution root
    from `/ai/templates/SECURITY.template.md` and
    `/ai/templates/CONTRIBUTING.template.md`. Project: solution.

@@ -105,7 +105,7 @@ rpl_preflight() {
     *)
       if [ "${RUN_PHASE_AUTO_BRANCH:-1}" = "0" ]; then
         err "error: current branch '$branch' does not match expected $expected/* prefix."
-        err "Create/switch to a $expected/* branch, or unset RUN_PHASE_AUTO_BRANCH=0."
+        err "Create/switch to a $expected/* branch, or unset RUN_PHASE_AUTO_BRANCH (defaults to auto-create)."
         exit 1
       fi
       target_branch="${expected}/phase-$(date +%Y%m%d-%H%M%S)"
@@ -178,29 +178,45 @@ RPL_SENSITIVE_PATTERNS_DEFAULT='((^|/)(\.env(\..+)?|\.envrc|\.netrc|\.npmrc|\.py
 # Includes modified, added, deleted, renamed (new name), and untracked
 # (excluding gitignored). Output is NUL-delimited so paths with spaces /
 # newlines round-trip safely.
+#
+# Implementation note: uses bash's `read -r -d ''` for NUL-record splitting
+# rather than `awk -v RS='\0'` (a GNU AWK extension that breaks under BSD
+# awk on macOS without a gawk install). Pure bash 3.2+ — runs on stock
+# macOS, every Linux distro, and Windows Git Bash unchanged.
 # ---------------------------------------------------------------------------
 rpl_session_changed_paths() {
-  # `git status --porcelain -z` emits NUL-terminated records.
-  # Each record is "XY path" where XY is the two-char status code.
-  # Renames: "R  old\0new\0" — we keep the new path.
-  git status --porcelain=v1 -z --untracked-files=normal \
-    | awk -v RS='\0' -v ORS='\0' '
-      BEGIN { skip_next = 0 }
-      {
-        if (skip_next) { skip_next = 0; print; next }
-        # Each record starts with 2-char status + space + path.
-        code = substr($0, 1, 2)
-        path = substr($0, 4)
-        if (code ~ /^R/ || code ~ /^C/) {
-          # Rename / copy: the NEXT record is the original name; we want
-          # the new path which is in THIS record.
-          print path
-          skip_next = 1
-          next
-        }
-        print path
-      }
-    '
+  # `git status --porcelain=v1 -z` emits NUL-terminated records.
+  # Each non-rename record is "XY path".
+  # Renames/copies emit TWO records: "RC path-A" then "path-B" (no
+  # status-code prefix). We emit BOTH paths so safe-stage sees the full
+  # before-and-after set; git handles rename detection at commit time.
+  local rec records=() i=0 n code path skip_next=0
+  while IFS= read -r -d '' rec; do
+    records+=("$rec")
+  done < <(git status --porcelain=v1 -z --untracked-files=normal)
+
+  n=${#records[@]}
+  while [ "$i" -lt "$n" ]; do
+    rec="${records[i]}"
+    if [ "$skip_next" = "1" ]; then
+      # Companion record of a rename/copy — no status-code prefix.
+      printf '%s\0' "$rec"
+      skip_next=0
+    else
+      code="${rec:0:2}"
+      path="${rec:3}"
+      case "$code" in
+        R*|C*)
+          printf '%s\0' "$path"
+          skip_next=1
+          ;;
+        *)
+          printf '%s\0' "$path"
+          ;;
+      esac
+    fi
+    i=$((i + 1))
+  done
 }
 
 # ---------------------------------------------------------------------------
